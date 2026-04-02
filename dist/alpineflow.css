@@ -1,0 +1,1415 @@
+/* ================================================================
+   AlpineFlow — Structural CSS
+   Positioning, z-index, cursors, transforms, and var() references
+   for visual properties. Import a theme to set --flow-* values.
+   ================================================================ */
+
+/* ── Variable declarations ──────────────────────────────────────── */
+.flow-container {
+    /* Container */
+    --flow-container-height: 400px;
+    --flow-bg-color: transparent;
+
+    /* Nodes */
+    --flow-node-min-width: 0;
+    --flow-node-bg: #fff;
+    --flow-node-color: inherit;
+    --flow-node-border: 1px solid #1a192b;
+    --flow-node-border-radius: 3px;
+    --flow-node-padding: 5px;
+    --flow-node-shadow: none;
+    --flow-node-transition: none;
+    --flow-node-hover-border-color: transparent;
+    --flow-node-selected-border-color: #555;
+    --flow-node-selected-shadow: 0 0 0 0.5px #555;
+
+    /* Node focus */
+    --flow-node-focus-outline: 2px solid Highlight;
+    --flow-node-focus-outline-offset: 2px;
+
+    /* Edge focus */
+    --flow-edge-focus-stroke: currentColor;
+    --flow-edge-focus-stroke-width: 2.5;
+
+    /* Handles */
+    --flow-handle-size: 10px;
+    --flow-handle-bg: #333;
+    --flow-handle-border: 1px solid #fff;
+    --flow-handle-active-bg: transparent;
+    --flow-handle-invalid-bg: #ef4444;
+
+    /* Edges */
+    --flow-edge-stroke: #b1b1b7;
+    --flow-edge-stroke-width: 1.5;
+    --flow-edge-transition: stroke 0.3s ease;
+    --flow-edge-animated-dasharray: 6 3;
+    --flow-edge-animated-duration: 0.5s;
+    --flow-edge-pulse-duration: 2s;
+    --flow-edge-pulse-min-opacity: 0.3;
+    --flow-edge-dot-size: 4;
+    --flow-edge-dot-fill: currentColor;
+    --flow-edge-dot-duration: 2s;
+    --flow-edge-stroke-selected: #555;
+    --flow-edge-stroke-width-selected: 2.5;
+    --flow-edge-reconnecting-opacity: 0.25;
+    --flow-edge-reconnecting-transition: opacity 0.15s;
+
+    /* Connection line */
+    --flow-connectionline-stroke: var(--flow-edge-stroke);
+    --flow-connectionline-stroke-width: var(--flow-edge-stroke-width);
+
+    /* Edge labels */
+    --flow-edge-label-bg: #fff;
+    --flow-edge-label-border: none;
+    --flow-edge-label-border-radius: 0;
+    --flow-edge-label-padding: 2px 8px;
+    --flow-edge-label-font-size: 11px;
+    --flow-edge-label-color: inherit;
+
+    /* Node toolbar */
+    --flow-node-toolbar-padding: 4px 6px;
+    --flow-node-toolbar-bg: transparent;
+    --flow-node-toolbar-border: none;
+    --flow-node-toolbar-border-radius: 0;
+    --flow-node-toolbar-btn-bg: transparent;
+    --flow-node-toolbar-btn-border: none;
+    --flow-node-toolbar-btn-color: inherit;
+    --flow-node-toolbar-btn-padding: 4px 8px;
+    --flow-node-toolbar-btn-border-radius: 0;
+    --flow-node-toolbar-btn-font-size: 12px;
+    --flow-node-toolbar-btn-hover-bg: transparent;
+
+    /* Drag handle */
+    --flow-drag-handle-bg: transparent;
+    --flow-drag-handle-border-bottom: none;
+    --flow-drag-handle-padding: 6px 12px;
+    --flow-drag-handle-border-radius: 0;
+    --flow-drag-handle-font-size: 12px;
+    --flow-drag-handle-font-weight: 600;
+    --flow-drag-handle-color: inherit;
+
+    /* Node states */
+    --flow-node-locked-opacity: 1;
+    --flow-node-locked-border-style: solid;
+
+    /* Resize handles */
+    --flow-resizer-bg: transparent;
+    --flow-resizer-border: none;
+    --flow-resizer-hover-bg: transparent;
+
+    /* Controls */
+    --flow-controls-gap: 1px;
+    --flow-controls-btn-width: 28px;
+    --flow-controls-btn-height: 28px;
+    --flow-controls-btn-bg: #fefefe;
+    --flow-controls-btn-border: 1px solid #eee;
+    --flow-controls-btn-color: inherit;
+    --flow-controls-btn-border-radius: 0;
+    --flow-controls-btn-hover-bg: #f4f4f4;
+
+    /* Selection box */
+    --flow-selection-bg: rgba(0, 89, 220, 0.08);
+    --flow-selection-border: 1px dotted rgba(0, 89, 220, 0.8);
+    --flow-selection-border-radius: 0;
+
+    /* Background pattern */
+    --flow-bg-pattern-color: rgba(0, 0, 0, 0.15);
+    --flow-bg-pattern-gap: 20;
+
+    /* Minimap */
+    --flow-minimap-border: 1px solid #eee;
+    --flow-minimap-border-radius: 0;
+    --flow-minimap-bg: #fff;
+    --flow-minimap-node-color: #e2e2e2;
+    --flow-minimap-mask-color: rgba(240, 240, 240, 0.6);
+
+    /* Panel */
+    --flow-panel-bg: transparent;
+    --flow-panel-border: none;
+    --flow-panel-border-radius: 0;
+    --flow-panel-min-width: 100px;
+    --flow-panel-min-height: 60px;
+    --flow-panel-resize-bg: transparent;
+    --flow-panel-resize-border-radius: 0;
+    --flow-panel-resize-hover-bg: transparent;
+
+    /* Group node */
+    --flow-node-group-bg: transparent;
+    --flow-node-group-border: none;
+    --flow-node-group-border-radius: 0;
+    --flow-node-group-shadow: none;
+    --flow-node-group-font-size: inherit;
+    --flow-node-group-text-transform: none;
+    --flow-node-group-letter-spacing: normal;
+    --flow-node-group-padding: 0;
+    --flow-node-group-hover-border-color: transparent;
+
+    /* Layout animation */
+    --flow-layout-animation-duration: 0.3s;
+}
+
+/* ── Container & viewport ───────────────────────────────────────── */
+.flow-container {
+    direction: ltr;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: var(--flow-container-height, 400px);
+    background-color: var(--flow-bg-color);
+    touch-action: none;
+    -webkit-touch-callout: none;
+}
+.flow-viewport {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+}
+
+/* Hide viewport until canvas is ready — prevents flash of nodes
+   at raw positions before fitView runs. Only applies when
+   fitViewOnInit is set (indicated by data-fit-view attribute).
+   The .flow-ready class is added by flowCanvas after init completes. */
+.flow-container[data-fit-view]:not(.flow-ready) .flow-viewport {
+    opacity: 0;
+}
+
+/* ── Nodes ───────────────────────────────────────────────────────── */
+/* IMPORTANT: Do not override position: absolute on .flow-node.
+   Nodes rely on absolute positioning within the viewport transform.
+   Setting position: relative breaks layout, fitView, and minimap.
+   Pseudo-elements (::before/::after) work fine — position: absolute
+   already serves as a containing block for them.
+   Also avoid transition: all — it transitions transform (position)
+   during drag, causing severe lag. Use specific properties instead:
+   e.g. transition: border-color 0.2s, box-shadow 0.2s. */
+.flow-node {
+    position: absolute;
+    box-sizing: border-box;
+    transform-origin: 0 0;
+    z-index: 2;
+    opacity: 1;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
+    -webkit-touch-callout: none;
+    text-align: center;
+    min-width: var(--flow-node-min-width);
+    background: var(--flow-node-bg);
+    color: var(--flow-node-color);
+    border: var(--flow-node-border);
+    border-top: var(--flow-node-border-top, var(--flow-node-border));
+    border-radius: var(--flow-node-border-radius);
+    padding: var(--flow-node-padding);
+    box-shadow: var(--flow-node-shadow);
+    transition: var(--flow-node-transition);
+}
+.flow-node:hover {
+    border-color: var(--flow-node-hover-border-color);
+}
+.flow-node:active {
+    cursor: grabbing;
+}
+.flow-node-selected {
+    border-color: var(--flow-node-selected-border-color);
+    box-shadow: var(--flow-node-selected-shadow);
+}
+.flow-node:focus-visible {
+    outline: var(--flow-node-focus-outline);
+    outline-offset: var(--flow-node-focus-outline-offset);
+}
+.flow-node:focus:not(:focus-visible) {
+    outline: none;
+}
+
+/* ── Shape Nodes ─────────────────────────────────────────────────── */
+.flow-node-circle {
+    border-radius: 50%;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+/* Clipped shapes: use background-as-border technique.
+   The element bg = border color, ::after fills the interior.
+   (filter: drop-shadow doesn't work — CSS applies clip-path AFTER filter.) */
+.flow-node-diamond,
+.flow-node-hexagon,
+.flow-node-parallelogram,
+.flow-node-triangle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.flow-node-diamond    { clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%); }
+.flow-node-hexagon    { clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
+.flow-node-parallelogram { clip-path: polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%); }
+.flow-node-triangle   { clip-path: polygon(50% 0%, 100% 100%, 0% 100%); padding-top: 30%; }
+
+.flow-node-diamond::after,
+.flow-node-hexagon::after,
+.flow-node-parallelogram::after,
+.flow-node-triangle::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    clip-path: inherit;
+    background: var(--flow-node-bg, #fff);
+    z-index: 0;
+    pointer-events: none;
+}
+.flow-node-diamond.flow-node-selected::after,
+.flow-node-hexagon.flow-node-selected::after,
+.flow-node-parallelogram.flow-node-selected::after,
+.flow-node-triangle.flow-node-selected::after {
+    inset: 3px;
+}
+/* Push node content above the fill pseudo-element */
+.flow-node-diamond > *,
+.flow-node-hexagon > *,
+.flow-node-parallelogram > *,
+.flow-node-triangle > * {
+    position: relative;
+    z-index: 1;
+}
+.flow-node-cylinder {
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.flow-node-cylinder::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 24%;
+    border-radius: 50%;
+    background: inherit;
+    border: inherit;
+    border-bottom: none;
+    z-index: 1;
+}
+.flow-node-stadium {
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ── Handles ─────────────────────────────────────────────────────── */
+.flow-handle {
+    position: absolute;
+    z-index: 10;
+    border-radius: 50%;
+    width: var(--flow-handle-size);
+    height: var(--flow-handle-size);
+    min-width: 5px;
+    min-height: 5px;
+    background: var(--flow-handle-bg);
+    border: var(--flow-handle-border);
+    touch-action: none;
+}
+.flow-handle-source {
+    cursor: crosshair;
+}
+
+/* Cardinal positions */
+.flow-handle[data-flow-handle-position="top"] {
+    top: -5px; left: 50%; transform: translateX(-50%);
+}
+.flow-handle[data-flow-handle-position="bottom"] {
+    bottom: -5px; left: 50%; transform: translateX(-50%);
+}
+.flow-handle[data-flow-handle-position="right"] {
+    right: -5px; top: 50%; transform: translateY(-50%);
+}
+.flow-handle[data-flow-handle-position="left"] {
+    left: -5px; top: 50%; transform: translateY(-50%);
+}
+
+/* Corner positions */
+.flow-handle[data-flow-handle-position="top-left"] {
+    top: -5px; left: -5px;
+}
+.flow-handle[data-flow-handle-position="top-right"] {
+    top: -5px; right: -5px;
+}
+.flow-handle[data-flow-handle-position="bottom-left"] {
+    bottom: -5px; left: -5px;
+}
+.flow-handle[data-flow-handle-position="bottom-right"] {
+    bottom: -5px; right: -5px;
+}
+
+/* Active state per position */
+.flow-handle-active[data-flow-handle-position="top"],
+.flow-handle-active[data-flow-handle-position="bottom"] {
+    background: var(--flow-handle-active-bg);
+    transform: translateX(-50%) scale(1.5);
+}
+.flow-handle-active[data-flow-handle-position="right"],
+.flow-handle-active[data-flow-handle-position="left"] {
+    background: var(--flow-handle-active-bg);
+    transform: translateY(-50%) scale(1.5);
+}
+.flow-handle-active[data-flow-handle-position="top-left"],
+.flow-handle-active[data-flow-handle-position="top-right"],
+.flow-handle-active[data-flow-handle-position="bottom-left"],
+.flow-handle-active[data-flow-handle-position="bottom-right"] {
+    background: var(--flow-handle-active-bg);
+    transform: scale(1.5);
+}
+
+/* Invalid handle override — shown when validation rejects the connection */
+.flow-handle-invalid.flow-handle-active {
+    background: var(--flow-handle-invalid-bg) !important;
+}
+
+/* ── Shape-aware handle positions ─────────────────────────────────
+   Handles on clipped shapes appear as semicircles at the perimeter.
+   All shapes use translate(-50%, -50%) centering on perimeter points. */
+.flow-node-diamond .flow-handle,
+.flow-node-hexagon .flow-handle,
+.flow-node-parallelogram .flow-handle,
+.flow-node-triangle .flow-handle,
+.flow-node-circle .flow-handle,
+.flow-node-cylinder .flow-handle,
+.flow-node-stadium .flow-handle {
+    right: auto;
+    bottom: auto;
+    transform: translate(-50%, -50%);
+}
+
+/* Diamond */
+.flow-node-diamond .flow-handle[data-flow-handle-position="top"]          { left: 50%;  top: 0; }
+.flow-node-diamond .flow-handle[data-flow-handle-position="right"]        { left: 100%; top: 50%; }
+.flow-node-diamond .flow-handle[data-flow-handle-position="bottom"]       { left: 50%;  top: 100%; }
+.flow-node-diamond .flow-handle[data-flow-handle-position="left"]         { left: 0;    top: 50%; }
+.flow-node-diamond .flow-handle[data-flow-handle-position="top-right"]    { left: 75%;  top: 25%; }
+.flow-node-diamond .flow-handle[data-flow-handle-position="top-left"]     { left: 25%;  top: 25%; }
+.flow-node-diamond .flow-handle[data-flow-handle-position="bottom-right"] { left: 75%;  top: 75%; }
+.flow-node-diamond .flow-handle[data-flow-handle-position="bottom-left"]  { left: 25%;  top: 75%; }
+
+/* Hexagon */
+.flow-node-hexagon .flow-handle[data-flow-handle-position="top"]          { left: 50%;  top: 0; }
+.flow-node-hexagon .flow-handle[data-flow-handle-position="right"]        { left: 100%; top: 50%; }
+.flow-node-hexagon .flow-handle[data-flow-handle-position="bottom"]       { left: 50%;  top: 100%; }
+.flow-node-hexagon .flow-handle[data-flow-handle-position="left"]         { left: 0;    top: 50%; }
+.flow-node-hexagon .flow-handle[data-flow-handle-position="top-right"]    { left: 75%;  top: 0; }
+.flow-node-hexagon .flow-handle[data-flow-handle-position="top-left"]     { left: 25%;  top: 0; }
+.flow-node-hexagon .flow-handle[data-flow-handle-position="bottom-right"] { left: 75%;  top: 100%; }
+.flow-node-hexagon .flow-handle[data-flow-handle-position="bottom-left"]  { left: 25%;  top: 100%; }
+
+/* Parallelogram */
+.flow-node-parallelogram .flow-handle[data-flow-handle-position="top"]          { left: 57.5%; top: 0; }
+.flow-node-parallelogram .flow-handle[data-flow-handle-position="right"]        { left: 92.5%; top: 50%; }
+.flow-node-parallelogram .flow-handle[data-flow-handle-position="bottom"]       { left: 42.5%; top: 100%; }
+.flow-node-parallelogram .flow-handle[data-flow-handle-position="left"]         { left: 7.5%;  top: 50%; }
+.flow-node-parallelogram .flow-handle[data-flow-handle-position="top-right"]    { left: 100%;  top: 0; }
+.flow-node-parallelogram .flow-handle[data-flow-handle-position="top-left"]     { left: 15%;   top: 0; }
+.flow-node-parallelogram .flow-handle[data-flow-handle-position="bottom-right"] { left: 85%;   top: 100%; }
+.flow-node-parallelogram .flow-handle[data-flow-handle-position="bottom-left"]  { left: 0;     top: 100%; }
+
+/* Triangle */
+.flow-node-triangle .flow-handle[data-flow-handle-position="top"]          { left: 50%;  top: 0; }
+.flow-node-triangle .flow-handle[data-flow-handle-position="right"]        { left: 75%;  top: 50%; }
+.flow-node-triangle .flow-handle[data-flow-handle-position="bottom"]       { left: 50%;  top: 100%; }
+.flow-node-triangle .flow-handle[data-flow-handle-position="left"]         { left: 25%;  top: 50%; }
+.flow-node-triangle .flow-handle[data-flow-handle-position="top-right"]    { left: 62.5%; top: 25%; }
+.flow-node-triangle .flow-handle[data-flow-handle-position="top-left"]     { left: 37.5%; top: 25%; }
+.flow-node-triangle .flow-handle[data-flow-handle-position="bottom-right"] { left: 100%; top: 100%; }
+.flow-node-triangle .flow-handle[data-flow-handle-position="bottom-left"]  { left: 0;    top: 100%; }
+
+/* Circle: corners at 45° on the ellipse */
+.flow-node-circle .flow-handle[data-flow-handle-position="top"]          { left: 50%;    top: 0; }
+.flow-node-circle .flow-handle[data-flow-handle-position="right"]        { left: 100%;   top: 50%; }
+.flow-node-circle .flow-handle[data-flow-handle-position="bottom"]       { left: 50%;    top: 100%; }
+.flow-node-circle .flow-handle[data-flow-handle-position="left"]         { left: 0;      top: 50%; }
+.flow-node-circle .flow-handle[data-flow-handle-position="top-right"]    { left: 85.36%; top: 14.64%; }
+.flow-node-circle .flow-handle[data-flow-handle-position="top-left"]     { left: 14.64%; top: 14.64%; }
+.flow-node-circle .flow-handle[data-flow-handle-position="bottom-right"] { left: 85.36%; top: 85.36%; }
+.flow-node-circle .flow-handle[data-flow-handle-position="bottom-left"]  { left: 14.64%; top: 85.36%; }
+
+/* Cylinder: cap offset shifts top/bottom 12% inward */
+.flow-node-cylinder .flow-handle[data-flow-handle-position="top"]          { left: 50%;  top: 12%; }
+.flow-node-cylinder .flow-handle[data-flow-handle-position="right"]        { left: 100%; top: 50%; }
+.flow-node-cylinder .flow-handle[data-flow-handle-position="bottom"]       { left: 50%;  top: 88%; }
+.flow-node-cylinder .flow-handle[data-flow-handle-position="left"]         { left: 0;    top: 50%; }
+.flow-node-cylinder .flow-handle[data-flow-handle-position="top-right"]    { left: 100%; top: 12%; }
+.flow-node-cylinder .flow-handle[data-flow-handle-position="top-left"]     { left: 0;    top: 12%; }
+.flow-node-cylinder .flow-handle[data-flow-handle-position="bottom-right"] { left: 100%; top: 88%; }
+.flow-node-cylinder .flow-handle[data-flow-handle-position="bottom-left"]  { left: 0;    top: 88%; }
+
+/* Stadium */
+.flow-node-stadium .flow-handle[data-flow-handle-position="top"]    { left: 50%;  top: 0; }
+.flow-node-stadium .flow-handle[data-flow-handle-position="right"]  { left: 100%; top: 50%; }
+.flow-node-stadium .flow-handle[data-flow-handle-position="bottom"] { left: 50%;  top: 100%; }
+.flow-node-stadium .flow-handle[data-flow-handle-position="left"]   { left: 0;    top: 50%; }
+
+/* Active states for shape handles */
+.flow-node-diamond .flow-handle-active,
+.flow-node-hexagon .flow-handle-active,
+.flow-node-parallelogram .flow-handle-active,
+.flow-node-triangle .flow-handle-active,
+.flow-node-circle .flow-handle-active,
+.flow-node-cylinder .flow-handle-active,
+.flow-node-stadium .flow-handle-active {
+    background: var(--flow-handle-active-bg);
+    transform: translate(-50%, -50%) scale(1.5);
+}
+
+/* ── Edges ────────────────────────────────────────────────────────── */
+.flow-edges {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+.flow-edge-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    overflow: visible;
+    opacity: 1;
+}
+.flow-edges path {
+    fill: none;
+    stroke: var(--flow-edge-stroke);
+    stroke-width: var(--flow-edge-stroke-width);
+    transition: var(--flow-edge-transition);
+    pointer-events: visibleStroke;
+}
+.flow-edge-gradient stop {
+    transition: stop-color 0.3s ease;
+}
+/* TODO(future): Multi-stop gradient stops — when EdgeGradient supports arrays,
+   generate multiple <stop> elements and transition each stop-color independently */
+
+/* Edge animation */
+@keyframes flow-edge-dash {
+    to { stroke-dashoffset: -24; }
+}
+.flow-edge-animated {
+    stroke-dasharray: var(--flow-edge-animated-dasharray);
+    animation: flow-edge-dash var(--flow-edge-animated-duration) linear infinite;
+}
+
+/* Edge pulse animation */
+@keyframes flow-edge-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: var(--flow-edge-pulse-min-opacity); }
+}
+.flow-edge-pulse {
+    animation: flow-edge-pulse var(--flow-edge-pulse-duration) ease-in-out infinite;
+}
+
+/* Edge dot animation */
+.flow-edge-dot {
+    fill: var(--flow-edge-dot-fill);
+}
+
+.flow-edge-particle {
+    pointer-events: none;
+}
+
+/* Edge labels */
+.flow-edge-label {
+    position: absolute;
+    z-index: 1;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    opacity: 1;
+    background: var(--flow-edge-label-bg);
+    border: var(--flow-edge-label-border);
+    border-radius: var(--flow-edge-label-border-radius);
+    padding: var(--flow-edge-label-padding);
+    font-size: var(--flow-edge-label-font-size);
+    color: var(--flow-edge-label-color);
+}
+
+/* Edge label visibility modes */
+.flow-edge-label-hover,
+.flow-edge-label-on-select {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+}
+.flow-edge-label-hover.flow-edge-hovered,
+.flow-edge-label-hover.flow-edge-label-selected,
+.flow-edge-label-on-select.flow-edge-label-selected {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Edge selection */
+.flow-edge-selected path:not([stroke="transparent"]) {
+    stroke: var(--flow-edge-stroke-selected);
+    stroke-width: var(--flow-edge-stroke-width-selected);
+}
+
+/* Edge focus — suppress native ring on mouse click, show only on keyboard */
+.flow-edge-svg g:focus {
+    outline: none;
+}
+.flow-edge-focused path:not([style*="transparent"]) {
+    stroke: var(--flow-edge-focus-stroke) !important;
+    stroke-width: var(--flow-edge-focus-stroke-width) !important;
+}
+
+/* Edge reconnection */
+.flow-edge-reconnecting {
+    opacity: var(--flow-edge-reconnecting-opacity);
+    transition: var(--flow-edge-reconnecting-transition);
+    cursor: grabbing;
+}
+.flow-edge-reconnecting path {
+    pointer-events: none !important;
+}
+
+/* ── Node states ─────────────────────────────────────────────────── */
+.flow-node-locked {
+    cursor: default;
+    opacity: var(--flow-node-locked-opacity);
+    border-style: var(--flow-node-locked-border-style);
+}
+.flow-node-locked:active {
+    cursor: default;
+}
+.flow-node-annotation {
+    background: none;
+    border: none;
+    padding: 0;
+    min-width: 0;
+    box-shadow: none;
+    cursor: default;
+    pointer-events: none;
+}
+.flow-node-annotation:hover {
+    border-color: transparent;
+}
+.flow-node-annotation:active {
+    cursor: default;
+}
+.flow-node-hidden {
+    display: none !important;
+}
+.flow-node-condensed {
+    overflow: hidden;
+}
+.flow-node-filtered {
+    opacity: 0;
+    pointer-events: none;
+}
+.flow-edge-filtered {
+    opacity: 0;
+    pointer-events: none;
+}
+.flow-connecting .flow-handle-target {
+    outline: 2px solid var(--flow-accent-color, #3b82f6);
+    outline-offset: 2px;
+    border-radius: 50%;
+}
+.flow-connecting .flow-handle-target.flow-handle-invalid {
+    outline-color: var(--flow-handle-invalid-bg);
+}
+.flow-row-selected {
+    background: var(--flow-row-selected-bg, rgba(59, 130, 246, 0.1));
+    outline: 1px solid var(--flow-row-selected-border-color, #3b82f6);
+    outline-offset: -1px;
+}
+.flow-node-no-connect .flow-handle {
+    cursor: not-allowed;
+}
+
+/* ── Handle visibility modes ──────────────────────────────────── */
+.flow-handles-hidden > .flow-handle {
+    display: none;
+}
+.flow-handles-hover > .flow-handle {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+}
+.flow-handles-hover:hover > .flow-handle {
+    opacity: 1;
+    pointer-events: auto;
+}
+.flow-handles-select > .flow-handle {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+}
+.flow-handles-select.flow-node-selected > .flow-handle {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* ── Node toolbar ────────────────────────────────────────────────── */
+.flow-node-toolbar {
+    position: absolute;
+    z-index: 20;
+    display: flex;
+    gap: 4px;
+    pointer-events: auto;
+    white-space: nowrap;
+    padding: var(--flow-node-toolbar-padding);
+    background: var(--flow-node-toolbar-bg);
+    border: var(--flow-node-toolbar-border);
+    border-radius: var(--flow-node-toolbar-border-radius);
+}
+.flow-node-toolbar button {
+    cursor: pointer;
+    transition: background 0.15s;
+    background: var(--flow-node-toolbar-btn-bg);
+    border: var(--flow-node-toolbar-btn-border);
+    color: var(--flow-node-toolbar-btn-color);
+    padding: var(--flow-node-toolbar-btn-padding);
+    border-radius: var(--flow-node-toolbar-btn-border-radius);
+    font-size: var(--flow-node-toolbar-btn-font-size);
+}
+.flow-node-toolbar button:hover {
+    background: var(--flow-node-toolbar-btn-hover-bg);
+}
+
+/* ── Edge toolbar ───────────────────────────────────────────────── */
+.flow-edge-toolbar {
+    position: absolute;
+    z-index: 20;
+    display: flex;
+    gap: 4px;
+    pointer-events: auto;
+    white-space: nowrap;
+    padding: var(--flow-node-toolbar-padding);
+    background: var(--flow-node-toolbar-bg);
+    border: var(--flow-node-toolbar-border);
+    border-radius: var(--flow-node-toolbar-border-radius);
+}
+.flow-edge-toolbar button {
+    cursor: pointer;
+    transition: background 0.15s;
+    background: var(--flow-node-toolbar-btn-bg);
+    border: var(--flow-node-toolbar-btn-border);
+    color: var(--flow-node-toolbar-btn-color);
+    padding: var(--flow-node-toolbar-btn-padding);
+    border-radius: var(--flow-node-toolbar-btn-border-radius);
+    font-size: var(--flow-node-toolbar-btn-font-size);
+}
+.flow-edge-toolbar button:hover {
+    background: var(--flow-node-toolbar-btn-hover-bg);
+}
+
+/* ── Editable edge control points ───────────────────────────────── */
+.flow-edge-control-point {
+    fill: var(--flow-edge-control-point-color, #3b82f6);
+    stroke: var(--flow-edge-control-point-stroke, #fff);
+    stroke-width: 1.5;
+    cursor: grab;
+    pointer-events: all;
+    transition: fill 0.15s, r 0.15s;
+}
+.flow-edge-control-point:hover {
+    fill: var(--flow-edge-control-point-active, #2563eb);
+}
+.flow-edge-control-point.dragging {
+    fill: var(--flow-edge-control-point-active, #2563eb);
+    cursor: grabbing;
+}
+
+.flow-edge-midpoint {
+    fill: var(--flow-edge-control-point-color, #3b82f6);
+    stroke: none;
+    opacity: 0;
+    pointer-events: all;
+    cursor: crosshair;
+    transition: opacity 0.15s;
+}
+.flow-edge-selected .flow-edge-midpoint,
+.flow-edge:hover .flow-edge-midpoint {
+    opacity: 0.3;
+}
+.flow-edge-midpoint:hover {
+    opacity: 0.8;
+}
+
+/* ── Drag handle ─────────────────────────────────────────────────── */
+.flow-drag-handle {
+    cursor: grab;
+    background: var(--flow-drag-handle-bg);
+    border-bottom: var(--flow-drag-handle-border-bottom);
+    padding: var(--flow-drag-handle-padding);
+    border-radius: var(--flow-drag-handle-border-radius);
+    font-size: var(--flow-drag-handle-font-size);
+    font-weight: var(--flow-drag-handle-font-weight);
+    color: var(--flow-drag-handle-color);
+}
+.flow-drag-handle:active {
+    cursor: grabbing;
+}
+.flow-node-has-handle {
+    cursor: default;
+    padding: 0;
+}
+.flow-node-has-handle:active {
+    cursor: default;
+}
+
+/* ── Resize handles ──────────────────────────────────────────────── */
+.flow-resizer-handle {
+    position: absolute;
+    z-index: 5;
+    border-radius: 2px;
+    background: var(--flow-resizer-bg);
+    border: var(--flow-resizer-border);
+    touch-action: none;
+}
+.flow-resizer-handle:hover {
+    background: var(--flow-resizer-hover-bg);
+}
+
+/* Corner handles (8x8 squares) */
+.flow-resizer-handle-top-left     { width: 8px; height: 8px; top: -4px; left: -4px; }
+.flow-resizer-handle-top-right    { width: 8px; height: 8px; top: -4px; right: -4px; }
+.flow-resizer-handle-bottom-left  { width: 8px; height: 8px; bottom: -4px; left: -4px; }
+.flow-resizer-handle-bottom-right { width: 8px; height: 8px; bottom: -4px; right: -4px; }
+
+/* Edge handles (rectangles at midpoints) */
+.flow-resizer-handle-top    { width: 16px; height: 6px; top: -3px; left: 50%; transform: translateX(-50%); }
+.flow-resizer-handle-bottom { width: 16px; height: 6px; bottom: -3px; left: 50%; transform: translateX(-50%); }
+.flow-resizer-handle-left   { width: 6px; height: 16px; left: -3px; top: 50%; transform: translateY(-50%); }
+.flow-resizer-handle-right  { width: 6px; height: 16px; right: -3px; top: 50%; transform: translateY(-50%); }
+
+/* ── Rotate Handle ──────────────────────────────────────────────── */
+.flow-rotate-handle {
+    position: absolute;
+    top: calc(-1 * var(--flow-rotate-handle-offset, 24px));
+    left: 50%;
+    transform: translateX(-50%);
+    width: var(--flow-rotate-handle-size, 14px);
+    height: var(--flow-rotate-handle-size, 14px);
+    border-radius: 50%;
+    z-index: 15;
+    pointer-events: auto;
+    touch-action: none;
+}
+
+/* Connector line from node to rotate handle */
+.flow-rotate-handle::before {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: calc(var(--flow-rotate-handle-offset, 24px) - var(--flow-rotate-handle-size, 14px));
+}
+
+/* ── Controls ────────────────────────────────────────────────────── */
+.flow-controls {
+    position: absolute;
+    z-index: 12;
+    display: flex;
+    pointer-events: auto;
+    gap: var(--flow-controls-gap);
+}
+.flow-controls-vertical   { flex-direction: column; }
+.flow-controls-horizontal { flex-direction: row; }
+.flow-controls-bottom-left  { bottom: 12px; left: 12px; }
+.flow-controls-bottom-right { bottom: 12px; right: 12px; }
+.flow-controls-top-left     { top: 12px; left: 12px; }
+.flow-controls-top-right    { top: 12px; right: 12px; }
+
+.flow-controls button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    transition: background 0.15s;
+    width: var(--flow-controls-btn-width);
+    height: var(--flow-controls-btn-height);
+    background: var(--flow-controls-btn-bg);
+    border: var(--flow-controls-btn-border);
+    color: var(--flow-controls-btn-color);
+}
+.flow-controls button:hover {
+    background: var(--flow-controls-btn-hover-bg);
+}
+.flow-controls button:disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+/* Vertical: round top of first, bottom of last */
+.flow-controls-vertical button:first-child { border-radius: var(--flow-controls-btn-border-radius) var(--flow-controls-btn-border-radius) 0 0; }
+.flow-controls-vertical button:last-child  { border-radius: 0 0 var(--flow-controls-btn-border-radius) var(--flow-controls-btn-border-radius); }
+.flow-controls-vertical button:only-child  { border-radius: var(--flow-controls-btn-border-radius); }
+
+/* Horizontal: round left of first, right of last */
+.flow-controls-horizontal button:first-child { border-radius: var(--flow-controls-btn-border-radius) 0 0 var(--flow-controls-btn-border-radius); }
+.flow-controls-horizontal button:last-child  { border-radius: 0 var(--flow-controls-btn-border-radius) var(--flow-controls-btn-border-radius) 0; }
+.flow-controls-horizontal button:only-child  { border-radius: var(--flow-controls-btn-border-radius); }
+
+/* External controls: rendered outside the flow-container */
+.flow-controls-external {
+    position: static;
+    z-index: auto;
+}
+
+/* ── Selection box ───────────────────────────────────────────────── */
+.flow-selection-box {
+    position: absolute;
+    z-index: 7;
+    pointer-events: none;
+    display: none;
+    background: var(--flow-selection-bg);
+    border: var(--flow-selection-border);
+    border-radius: var(--flow-selection-border-radius);
+}
+.flow-selection-box-active {
+    display: block;
+}
+.flow-selection-full {
+    border: 1px dashed var(--flow-selection-full-border-color, rgba(59, 130, 246, 0.4));
+    background: var(--flow-selection-full-bg, rgba(59, 130, 246, 0.06));
+}
+
+/* ── Lasso selection ─────────────────────────────────────────────── */
+.flow-lasso-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 7;
+    pointer-events: none;
+    overflow: visible;
+    display: none;
+}
+.flow-lasso-active {
+    display: block;
+}
+.flow-lasso-path {
+    fill: var(--flow-selection-bg);
+    stroke: var(--flow-lasso-stroke, rgba(233, 69, 96, 0.5));
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+.flow-lasso-full .flow-lasso-path {
+    fill: var(--flow-selection-full-bg, rgba(59, 130, 246, 0.06));
+    stroke: var(--flow-lasso-stroke-full, rgba(59, 130, 246, 0.6));
+    stroke-dasharray: 4 3;
+}
+
+/* ── Loading overlay ──────────────────────────────────────────── */
+
+.flow-loading-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    background: var(--flow-loading-bg, rgba(255, 255, 255, 0.85));
+}
+
+.flow-loading-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.flow-loading-indicator-node {
+    width: 120px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--flow-loading-indicator-color, rgba(0, 0, 0, 0.08));
+    animation: flow-loading-pulse 1.5s ease-in-out infinite;
+}
+
+.flow-loading-indicator-text {
+    font-size: 13px;
+    color: var(--flow-loading-text-color, rgba(0, 0, 0, 0.4));
+}
+
+@keyframes flow-loading-pulse {
+    0%, 100% { opacity: 0.4; }
+    50% { opacity: 1; }
+}
+
+.flow-loading-fade {
+    transition: opacity 0.3s ease;
+}
+
+.flow-loading-fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ── Minimap ─────────────────────────────────────────────────────── */
+.flow-minimap {
+    position: absolute;
+    z-index: 12;
+    overflow: hidden;
+    pointer-events: auto;
+    border: var(--flow-minimap-border);
+    border-radius: var(--flow-minimap-border-radius);
+}
+.flow-minimap-bottom-right { bottom: 12px; right: 12px; }
+.flow-minimap-bottom-left  { bottom: 12px; left: 12px; }
+.flow-minimap-top-right    { top: 12px; right: 12px; }
+.flow-minimap-top-left     { top: 12px; left: 12px; }
+.flow-minimap svg { display: block; }
+.flow-minimap-bg { fill: var(--flow-minimap-bg); }
+.flow-minimap-nodes rect { fill: var(--flow-minimap-node-color); }
+.flow-minimap-mask { fill: var(--flow-minimap-mask-color); }
+
+/* ── Panel ───────────────────────────────────────────────────────── */
+.flow-panel {
+    position: absolute;
+    z-index: 11;
+    overflow: auto;
+    pointer-events: auto;
+    cursor: grab;
+    user-select: none;
+    background: var(--flow-panel-bg);
+    border: var(--flow-panel-border);
+    border-radius: var(--flow-panel-border-radius);
+    min-width: var(--flow-panel-min-width);
+    min-height: var(--flow-panel-min-height);
+}
+.flow-panel:active { cursor: grabbing; }
+.flow-panel-static { cursor: default; }
+.flow-panel-static:active { cursor: default; }
+.flow-panel-locked { cursor: default; }
+.flow-panel-locked:active { cursor: default; }
+.flow-panel-no-resize { cursor: grab; }
+.flow-panel-no-resize:active { cursor: grabbing; }
+.flow-panel-no-resize.flow-panel-locked { cursor: default; }
+.flow-panel-no-resize.flow-panel-locked:active { cursor: default; }
+.flow-panel > * { user-select: text; }
+
+/* 8 anchor positions */
+.flow-panel-top          { top: 12px; left: 50%; transform: translateX(-50%); }
+.flow-panel-bottom       { bottom: 12px; left: 50%; transform: translateX(-50%); }
+.flow-panel-left         { left: 12px; top: 50%; transform: translateY(-50%); }
+.flow-panel-right        { right: 12px; top: 50%; transform: translateY(-50%); }
+.flow-panel-top-left     { top: 12px; left: 12px; }
+.flow-panel-top-right    { top: 12px; right: 12px; }
+.flow-panel-bottom-left  { bottom: 12px; left: 12px; }
+.flow-panel-bottom-right { bottom: 12px; right: 12px; }
+
+/* Resize grip */
+.flow-panel-resize-handle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 14px;
+    height: 14px;
+    cursor: nwse-resize;
+    user-select: none;
+    background: var(--flow-panel-resize-bg);
+    border-radius: var(--flow-panel-resize-border-radius);
+}
+.flow-panel-resize-handle:hover {
+    background: var(--flow-panel-resize-hover-bg);
+}
+
+/* ── Group nodes ─────────────────────────────────────────────────── */
+.flow-node-group {
+    z-index: 0;
+    cursor: grab;
+    background: var(--flow-node-group-bg);
+    border: var(--flow-node-group-border);
+    border-radius: var(--flow-node-group-border-radius);
+    box-shadow: var(--flow-node-group-shadow);
+    font-size: var(--flow-node-group-font-size);
+    text-transform: var(--flow-node-group-text-transform);
+    letter-spacing: var(--flow-node-group-letter-spacing);
+    padding: var(--flow-node-group-padding);
+}
+.flow-node-group:hover {
+    border-color: var(--flow-node-group-hover-border-color);
+}
+.flow-node-group.flow-node-selected {
+    box-shadow: var(--flow-node-selected-shadow);
+}
+
+/* ── Invalid parent state ────────────────────────────────────────── */
+.flow-node-invalid {
+    border: var(--flow-node-invalid-border) !important;
+    box-shadow: var(--flow-node-invalid-shadow) !important;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+/* ── Drop target state ───────────────────────────────────────────── */
+.flow-node-drop-target {
+    border: var(--flow-node-drop-target-border) !important;
+    box-shadow: var(--flow-node-drop-target-shadow) !important;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+/* ── Reorder drag elevation ──────────────────────────────────────── */
+.flow-node.flow-reorder-dragging {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    opacity: 0.95;
+}
+
+/* ── Layout animation ────────────────────────────────────────────── */
+.flow-layout-animating .flow-node {
+    transition: left var(--flow-layout-animation-duration) ease,
+                top var(--flow-layout-animation-duration) ease;
+}
+
+/* ── Animation lock ─────────────────────────────────────────────── */
+.flow-animation-locked {
+    pointer-events: none;
+    cursor: default;
+}
+.flow-animation-locked .flow-node {
+    cursor: default;
+}
+.flow-animation-locked .flow-handle {
+    cursor: default;
+    pointer-events: none;
+}
+
+/* ── Guide paths ───────────────────────────────────────────────── */
+.flow-guide-path {
+    fill: none;
+    stroke: var(--flow-guide-path-color, #94a3b8);
+    stroke-width: var(--flow-guide-path-width, 1);
+    stroke-dasharray: var(--flow-guide-path-dash, 4 4);
+    opacity: var(--flow-guide-path-opacity, 0.5);
+    pointer-events: none;
+}
+
+/* ── Devtools overlay ─────────────────────────────────────────── */
+.flow-devtools {
+    position: absolute;
+    bottom: 12px;
+    left: 56px;
+    z-index: 60;
+    display: flex;
+    align-items: flex-end;
+    gap: 6px;
+    pointer-events: none;
+}
+.flow-devtools > * {
+    pointer-events: auto;
+}
+.flow-devtools-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--flow-devtools-btn-bg, var(--demo-overlay-btn-bg, rgba(255,255,255,0.9)));
+    border: var(--flow-devtools-btn-border, var(--demo-overlay-btn-border, 1px solid rgba(0,0,0,0.1)));
+    color: var(--flow-devtools-btn-color, var(--demo-overlay-btn-color, #374151));
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    flex-shrink: 0;
+}
+.flow-devtools-toggle:hover {
+    background: var(--flow-devtools-btn-hover, var(--demo-overlay-btn-hover, rgba(255,255,255,1)));
+}
+.flow-devtools-panel {
+    background: var(--flow-devtools-panel-bg, var(--demo-overlay-btn-bg, rgba(255,255,255,0.9)));
+    border: var(--flow-devtools-panel-border, var(--demo-overlay-btn-border, 1px solid rgba(0,0,0,0.1)));
+    border-radius: 6px;
+    padding: 0;
+    font-size: 11px;
+    line-height: 1;
+    min-width: 160px;
+    max-height: 320px;
+    overflow-y: auto;
+}
+.flow-devtools-section {
+    padding: 6px 10px;
+}
+.flow-devtools-section + .flow-devtools-section {
+    border-top: 1px solid var(--flow-devtools-divider, rgba(0,0,0,0.08));
+}
+.flow-devtools-section-title {
+    font-weight: 600;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--flow-devtools-title-color, var(--demo-text-muted, #6b7280));
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.flow-devtools-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 2px 0;
+}
+.flow-devtools-label {
+    color: var(--flow-devtools-label-color, var(--demo-text-muted, #6b7280));
+}
+.flow-devtools-value {
+    color: var(--flow-devtools-value-color, var(--demo-text, #1f2937));
+    font-variant-numeric: tabular-nums;
+}
+.flow-devtools-clear-btn {
+    font-size: 9px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    border: 1px solid var(--flow-devtools-divider, rgba(0,0,0,0.08));
+    background: transparent;
+    color: var(--flow-devtools-label-color, var(--demo-text-muted, #6b7280));
+    cursor: pointer;
+}
+.flow-devtools-clear-btn:hover {
+    background: rgba(0,0,0,0.04);
+}
+.flow-devtools-event-list {
+    max-height: 120px;
+    overflow-y: auto;
+}
+.flow-devtools-event-entry {
+    display: flex;
+    gap: 6px;
+    padding: 1px 0;
+    font-size: 10px;
+    align-items: baseline;
+}
+.flow-devtools-event-name {
+    font-weight: 500;
+    color: var(--flow-devtools-value-color, var(--demo-text, #1f2937));
+    white-space: nowrap;
+}
+.flow-devtools-event-age {
+    color: var(--flow-devtools-label-color, var(--demo-text-muted, #6b7280));
+    white-space: nowrap;
+    font-size: 9px;
+}
+.flow-devtools-event-detail {
+    color: var(--flow-devtools-label-color, var(--demo-text-muted, #6b7280));
+    font-size: 9px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 120px;
+}
+.flow-devtools-state-content {
+    font-size: 10px;
+    color: var(--flow-devtools-label-color, var(--demo-text-muted, #6b7280));
+}
+.flow-devtools-json {
+    font-size: 9px;
+    line-height: 1.3;
+    margin: 2px 0;
+    padding: 4px;
+    background: rgba(0,0,0,0.03);
+    border-radius: 3px;
+    overflow-x: auto;
+    max-height: 80px;
+    white-space: pre;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    color: var(--flow-devtools-value-color, var(--demo-text, #1f2937));
+}
+
+/* ── Touch selection mode indicator ───────────────────────────── */
+
+.flow-touch-selection-mode-indicator {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 55;
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    background: var(--flow-touch-selection-bg, rgba(59, 130, 246, 0.9));
+    color: var(--flow-touch-selection-color, #fff);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.flow-touch-selection-mode .flow-touch-selection-mode-indicator {
+    opacity: 1;
+}
+
+/* ── Touch / coarse pointer adjustments ───────────────────────── */
+
+@media (pointer: coarse) {
+    /* Expand handle hit area to 44x44px (Apple minimum touch target) */
+    .flow-handle::before {
+        content: '';
+        position: absolute;
+        inset: -17px;
+        z-index: -1;
+    }
+
+    /* Expand resize grip hit area to 32x32px minimum */
+    .flow-resizer-handle::before {
+        content: '';
+        position: absolute;
+        inset: -8px;
+        z-index: -1;
+    }
+}
+
+/* ── Ghost node (edge drop preview) ──────────────────────────── */
+
+.flow-ghost-node {
+    position: absolute;
+    pointer-events: none;
+    opacity: var(--flow-ghost-opacity, 0.5);
+    border: var(--flow-ghost-border, var(--flow-node-border));
+    background: var(--flow-ghost-bg, var(--flow-node-bg));
+    border-radius: var(--flow-node-border-radius);
+    padding: var(--flow-node-padding);
+    font-size: var(--flow-node-font-size);
+    color: var(--flow-ghost-color, var(--flow-node-color));
+    min-width: var(--flow-node-min-width);
+    text-align: center;
+    transform: translate(-50%, 0);
+    box-shadow: var(--flow-node-shadow);
+}
+
+.flow-ghost-handle {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--flow-ghost-border, #94a3b8);
+}
+
+/* ── Static / SSR ─────────────────────────────────────────────── */
+
+.flow-static {
+  cursor: default;
+}
+
+.flow-static .flow-node {
+  cursor: default;
+  user-select: text;
+  touch-action: auto;
+}
+
+.flow-static .flow-edges-static {
+  position: absolute;
+  inset: 0;
+  width: 1px;
+  height: 1px;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.flow-static .flow-edges-static path {
+  stroke: var(--flow-edge-stroke, #b1b1b7);
+  stroke-width: var(--flow-edge-stroke-width, 1.5);
+  fill: none;
+}
+
+/* ── Whiteboard tools ────────────────────────────────────────── */
+
+.flow-tool-eraser,
+.flow-tool-rectangle,
+.flow-tool-freehand,
+.flow-tool-highlighter,
+.flow-tool-arrow,
+.flow-tool-circle {
+    cursor: crosshair;
+}
+
+.flow-tool-text {
+    cursor: text;
+}
+
+/* Filled freehand mode — available via x-flow-freehand.filled for consumer styling */
+.flow-tool-freehand-filled {
+    cursor: crosshair;
+}
+
+/* Eraser trail SVG overlay */
+.flow-eraser-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.flow-eraser-trail {
+    fill: none;
+    stroke: var(--flow-eraser-color, #ef4444);
+    stroke-width: var(--flow-eraser-width, 3);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.6;
+}
+
+.flow-eraser-marked {
+    opacity: 0.3 !important;
+    outline: 2px solid var(--flow-eraser-color, #ef4444) !important;
+    outline-offset: 2px;
+}
+
+/* Rectangle draw preview */
+.flow-rectangle-draw-preview {
+    border: 2px dashed var(--flow-rectangle-draw-border, #94a3b8);
+    background: var(--flow-rectangle-draw-bg, rgba(148, 163, 184, 0.1));
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+/* Freehand draw live path */
+.flow-freehand-path {
+    stroke: var(--flow-freehand-color, #334155);
+    stroke-width: var(--flow-freehand-width, 2);
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ── Color swatch buttons ───────────────────────────────────────── */
+.color-swatch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    cursor: pointer;
+    padding: 0;
+}
+.color-swatch.active {
+    border-color: var(--flow-node-selected-border-color, #3b82f6);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+/* ── Long-press visual feedback ───────────────────────────────── */
+
+@keyframes flow-long-press-ring {
+    0% { transform: scale(0.8); opacity: 0; }
+    100% { transform: scale(1.2); opacity: 0.3; }
+}
+
+/* ── Reduced motion ─────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+    .flow-node,
+    .flow-edge-path,
+    .flow-viewport {
+        transition: none !important;
+    }
+}

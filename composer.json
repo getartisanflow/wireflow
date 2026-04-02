@@ -1,0 +1,50 @@
+{
+    "name": "getartisanflow/wireflow",
+    "description": "Livewire components for AlpineFlow — build interactive flow diagrams in Laravel.",
+    "keywords": ["laravel", "livewire", "alpineflow", "flow", "diagram", "wireflow"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Zac Hiler",
+            "homepage": "https://github.com/zachiler"
+        }
+    ],
+    "type": "library",
+    "require": {
+        "php": "^8.3",
+        "illuminate/support": "^11.0|^12.0|^13.0",
+        "livewire/livewire": "^3.0|^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ArtisanFlow\\WireFlow\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ArtisanFlow\\WireFlow\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ArtisanFlow\\WireFlow\\WireFlowServiceProvider"
+            ]
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/pest --compact"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require-dev": {
+        "orchestra/testbench": "^11.0",
+        "pestphp/pest": "^4.4",
+        "pestphp/pest-plugin-laravel": "^4.1"
+    },
+    "config": {
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    }
+}

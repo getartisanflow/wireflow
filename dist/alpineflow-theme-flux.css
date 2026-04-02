@@ -1,0 +1,400 @@
+/* ================================================================
+   AlpineFlow — Flux Theme (Tailwind v4 / Flux UI Native)
+   Maps all --flow-* variables to Tailwind v4 design tokens and
+   Flux's --color-accent system. Automatically adapts to any
+   TweakFlux theme preset.
+
+   Requires: Tailwind v4 CSS variables at :root
+   (--color-zinc-*, --color-accent, --radius-*, --shadow-*)
+
+   Dark mode: .dark class on ancestor or .flow-container itself
+
+   Usage:
+     @import 'alpineflow/structural.css';
+     @import 'alpineflow/theme-flux.css';
+   ================================================================ */
+
+/* ── Shared values (identical in both modes) ────────────────────── */
+.flow-container {
+    /* Sizing & spacing */
+    --flow-node-min-width: 150px;
+    --flow-node-padding: 14px 24px;
+    --flow-handle-size: 10px;
+    --flow-controls-gap: 1px;
+    --flow-controls-btn-width: 28px;
+    --flow-controls-btn-height: 28px;
+    --flow-bg-pattern-gap: 20;
+    --flow-panel-min-width: 100px;
+    --flow-panel-min-height: 60px;
+    --flow-node-group-padding: 6px 14px;
+    --flow-node-toolbar-padding: 4px 6px;
+    --flow-node-toolbar-btn-padding: 4px 8px;
+    --flow-drag-handle-padding: 6px 12px;
+    --flow-edge-label-padding: 2px 8px;
+    --flow-rotate-handle-size: 14px;
+    --flow-rotate-handle-offset: 24px;
+
+    /* Border radii — Tailwind v4 tokens */
+    --flow-node-border-radius: var(--radius-lg);
+    --flow-controls-btn-border-radius: var(--radius-md);
+    --flow-selection-border-radius: var(--radius-sm);
+    --flow-minimap-border-radius: var(--radius-md);
+    --flow-panel-border-radius: var(--radius-lg);
+    --flow-panel-resize-border-radius: 0 0 7px 0;
+    --flow-node-group-border-radius: var(--radius-xl);
+    --flow-node-toolbar-border-radius: var(--radius-md);
+    --flow-node-toolbar-btn-border-radius: var(--radius-sm);
+    --flow-drag-handle-border-radius: var(--radius-md) var(--radius-md) 0 0;
+    --flow-edge-label-border-radius: var(--radius-sm);
+
+    /* Typography */
+    --flow-node-group-font-size: 11px;
+    --flow-node-group-text-transform: uppercase;
+    --flow-node-group-letter-spacing: 0.5px;
+    --flow-node-toolbar-btn-font-size: 12px;
+    --flow-drag-handle-font-size: 12px;
+    --flow-drag-handle-font-weight: 600;
+    --flow-edge-label-font-size: 11px;
+
+    /* Timing & transitions */
+    --flow-node-transition: border-color 0.15s;
+    --flow-edge-animated-dasharray: 6 3;
+    --flow-edge-animated-duration: 0.5s;
+    --flow-edge-pulse-duration: 2s;
+    --flow-edge-pulse-min-opacity: 0.3;
+    --flow-edge-dot-duration: 2s;
+    --flow-edge-reconnecting-opacity: 0.25;
+    --flow-edge-reconnecting-transition: opacity 0.15s;
+    --flow-layout-animation-duration: 0.3s;
+    --flow-node-locked-border-style: dashed;
+
+    /* Accent-derived (mode-aware via --color-accent) */
+    --flow-node-hover-border-color: var(--color-accent);
+    --flow-node-selected-border-color: var(--color-accent);
+    --flow-handle-active-bg: var(--color-accent);
+    --flow-handle-invalid-bg: #ef4444;
+    --flow-edge-stroke-selected: var(--color-accent);
+    --flow-edge-stroke-width: 1.5;
+    --flow-edge-stroke-width-selected: 2.5;
+    --flow-edge-dot-size: 4;
+    --flow-edge-dot-fill: var(--color-accent);
+    --flow-rotate-handle-bg: var(--color-accent);
+    --flow-node-group-shadow: none;
+
+    /* Accent transparencies (oklab for Flux convention) */
+    --flow-node-selected-shadow: 0 0 0 2px color-mix(in oklab, var(--color-accent) 25%, transparent);
+    --flow-selection-bg: color-mix(in oklab, var(--color-accent) 6%, transparent);
+    --flow-selection-border: 1px solid color-mix(in oklab, var(--color-accent) 30%, transparent);
+    --flow-lasso-stroke: color-mix(in oklab, var(--color-accent) 50%, transparent);
+    --flow-resizer-border: 1px solid var(--color-accent);
+    --flow-resizer-hover-bg: var(--color-accent);
+
+    /* Focus / accessibility */
+    --flow-node-focus-outline: 2px solid var(--color-accent);
+    --flow-node-focus-outline-offset: 2px;
+    --flow-edge-focus-stroke: var(--color-accent);
+    --flow-edge-focus-stroke-width: 2.5;
+
+    /* Guide paths */
+    --flow-guide-path-color: var(--color-zinc-400);
+    --flow-guide-path-width: 1;
+    --flow-guide-path-dash: 4 4;
+    --flow-guide-path-opacity: 0.5;
+
+    /* Validation colors (semantic — not theme-derived) */
+    --flow-node-invalid-border: 1.5px dashed #ef4444;
+    --flow-node-invalid-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+    --flow-node-drop-target-border: 1.5px dashed #3b82f6;
+    --flow-node-drop-target-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    --flow-connection-line-invalid: #ef4444;
+    --flow-selection-full-bg: rgba(59, 130, 246, 0.06);
+    --flow-selection-full-border-color: rgba(59, 130, 246, 0.4);
+    --flow-lasso-stroke-full: rgba(59, 130, 246, 0.6);
+    --flow-touch-selection-bg: rgba(59, 130, 246, 0.9);
+    --flow-touch-selection-color: var(--color-white);
+    --flow-tool-stroke-color: var(--color-zinc-700);
+    --flow-tool-highlighter-color: #fbbf24;
+    --flow-edge-row-highlight-color: var(--color-accent);
+}
+
+/* ── Light theme (base) ─────────────────────────────────────────── */
+.flow-container {
+    /* Canvas */
+    --flow-bg-color: var(--color-white);
+    --flow-bg-pattern-color: var(--color-zinc-200);
+
+    /* Nodes */
+    --flow-node-bg: var(--color-white);
+    --flow-node-color: var(--color-zinc-700);
+    --flow-node-border: 1px solid var(--color-zinc-200);
+    --flow-node-shadow: var(--shadow-xs);
+
+    /* Handles */
+    --flow-handle-bg: var(--color-zinc-400);
+    --flow-handle-border: 1px solid var(--color-white);
+
+    /* Edges */
+    --flow-edge-stroke: var(--color-zinc-300);
+
+    /* Edge labels */
+    --flow-edge-label-bg: var(--color-white);
+    --flow-edge-label-border: 1px solid var(--color-zinc-200);
+    --flow-edge-label-color: var(--color-zinc-500);
+
+    /* Node toolbar */
+    --flow-node-toolbar-bg: var(--color-white);
+    --flow-node-toolbar-border: 1px solid var(--color-zinc-200);
+    --flow-node-toolbar-btn-bg: var(--color-zinc-100);
+    --flow-node-toolbar-btn-border: 1px solid var(--color-zinc-200);
+    --flow-node-toolbar-btn-color: var(--color-zinc-700);
+    --flow-node-toolbar-btn-hover-bg: var(--color-zinc-200);
+
+    /* Drag handle */
+    --flow-drag-handle-bg: color-mix(in oklab, var(--color-accent) 8%, transparent);
+    --flow-drag-handle-border-bottom: 1px solid var(--color-zinc-200);
+    --flow-drag-handle-color: var(--color-zinc-500);
+
+    /* Locked nodes */
+    --flow-node-locked-opacity: 0.7;
+
+    /* Resizer */
+    --flow-resizer-bg: color-mix(in oklab, var(--color-accent) 40%, transparent);
+
+    /* Controls */
+    --flow-controls-btn-bg: var(--color-white);
+    --flow-controls-btn-border: 1px solid var(--color-zinc-200);
+    --flow-controls-btn-color: var(--color-zinc-700);
+    --flow-controls-btn-hover-bg: var(--color-zinc-100);
+
+    /* Minimap */
+    --flow-minimap-border: 1px solid var(--color-zinc-200);
+    --flow-minimap-bg: var(--color-zinc-100);
+    --flow-minimap-node-color: var(--color-zinc-400);
+    --flow-minimap-mask-color: rgba(0, 0, 0, 0.12);
+
+    /* Panels */
+    --flow-panel-bg: var(--color-white);
+    --flow-panel-border: 1px solid var(--color-zinc-200);
+    --flow-panel-resize-bg: linear-gradient(135deg, transparent 50%, var(--color-zinc-300) 50%);
+    --flow-panel-resize-hover-bg: linear-gradient(135deg, transparent 50%, color-mix(in oklab, var(--color-accent) 50%, transparent) 50%);
+
+    /* Groups */
+    --flow-node-group-bg: color-mix(in oklab, var(--color-zinc-100) 50%, transparent);
+    --flow-node-group-border: 1.5px dashed var(--color-zinc-300);
+    --flow-node-group-hover-border-color: var(--color-zinc-400);
+
+    /* Loading */
+    --flow-loading-bg: color-mix(in oklab, var(--color-white) 85%, transparent);
+    --flow-loading-indicator-color: rgba(0, 0, 0, 0.08);
+    --flow-loading-text-color: var(--color-zinc-400);
+
+    /* Rotate handle */
+    --flow-rotate-handle-border: 2px solid var(--color-white);
+    --flow-rotate-handle-line-color: var(--color-zinc-300);
+}
+
+/* ── Dark theme (.dark class on ancestor or container) ───────────── */
+.dark .flow-container,
+.flow-container.dark {
+    /* Canvas */
+    --flow-bg-color: var(--color-zinc-900);
+    --flow-bg-pattern-color: var(--color-zinc-700);
+
+    /* Nodes */
+    --flow-node-bg: var(--color-zinc-800);
+    --flow-node-color: var(--color-zinc-300);
+    --flow-node-border: 1px solid var(--color-zinc-700);
+    --flow-node-shadow: var(--shadow-xs);
+
+    /* Handles */
+    --flow-handle-bg: var(--color-zinc-500);
+    --flow-handle-border: 1px solid var(--color-zinc-800);
+
+    /* Edges */
+    --flow-edge-stroke: var(--color-zinc-600);
+
+    /* Edge labels */
+    --flow-edge-label-bg: var(--color-zinc-800);
+    --flow-edge-label-border: 1px solid var(--color-zinc-700);
+    --flow-edge-label-color: var(--color-zinc-400);
+
+    /* Node toolbar */
+    --flow-node-toolbar-bg: var(--color-zinc-800);
+    --flow-node-toolbar-border: 1px solid var(--color-zinc-700);
+    --flow-node-toolbar-btn-bg: var(--color-zinc-900);
+    --flow-node-toolbar-btn-border: 1px solid var(--color-zinc-700);
+    --flow-node-toolbar-btn-color: var(--color-zinc-300);
+    --flow-node-toolbar-btn-hover-bg: var(--color-zinc-700);
+
+    /* Drag handle */
+    --flow-drag-handle-bg: color-mix(in oklab, var(--color-accent) 15%, transparent);
+    --flow-drag-handle-border-bottom: 1px solid var(--color-zinc-700);
+    --flow-drag-handle-color: var(--color-zinc-400);
+
+    /* Locked nodes */
+    --flow-node-locked-opacity: 0.85;
+
+    /* Resizer */
+    --flow-resizer-bg: color-mix(in oklab, var(--color-accent) 60%, transparent);
+
+    /* Controls */
+    --flow-controls-btn-bg: var(--color-zinc-800);
+    --flow-controls-btn-border: 1px solid var(--color-zinc-700);
+    --flow-controls-btn-color: var(--color-zinc-300);
+    --flow-controls-btn-hover-bg: var(--color-zinc-700);
+
+    /* Selection (dark overrides for validation colors) */
+    --flow-selection-full-bg: rgba(59, 130, 246, 0.08);
+    --flow-selection-full-border-color: rgba(59, 130, 246, 0.5);
+    --flow-lasso-stroke-full: rgba(59, 130, 246, 0.7);
+    --flow-touch-selection-bg: rgba(96, 165, 250, 0.9);
+
+    /* Minimap */
+    --flow-minimap-border: 1px solid var(--color-zinc-700);
+    --flow-minimap-bg: var(--color-zinc-950);
+    --flow-minimap-node-color: var(--color-zinc-600);
+    --flow-minimap-mask-color: rgba(0, 0, 0, 0.3);
+
+    /* Panels */
+    --flow-panel-bg: var(--color-zinc-800);
+    --flow-panel-border: 1px solid var(--color-zinc-700);
+    --flow-panel-resize-bg: linear-gradient(135deg, transparent 50%, var(--color-zinc-600) 50%);
+    --flow-panel-resize-hover-bg: linear-gradient(135deg, transparent 50%, color-mix(in oklab, var(--color-accent) 60%, transparent) 50%);
+
+    /* Groups */
+    --flow-node-group-bg: color-mix(in oklab, var(--color-zinc-800) 30%, transparent);
+    --flow-node-group-border: 1.5px dashed var(--color-zinc-700);
+    --flow-node-group-hover-border-color: var(--color-zinc-500);
+
+    /* Loading */
+    --flow-loading-bg: color-mix(in oklab, var(--color-zinc-900) 85%, transparent);
+    --flow-loading-indicator-color: rgba(255, 255, 255, 0.1);
+    --flow-loading-text-color: var(--color-zinc-500);
+
+    /* Rotate handle */
+    --flow-rotate-handle-border: 2px solid var(--color-zinc-900);
+    --flow-rotate-handle-line-color: var(--color-zinc-700);
+
+    /* Validation (dark variants) */
+    --flow-node-invalid-border: 1.5px dashed #f87171;
+    --flow-node-invalid-shadow: 0 0 0 2px rgba(248, 113, 113, 0.2);
+    --flow-node-drop-target-border: 1.5px dashed #60a5fa;
+    --flow-node-drop-target-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25);
+    --flow-connection-line-invalid: #f87171;
+    --flow-tool-stroke-color: var(--color-zinc-300);
+    --flow-tool-highlighter-color: #fbbf24;
+    --flow-edge-row-highlight-color: var(--color-accent);
+}
+
+/* ── Shape node defaults (clipped shapes use background-as-border) ── */
+.flow-node-diamond,
+.flow-node-hexagon,
+.flow-node-parallelogram,
+.flow-node-triangle {
+    min-width: 120px;
+    min-height: 80px;
+    border: none;
+    box-shadow: none;
+    background: var(--flow-shape-border-color, var(--color-zinc-300));
+}
+.dark .flow-node-diamond,
+.dark .flow-node-hexagon,
+.dark .flow-node-parallelogram,
+.dark .flow-node-triangle {
+    background: var(--flow-shape-border-color, var(--color-zinc-600));
+}
+.flow-node-diamond.flow-node-selected,
+.flow-node-hexagon.flow-node-selected,
+.flow-node-parallelogram.flow-node-selected,
+.flow-node-triangle.flow-node-selected {
+    background: var(--flow-node-selected-border-color);
+}
+.flow-node-circle {
+    min-width: 80px;
+    min-height: 80px;
+}
+.flow-node-cylinder {
+    min-width: 100px;
+    min-height: 80px;
+    padding-top: 16px;
+}
+.flow-node-stadium {
+    min-width: 120px;
+}
+
+/* ── Rotate handle colors ──────────────────────────────────────── */
+.flow-rotate-handle {
+    background: var(--flow-rotate-handle-bg);
+    border: var(--flow-rotate-handle-border);
+}
+.flow-rotate-handle::before {
+    background: var(--flow-rotate-handle-line-color);
+}
+
+/* ── Edge utility classes (for class-based edge styling) ─────── */
+.flow-edge-svg path.flow-edge-highlight {
+    stroke: var(--color-accent);
+    stroke-width: 2.5;
+}
+.flow-edge-svg path.flow-edge-success {
+    stroke: #10b981;
+    stroke-width: 2.5;
+}
+.flow-edge-svg path.flow-edge-warning {
+    stroke: #f59e0b;
+    stroke-width: 2.5;
+}
+.flow-edge-svg path.flow-edge-danger {
+    stroke: #ef4444;
+    stroke-width: 2.5;
+}
+.flow-edge-svg path.flow-edge-info {
+    stroke: #3b82f6;
+    stroke-width: 2.5;
+}
+.flow-edge-svg path.flow-edge-primary {
+    stroke: #8b5cf6;
+    stroke-width: 2.5;
+}
+
+/* ── Node status classes ────────────────────────────────────── */
+.flow-node.flow-node-success {
+    --flow-node-border-top: 2.5px solid #10b981;
+    border-color: #10b981;
+}
+.flow-node.flow-node-success.flow-node-selected {
+    --flow-node-selected-border-color: #10b981;
+    --flow-node-selected-shadow: 0 0 0 1px #10b981;
+}
+.flow-node.flow-node-warning {
+    --flow-node-border-top: 2.5px solid #f59e0b;
+    border-color: #f59e0b;
+}
+.flow-node.flow-node-warning.flow-node-selected {
+    --flow-node-selected-border-color: #f59e0b;
+    --flow-node-selected-shadow: 0 0 0 1px #f59e0b;
+}
+.flow-node.flow-node-danger {
+    --flow-node-border-top: 2.5px solid #ef4444;
+    border-color: #ef4444;
+}
+.flow-node.flow-node-danger.flow-node-selected {
+    --flow-node-selected-border-color: #ef4444;
+    --flow-node-selected-shadow: 0 0 0 1px #ef4444;
+}
+.flow-node.flow-node-info {
+    --flow-node-border-top: 2.5px solid #3b82f6;
+    border-color: #3b82f6;
+}
+.flow-node.flow-node-info.flow-node-selected {
+    --flow-node-selected-border-color: #3b82f6;
+    --flow-node-selected-shadow: 0 0 0 1px #3b82f6;
+}
+.flow-node.flow-node-primary {
+    --flow-node-border-top: 2.5px solid #8b5cf6;
+    border-color: #8b5cf6;
+}
+.flow-node.flow-node-primary.flow-node-selected {
+    --flow-node-selected-border-color: #8b5cf6;
+    --flow-node-selected-shadow: 0 0 0 1px #8b5cf6;
+}

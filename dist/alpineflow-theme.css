@@ -1,0 +1,473 @@
+/* ================================================================
+   AlpineFlow — Default Theme (Light + Dark)
+
+   A neutral, professional theme using the zinc gray scale with a
+   slate accent. Designed to fit most applications out of the box.
+   Change --flow-node-selected-border-color (and its related accent
+   variables) to quickly brand the flow to your app's primary color.
+
+   Supports class-based dark mode (same convention as Tailwind v4):
+     - Light by default
+     - Dark when .dark is on an ancestor or .flow-container itself
+     - System preference is handled by the host framework (e.g. Flux)
+       toggling the .dark class based on prefers-color-scheme
+
+   Override any --flow-* variable on .flow-container to customise.
+   ================================================================ */
+
+/* ── Shared values (identical in both modes) ────────────────────── */
+.flow-container {
+    /* Node sizing & layout */
+    --flow-node-min-width: 150px;
+    --flow-node-border-radius: 6px;
+    --flow-node-padding: 12px 16px;
+    --flow-node-font-size: 14px;
+    --flow-node-transition: border-color 0.15s;
+
+    /* Handles */
+    --flow-handle-size: 8px;
+    --flow-handle-invalid-bg: #ef4444;
+
+    /* Edge dimensions & animation */
+    --flow-edge-stroke-width: 1.5;
+    --flow-edge-animated-dasharray: 6 3;
+    --flow-edge-animated-duration: 0.5s;
+    --flow-edge-pulse-duration: 2s;
+    --flow-edge-pulse-min-opacity: 0.3;
+    --flow-edge-dot-size: 4;
+    --flow-edge-dot-duration: 2s;
+    --flow-edge-stroke-width-selected: 2;
+    --flow-edge-reconnecting-opacity: 0.25;
+    --flow-edge-reconnecting-transition: opacity 0.15s;
+
+    /* Edge label sizing */
+    --flow-edge-label-border-radius: 4px;
+    --flow-edge-label-padding: 2px 8px;
+    --flow-edge-label-font-size: 11px;
+
+    /* Node toolbar sizing */
+    --flow-node-toolbar-padding: 4px 6px;
+    --flow-node-toolbar-border-radius: 6px;
+    --flow-node-toolbar-btn-padding: 4px 8px;
+    --flow-node-toolbar-btn-border-radius: 4px;
+    --flow-node-toolbar-btn-font-size: 12px;
+
+    /* Drag handle sizing */
+    --flow-drag-handle-padding: 6px 12px;
+    --flow-drag-handle-border-radius: 6px 6px 0 0;
+    --flow-drag-handle-font-size: 12px;
+    --flow-drag-handle-font-weight: 600;
+
+    /* Node states */
+    --flow-node-locked-border-style: dashed;
+
+    /* Controls sizing */
+    --flow-controls-gap: 1px;
+    --flow-controls-btn-width: 28px;
+    --flow-controls-btn-height: 28px;
+    --flow-controls-btn-border-radius: 6px;
+
+    /* Selection */
+    --flow-selection-border-radius: 2px;
+
+    /* Background pattern */
+    --flow-bg-pattern-gap: 20;
+
+    /* Minimap */
+    --flow-minimap-border-radius: 6px;
+
+    /* Panel */
+    --flow-panel-border-radius: 6px;
+    --flow-panel-min-width: 100px;
+    --flow-panel-min-height: 60px;
+
+    /* Group node sizing */
+    --flow-node-group-border-radius: 10px;
+    --flow-node-group-font-size: 11px;
+    --flow-node-group-text-transform: uppercase;
+    --flow-node-group-letter-spacing: 0.5px;
+    --flow-node-group-padding: 6px 14px;
+    --flow-node-group-shadow: none;
+
+    /* Layout animation */
+    --flow-layout-animation-duration: 0.3s;
+
+    /* Focus */
+    --flow-node-focus-outline-offset: 2px;
+
+    /* Rotate handle */
+    --flow-rotate-handle-size: 14px;
+    --flow-rotate-handle-offset: 24px;
+
+    /* Guide paths */
+    --flow-guide-path-width: 1;
+    --flow-guide-path-dash: 4 4;
+    --flow-guide-path-opacity: 0.5;
+
+    /* Whiteboard tools */
+    --flow-tool-stroke-color: #52525b;
+    --flow-tool-highlighter-color: #fbbf24;
+
+    /* Row highlights */
+    --flow-edge-row-highlight-color: #3b82f6;
+
+    /* Validation colors (semantic — not accent-derived) */
+    --flow-node-invalid-border: 1.5px dashed #ef4444;
+    --flow-node-invalid-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15);
+    --flow-node-drop-target-border: 1.5px dashed #3b82f6;
+    --flow-node-drop-target-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    --flow-connection-line-invalid: #ef4444;
+    --flow-selection-full-bg: rgba(59, 130, 246, 0.06);
+    --flow-selection-full-border-color: rgba(59, 130, 246, 0.4);
+    --flow-lasso-stroke-full: rgba(59, 130, 246, 0.6);
+}
+
+/* ── Light mode (default) ────────────────────────────────────────── */
+.flow-container {
+    /* Canvas */
+    --flow-bg-color: #fafafa;
+    --flow-bg-pattern-color: #e4e4e7;
+
+    /* Node colors */
+    --flow-node-bg: #fff;
+    --flow-node-color: #52525b;
+    --flow-node-border: 1px solid #e4e4e7;
+    --flow-node-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+
+    /* Node accent stripe */
+    --flow-node-border-top: 2.5px solid #d4d4d8;
+
+    /* Node interactive states */
+    --flow-node-hover-border-color: #64748b;
+    --flow-node-selected-border-color: #64748b;
+    --flow-node-selected-shadow: 0 0 0 1px #64748b;
+
+    /* Handles */
+    --flow-handle-bg: #a1a1aa;
+    --flow-handle-border: 1px solid #fff;
+    --flow-handle-hover-bg: #64748b;
+    --flow-handle-active-bg: #64748b;
+
+    /* Edges */
+    --flow-edge-stroke: #d4d4d8;
+    --flow-edge-stroke-selected: #64748b;
+    --flow-edge-dot-fill: #64748b;
+    --flow-edge-marker-color: #a1a1aa;
+
+    /* Edge labels */
+    --flow-edge-label-bg: #fff;
+    --flow-edge-label-border: 1px solid #e4e4e7;
+    --flow-edge-label-color: #a1a1aa;
+
+    /* Drag handle */
+    --flow-drag-handle-bg: #f4f4f5;
+    --flow-drag-handle-border-bottom: 1px solid #e4e4e7;
+    --flow-drag-handle-color: #71717a;
+
+    /* Node toolbar */
+    --flow-node-toolbar-bg: rgba(255, 255, 255, 0.95);
+    --flow-node-toolbar-border: 1px solid #e4e4e7;
+    --flow-node-toolbar-btn-bg: #f4f4f5;
+    --flow-node-toolbar-btn-border: 1px solid #e4e4e7;
+    --flow-node-toolbar-btn-color: #52525b;
+    --flow-node-toolbar-btn-hover-bg: #e4e4e7;
+
+    /* Node states */
+    --flow-node-locked-opacity: 0.6;
+
+    /* Focus */
+    --flow-node-focus-outline: 2px solid #64748b;
+    --flow-edge-focus-stroke: #64748b;
+    --flow-edge-focus-stroke-width: 2.5;
+
+    /* Controls */
+    --flow-controls-btn-bg: #fff;
+    --flow-controls-btn-border: 1px solid #e4e4e7;
+    --flow-controls-btn-color: #52525b;
+    --flow-controls-btn-hover-bg: #f4f4f5;
+
+    /* Selection & lasso */
+    --flow-selection-bg: rgba(100, 116, 139, 0.06);
+    --flow-selection-border: 1px solid rgba(100, 116, 139, 0.3);
+    --flow-lasso-stroke: rgba(100, 116, 139, 0.5);
+
+    /* Minimap */
+    --flow-minimap-border: 1px solid #e4e4e7;
+    --flow-minimap-bg: #f4f4f5;
+    --flow-minimap-node-color: #d4d4d8;
+    --flow-minimap-mask-color: rgba(0, 0, 0, 0.08);
+
+    /* Panel */
+    --flow-panel-bg: rgba(255, 255, 255, 0.95);
+    --flow-panel-border: 1px solid #e4e4e7;
+    --flow-panel-resize-bg: linear-gradient(135deg, transparent 50%, rgba(212, 212, 216, 0.6) 50%);
+    --flow-panel-resize-hover-bg: linear-gradient(135deg, transparent 50%, rgba(100, 116, 139, 0.5) 50%);
+    --flow-panel-resize-border-radius: 0 0 5px 0;
+
+    /* Group node */
+    --flow-node-group-bg: rgba(228, 228, 231, 0.4);
+    --flow-node-group-border: 1.5px dashed #d4d4d8;
+    --flow-node-group-hover-border-color: #a1a1aa;
+
+    /* Resize handles */
+    --flow-resizer-bg: rgba(100, 116, 139, 0.4);
+    --flow-resizer-border: 1px solid #64748b;
+    --flow-resizer-hover-bg: #64748b;
+
+    /* Loading */
+    --flow-loading-bg: rgba(255, 255, 255, 0.85);
+    --flow-loading-indicator-color: rgba(0, 0, 0, 0.08);
+    --flow-loading-text-color: rgba(0, 0, 0, 0.4);
+
+    /* Touch selection */
+    --flow-touch-selection-bg: rgba(100, 116, 139, 0.9);
+    --flow-touch-selection-color: #fff;
+
+    /* Rotate handle */
+    --flow-rotate-handle-bg: #64748b;
+    --flow-rotate-handle-border: 2px solid #fff;
+    --flow-rotate-handle-line-color: #d4d4d8;
+
+    /* Guide paths */
+    --flow-guide-path-color: #a1a1aa;
+}
+
+/* ── Dark mode (.dark class on ancestor or container) ────────────── */
+.dark .flow-container,
+.flow-container.dark {
+    /* Canvas */
+    --flow-bg-color: #18181b;
+    --flow-bg-pattern-color: rgba(255, 255, 255, 0.06);
+
+    /* Node colors */
+    --flow-node-bg: #27272a;
+    --flow-node-color: #d4d4d8;
+    --flow-node-border: 1px solid #3f3f46;
+    --flow-node-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+
+    /* Node accent stripe */
+    --flow-node-border-top: 2.5px solid #52525b;
+
+    /* Node interactive states */
+    --flow-node-hover-border-color: #94a3b8;
+    --flow-node-selected-border-color: #94a3b8;
+    --flow-node-selected-shadow: 0 0 0 1px #94a3b8;
+
+    /* Handles */
+    --flow-handle-bg: #71717a;
+    --flow-handle-border: 1px solid #27272a;
+    --flow-handle-hover-bg: #94a3b8;
+    --flow-handle-active-bg: #94a3b8;
+
+    /* Edges */
+    --flow-edge-stroke: #52525b;
+    --flow-edge-stroke-selected: #94a3b8;
+    --flow-edge-dot-fill: #94a3b8;
+    --flow-edge-marker-color: #71717a;
+
+    /* Edge labels */
+    --flow-edge-label-bg: #27272a;
+    --flow-edge-label-border: 1px solid #3f3f46;
+    --flow-edge-label-color: #71717a;
+
+    /* Drag handle */
+    --flow-drag-handle-bg: #18181b;
+    --flow-drag-handle-border-bottom: 1px solid #3f3f46;
+    --flow-drag-handle-color: #a1a1aa;
+
+    /* Node toolbar */
+    --flow-node-toolbar-bg: rgba(39, 39, 42, 0.95);
+    --flow-node-toolbar-border: 1px solid #3f3f46;
+    --flow-node-toolbar-btn-bg: #3f3f46;
+    --flow-node-toolbar-btn-border: 1px solid #52525b;
+    --flow-node-toolbar-btn-color: #d4d4d8;
+    --flow-node-toolbar-btn-hover-bg: #52525b;
+
+    /* Node states */
+    --flow-node-locked-opacity: 0.7;
+
+    /* Focus */
+    --flow-node-focus-outline: 2px solid #94a3b8;
+    --flow-edge-focus-stroke: #94a3b8;
+
+    /* Controls */
+    --flow-controls-btn-bg: #27272a;
+    --flow-controls-btn-border: 1px solid #3f3f46;
+    --flow-controls-btn-color: #d4d4d8;
+    --flow-controls-btn-hover-bg: #3f3f46;
+
+    /* Selection & lasso */
+    --flow-selection-bg: rgba(148, 163, 184, 0.08);
+    --flow-selection-border: 1px solid rgba(148, 163, 184, 0.4);
+    --flow-lasso-stroke: rgba(148, 163, 184, 0.5);
+    --flow-selection-full-bg: rgba(59, 130, 246, 0.08);
+    --flow-selection-full-border-color: rgba(59, 130, 246, 0.5);
+    --flow-lasso-stroke-full: rgba(59, 130, 246, 0.7);
+
+    /* Minimap */
+    --flow-minimap-border: 1px solid #3f3f46;
+    --flow-minimap-bg: #18181b;
+    --flow-minimap-node-color: #52525b;
+    --flow-minimap-mask-color: rgba(0, 0, 0, 0.25);
+
+    /* Panel */
+    --flow-panel-bg: rgba(39, 39, 42, 0.95);
+    --flow-panel-border: 1px solid #3f3f46;
+    --flow-panel-resize-bg: linear-gradient(135deg, transparent 50%, rgba(82, 82, 91, 0.6) 50%);
+    --flow-panel-resize-hover-bg: linear-gradient(135deg, transparent 50%, rgba(148, 163, 184, 0.5) 50%);
+
+    /* Group node */
+    --flow-node-group-bg: rgba(63, 63, 70, 0.3);
+    --flow-node-group-border: 1.5px dashed #52525b;
+    --flow-node-group-hover-border-color: #71717a;
+
+    /* Resize handles */
+    --flow-resizer-bg: rgba(148, 163, 184, 0.4);
+    --flow-resizer-border: 1px solid #94a3b8;
+    --flow-resizer-hover-bg: #94a3b8;
+
+    /* Loading */
+    --flow-loading-bg: rgba(24, 24, 27, 0.85);
+    --flow-loading-indicator-color: rgba(255, 255, 255, 0.1);
+    --flow-loading-text-color: rgba(255, 255, 255, 0.4);
+
+    /* Touch selection */
+    --flow-touch-selection-bg: rgba(148, 163, 184, 0.9);
+    --flow-touch-selection-color: #fff;
+
+    /* Rotate handle */
+    --flow-rotate-handle-bg: #94a3b8;
+    --flow-rotate-handle-border: 2px solid #18181b;
+    --flow-rotate-handle-line-color: #52525b;
+
+    /* Validation (slightly brighter for dark bg visibility) */
+    --flow-node-invalid-border: 1.5px dashed #f87171;
+    --flow-node-invalid-shadow: 0 0 0 2px rgba(248, 113, 113, 0.2);
+    --flow-node-drop-target-border: 1.5px dashed #60a5fa;
+    --flow-node-drop-target-shadow: 0 0 0 2px rgba(96, 165, 250, 0.25);
+    --flow-connection-line-invalid: #f87171;
+
+    /* Whiteboard tools */
+    --flow-tool-stroke-color: #cbd5e1;
+    --flow-tool-highlighter-color: #fbbf24;
+
+    /* Row highlights */
+    --flow-edge-row-highlight-color: #60a5fa;
+
+    /* Guide paths */
+    --flow-guide-path-color: #52525b;
+}
+
+/* ── Shape node defaults (clipped shapes use background-as-border) ── */
+.flow-node-diamond,
+.flow-node-hexagon,
+.flow-node-parallelogram,
+.flow-node-triangle {
+    min-width: 120px;
+    min-height: 80px;
+    border: none;
+    border-top: none;
+    box-shadow: none;
+    background: #d4d4d8;
+}
+.dark .flow-node-diamond,
+.dark .flow-node-hexagon,
+.dark .flow-node-parallelogram,
+.dark .flow-node-triangle {
+    background: #3f3f46;
+}
+.flow-node-diamond.flow-node-selected,
+.flow-node-hexagon.flow-node-selected,
+.flow-node-parallelogram.flow-node-selected,
+.flow-node-triangle.flow-node-selected {
+    background: var(--flow-node-selected-border-color);
+}
+.flow-node-circle {
+    min-width: 80px;
+    min-height: 80px;
+}
+.flow-node-cylinder {
+    min-width: 100px;
+    min-height: 80px;
+    padding-top: 16px;
+}
+.flow-node-stadium {
+    min-width: 120px;
+}
+
+/* ── Rotate handle colors ──────────────────────────────────────── */
+.flow-rotate-handle {
+    background: var(--flow-rotate-handle-bg);
+    border: var(--flow-rotate-handle-border);
+}
+.flow-rotate-handle::before {
+    background: var(--flow-rotate-handle-line-color);
+}
+
+/* ── Node status classes ────────────────────────────────────── */
+.flow-node.flow-node-success {
+    --flow-node-border-top: 2.5px solid #10b981;
+    border-color: #10b981;
+}
+.flow-node.flow-node-success.flow-node-selected {
+    --flow-node-selected-border-color: #10b981;
+    --flow-node-selected-shadow: 0 0 0 1px #10b981;
+}
+.flow-node.flow-node-warning {
+    --flow-node-border-top: 2.5px solid #f59e0b;
+    border-color: #f59e0b;
+}
+.flow-node.flow-node-warning.flow-node-selected {
+    --flow-node-selected-border-color: #f59e0b;
+    --flow-node-selected-shadow: 0 0 0 1px #f59e0b;
+}
+.flow-node.flow-node-danger {
+    --flow-node-border-top: 2.5px solid #ef4444;
+    border-color: #ef4444;
+}
+.flow-node.flow-node-danger.flow-node-selected {
+    --flow-node-selected-border-color: #ef4444;
+    --flow-node-selected-shadow: 0 0 0 1px #ef4444;
+}
+.flow-node.flow-node-info {
+    --flow-node-border-top: 2.5px solid #3b82f6;
+    border-color: #3b82f6;
+}
+.flow-node.flow-node-info.flow-node-selected {
+    --flow-node-selected-border-color: #3b82f6;
+    --flow-node-selected-shadow: 0 0 0 1px #3b82f6;
+}
+.flow-node.flow-node-primary {
+    --flow-node-border-top: 2.5px solid #8b5cf6;
+    border-color: #8b5cf6;
+}
+.flow-node.flow-node-primary.flow-node-selected {
+    --flow-node-selected-border-color: #8b5cf6;
+    --flow-node-selected-shadow: 0 0 0 1px #8b5cf6;
+}
+
+/* ── Edge utility classes (for class-based edge styling) ─────── */
+.flow-edge-svg path.flow-edge-highlight {
+    stroke: #64748b;
+    stroke-width: 2.5;
+}
+.flow-edge-svg path.flow-edge-success {
+    stroke: #10b981;
+    stroke-width: 2.5;
+}
+.flow-edge-svg path.flow-edge-warning {
+    stroke: #f59e0b;
+    stroke-width: 2.5;
+}
+.flow-edge-svg path.flow-edge-danger {
+    stroke: #ef4444;
+    stroke-width: 2.5;
+}
+.flow-edge-svg path.flow-edge-info {
+    stroke: #3b82f6;
+    stroke-width: 2.5;
+}
+.flow-edge-svg path.flow-edge-primary {
+    stroke: #8b5cf6;
+    stroke-width: 2.5;
+}
