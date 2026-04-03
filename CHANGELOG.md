@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.1-alpha — 2026-04-03
+
+### Fixed
+- Updated bundled AlpineFlow to v0.1.1-alpha (widened y-websocket peer dep, picomatch security fix)
+
 ## v0.1.0-alpha — 2026-04-02
 
 Initial alpha release.

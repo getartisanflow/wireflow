@@ -1,49 +1,52 @@
 import * as c from "yjs";
-import { applyUpdate as N, encodeStateAsUpdate as A, encodeStateVector as H, Doc as j } from "yjs";
-import { applyAwarenessUpdate as m, encodeAwarenessUpdate as b, Awareness as R } from "y-protocols/awareness";
-import { WebsocketProvider as x } from "y-websocket";
+import { encodeStateAsUpdate as N, applyUpdate as H, encodeStateVector as C, Doc as T } from "yjs";
+import { applyAwarenessUpdate as m, encodeAwarenessUpdate as b, Awareness as j } from "y-protocols/awareness";
+import { WebsocketProvider as D } from "y-websocket";
 const w = "__alpineflow_registry__";
 function O() {
   return typeof globalThis < "u" ? (globalThis[w] || (globalThis[w] = /* @__PURE__ */ new Map()), globalThis[w]) : /* @__PURE__ */ new Map();
 }
-function k(i, e) {
+function x(i, e) {
   O().set(i, e);
 }
 const d = "collab-bridge-local";
-function f(i) {
+function y(i) {
   const e = new c.Map(), t = JSON.parse(JSON.stringify(i));
-  for (const [n, o] of Object.entries(t))
-    e.set(n, o);
+  for (const [n, r] of Object.entries(t))
+    e.set(n, r);
   return e;
 }
-class M {
+class k {
   constructor(e, t, n) {
     if (this.destroyed = !1, this._initialSyncDone = !1, this._draggingNodeIds = /* @__PURE__ */ new Set(), this.doc = e, this.state = t, this.yNodes = e.getMap("nodes"), this.yEdges = e.getMap("edges"), n) {
-      const o = (s) => {
-        !s || this._initialSyncDone || this.destroyed || (this._initialSyncDone = !0, n.off("sync", o), this._resolveInitialState());
+      const r = (s) => {
+        !s || this._initialSyncDone || this.destroyed || (this._initialSyncDone = !0, n.off("sync", r), this._resolveInitialState());
       };
-      n.on("sync", o);
+      n.on("sync", r);
     } else
       this._resolveInitialState();
-    this.nodeObserver = (o, s) => {
+    this.nodeObserver = (r, s) => {
       if (this.destroyed || s.origin === d)
         return;
       this.pullNodesFromYjs();
-      const r = () => {
+      const a = () => {
         this.destroyed || this.pullEdgesFromYjs();
       };
-      typeof requestAnimationFrame == "function" ? requestAnimationFrame(r) : r();
-    }, this.yNodes.observeDeep(this.nodeObserver), this.edgeObserver = (o, s) => {
+      typeof requestAnimationFrame == "function" ? requestAnimationFrame(a) : a();
+    }, this.yNodes.observeDeep(this.nodeObserver), this.edgeObserver = (r, s) => {
       this.destroyed || s.origin === d || this.pullEdgesFromYjs();
     }, this.yEdges.observeDeep(this.edgeObserver);
   }
   _resolveInitialState() {
-    console.log("[CollabBridge] _resolveInitialState, yNodes.size:", this.yNodes.size, "local nodes:", this.state.nodes.length), this.yNodes.size === 0 ? (console.log("[CollabBridge] pushing local state to Yjs"), this.doc.transact(() => {
+    this.yNodes.size > 0 ? this.pullAllFromYjs() : this._pushInitialState();
+  }
+  _pushInitialState() {
+    this.doc.transact(() => {
       for (const e of this.state.nodes)
-        this.yNodes.set(e.id, f(e));
+        this.yNodes.has(e.id) || this.yNodes.set(e.id, y(e));
       for (const e of this.state.edges)
-        this.yEdges.set(e.id, f(e));
-    }, d)) : (console.log("[CollabBridge] pulling from Yjs, yNodes content:", this.yNodes.toJSON()), this.pullAllFromYjs());
+        this.yEdges.has(e.id) || this.yEdges.set(e.id, y(e));
+    }, d);
   }
   // -- Push local to Yjs --
   pushLocalNodeUpdate(e, t) {
@@ -51,14 +54,14 @@ class M {
       const n = this.yNodes.get(e);
       if (!n)
         return;
-      const o = JSON.parse(JSON.stringify(t));
-      for (const [s, r] of Object.entries(o))
-        n.set(s, r);
+      const r = JSON.parse(JSON.stringify(t));
+      for (const [s, a] of Object.entries(r))
+        n.set(s, a);
     }, d);
   }
   pushLocalNodeAdd(e) {
     this.doc.transact(() => {
-      this.yNodes.set(e.id, f(e));
+      this.yNodes.set(e.id, y(e));
     }, d);
   }
   pushLocalNodeRemove(e) {
@@ -68,7 +71,7 @@ class M {
   }
   pushLocalEdgeAdd(e) {
     this.doc.transact(() => {
-      this.yEdges.set(e.id, f(e));
+      this.yEdges.set(e.id, y(e));
     }, d);
   }
   pushLocalEdgeRemove(e) {
@@ -86,19 +89,19 @@ class M {
   }
   pullNodesFromYjs() {
     const e = /* @__PURE__ */ new Map();
-    this.yNodes.forEach((n, o) => {
+    this.yNodes.forEach((n, r) => {
       const s = n.toJSON();
-      s.position || (s.position = { x: 0, y: 0 }), e.set(o, s);
+      (!s.position || typeof s.position != "object") && (s.position = { x: 0, y: 0 }), e.set(r, s);
     });
     const t = /* @__PURE__ */ new Set();
     for (let n = 0; n < this.state.nodes.length; n++) {
-      const o = this.state.nodes[n];
-      t.add(o.id);
-      const s = e.get(o.id);
-      s && (s.position && !this._draggingNodeIds.has(o.id) && (o.position.x = s.position.x, o.position.y = s.position.y), s.data && (o.data = s.data));
+      const r = this.state.nodes[n];
+      t.add(r.id);
+      const s = e.get(r.id);
+      s && (s.position && !this._draggingNodeIds.has(r.id) && (r.position.x = s.position.x, r.position.y = s.position.y), s.data && (r.data = s.data));
     }
-    e.forEach((n, o) => {
-      t.has(o) || this.state.nodes.push(n);
+    e.forEach((n, r) => {
+      t.has(r) || this.state.nodes.push(n);
     });
     for (let n = this.state.nodes.length - 1; n >= 0; n--)
       e.has(this.state.nodes[n].id) || this.state.nodes.splice(n, 1);
@@ -115,7 +118,7 @@ class M {
     this.destroyed = !0, this.yNodes.unobserveDeep(this.nodeObserver), this.yEdges.unobserveDeep(this.edgeObserver);
   }
 }
-class D {
+class R {
   constructor(e, t) {
     this.destroyed = !1, this._users = [], this._remoteStates = /* @__PURE__ */ new Map(), this._onChangeCallbacks = [], this.status = "connected", this.awareness = e, this.localUser = t, e.setLocalState({
       user: t,
@@ -168,138 +171,138 @@ class D {
   // -- Internal --
   rebuildUsers() {
     const e = this.awareness.getStates(), t = this.awareness.clientID, n = [];
-    this._remoteStates.clear(), e.forEach((o, s) => {
-      s !== t && o?.user && (n.push(o.user), this._remoteStates.set(s, o));
+    this._remoteStates.clear(), e.forEach((r, s) => {
+      s !== t && r?.user && (n.push(r.user), this._remoteStates.set(s, r));
     }), this._users = n;
-    for (const o of this._onChangeCallbacks) o();
+    for (const r of this._onChangeCallbacks) r();
   }
   // -- Lifecycle --
   destroy() {
     this.destroyed = !0, this.awareness.off("change", this.changeHandler), this.awareness.setLocalState(null), this._users = [], this._remoteStates.clear();
   }
 }
-const _ = "__alpineflow_collab_store__";
+const g = "__alpineflow_collab_store__";
 function F() {
-  return typeof globalThis < "u" ? (globalThis[_] || (globalThis[_] = /* @__PURE__ */ new WeakMap()), globalThis[_]) : /* @__PURE__ */ new WeakMap();
+  return typeof globalThis < "u" ? (globalThis[g] || (globalThis[g] = /* @__PURE__ */ new WeakMap()), globalThis[g]) : /* @__PURE__ */ new WeakMap();
 }
-const P = F(), S = "flow-collab-cursor", E = "http://www.w3.org/2000/svg", Y = "M0.5 0.5L15.5 11.5L8 12.5L5 21.5L0.5 0.5Z";
-function z(i, e) {
+const P = F(), v = "flow-collab-cursor", A = "http://www.w3.org/2000/svg", M = "M0.5 0.5L15.5 11.5L8 12.5L5 21.5L0.5 0.5Z";
+function Y(i, e) {
   const t = document.createElement("div");
-  t.className = S, t.dataset.clientId = i, t.style.position = "absolute", t.style.left = "0", t.style.top = "0", t.style.pointerEvents = "none", t.style.zIndex = "10000", t.style.transition = "transform 0.1s ease-out", t.style.willChange = "transform";
-  const n = document.createElementNS(E, "svg");
+  t.className = v, t.dataset.clientId = i, t.style.position = "absolute", t.style.left = "0", t.style.top = "0", t.style.pointerEvents = "none", t.style.zIndex = "10000", t.style.transition = "transform 0.1s ease-out", t.style.willChange = "transform";
+  const n = document.createElementNS(A, "svg");
   n.setAttribute("width", "16"), n.setAttribute("height", "22"), n.setAttribute("viewBox", "0 0 16 22"), n.setAttribute("fill", "none"), n.style.display = "block", n.style.filter = "drop-shadow(0 1px 2px rgba(0,0,0,0.3))";
-  const o = document.createElementNS(E, "path");
-  o.setAttribute("d", Y), o.setAttribute("fill", e.color), o.setAttribute("stroke", "white"), o.setAttribute("stroke-width", "1.5"), o.setAttribute("stroke-linejoin", "round"), o.classList.add("flow-collab-cursor-arrow"), n.appendChild(o), t.appendChild(n);
+  const r = document.createElementNS(A, "path");
+  r.setAttribute("d", M), r.setAttribute("fill", e.color), r.setAttribute("stroke", "white"), r.setAttribute("stroke-width", "1.5"), r.setAttribute("stroke-linejoin", "round"), r.classList.add("flow-collab-cursor-arrow"), n.appendChild(r), t.appendChild(n);
   const s = document.createElement("span");
   return s.className = "flow-collab-cursor-label", s.textContent = e.name, s.style.position = "absolute", s.style.left = "14px", s.style.top = "16px", s.style.background = e.color, s.style.color = "white", s.style.padding = "2px 8px", s.style.borderRadius = "4px", s.style.fontSize = "11px", s.style.fontWeight = "500", s.style.whiteSpace = "nowrap", s.style.lineHeight = "1.4", s.style.boxShadow = "0 1px 3px rgba(0,0,0,0.2)", t.appendChild(s), t;
 }
-function T(i, e) {
+function q(i, e) {
   const t = i.querySelector(".flow-collab-cursor-arrow");
   t && t.setAttribute("fill", e);
   const n = i.querySelector(".flow-collab-cursor-label");
   n && (n.style.background = e);
 }
-function q(i, e, t) {
+function W(i, e, t) {
   const n = /* @__PURE__ */ new Map();
-  i.querySelectorAll(`.${S}`).forEach((s) => {
+  i.querySelectorAll(`.${v}`).forEach((s) => {
     n.set(s.dataset.clientId, s);
   });
-  const o = /* @__PURE__ */ new Set();
-  e.forEach((s, r) => {
+  const r = /* @__PURE__ */ new Set();
+  e.forEach((s, a) => {
     if (!s.cursor)
       return;
-    const a = String(r);
-    o.add(a);
-    let l = n.get(a);
-    l ? T(l, s.user.color) : (l = z(a, s.user), i.appendChild(l)), l.style.transform = `translate(${s.cursor.x}px, ${s.cursor.y}px)`;
-  }), n.forEach((s, r) => {
-    o.has(r) || s.remove();
+    const o = String(a);
+    r.add(o);
+    let l = n.get(o);
+    l ? q(l, s.user.color) : (l = Y(o, s.user), i.appendChild(l)), l.style.transform = `translate(${s.cursor.x}px, ${s.cursor.y}px)`;
+  }), n.forEach((s, a) => {
+    r.has(a) || s.remove();
   });
 }
-function W(i) {
+function J(i) {
   i.directive("flow-cursors", (e, {}, { cleanup: t }) => {
     const n = e.closest("[data-flow-canvas]");
     if (!n) return;
-    const o = i.$data(n);
-    let s = null, r = null, a = !1;
+    const r = i.$data(n);
+    let s = null, a = null, o = !1;
     function l() {
-      const p = P.get(n);
-      if (!p?.awareness) return !1;
-      const v = p.awareness;
-      function U() {
-        const L = v.getRemoteStates();
-        o.viewport?.zoom, q(e, L);
+      const f = P.get(n);
+      if (!f?.awareness) return !1;
+      const U = f.awareness;
+      function E() {
+        const L = U.getRemoteStates();
+        r.viewport?.zoom, W(e, L);
       }
-      return U(), s = v.onChange(U), !0;
+      return E(), s = U.onChange(E), !0;
     }
-    l() || (r = setInterval(() => {
-      (a || l()) && (clearInterval(r), r = null);
+    l() || (a = setInterval(() => {
+      (o || l()) && (clearInterval(a), a = null);
     }, 50)), t(() => {
-      a = !0, r && clearInterval(r), s && s(), e.querySelectorAll(`.${S}`).forEach((p) => p.remove());
+      o = !0, a && clearInterval(a), s && s(), e.querySelectorAll(`.${v}`).forEach((f) => f.remove());
     });
   });
 }
-let g = N, C = A, I = H;
-function B(i) {
-  g = i.applyUpdate, C = i.encodeStateAsUpdate, I = i.encodeStateVector;
+let _ = H, S = N, I = C;
+function V(i) {
+  _ = i.applyUpdate, S = i.encodeStateAsUpdate, I = i.encodeStateVector;
 }
-function y(i) {
+function h(i) {
   let e = "";
   for (let t = 0; t < i.length; t++)
     e += String.fromCharCode(i[t]);
   return btoa(e);
 }
-function h(i) {
+function u(i) {
   const e = atob(i), t = new Uint8Array(e.length);
   for (let n = 0; n < e.length; n++)
     t[n] = e.charCodeAt(n);
   return t;
 }
-const u = "reverb-provider";
+const p = "reverb-provider";
 class G {
   constructor(e) {
-    this.channel = null, this.doc = null, this.awareness = null, this.listeners = {}, this._connected = !1, this.updateHandler = null, this.awarenessHandler = null, this.roomId = e.roomId, this.channelPattern = e.channel, this.user = e.user, this.stateUrl = e.stateUrl;
+    this.channel = null, this.doc = null, this.awareness = null, this.listeners = {}, this._connected = !1, this.updateHandler = null, this.awarenessHandler = null, this._saveTimer = null, this._saveDirty = !1, this.roomId = e.roomId, this.channelPattern = e.channel, this.user = e.user, this.stateUrl = e.stateUrl;
   }
   get connected() {
     return this._connected;
   }
   connect(e, t) {
     this.doc = e, this.awareness = t;
-    const n = this.channelPattern.replace("{roomId}", this.roomId), o = globalThis.Echo;
-    if (!o) {
+    const n = this.channelPattern.replace("{roomId}", this.roomId), r = globalThis.Echo;
+    if (!r) {
       console.warn("[alpineflow-collab] Laravel Echo not found. ReverbProvider requires Echo.");
       return;
     }
-    if (this.channel = o.private(n), this.channel.listenForWhisper("yjs-update", (s) => {
+    if (this.channel = r.private(n), this.channel.listenForWhisper("yjs-update", (s) => {
       if (!this.doc) return;
-      const r = h(s.data);
-      console.log("[Reverb] yjs-update received, size:", r.length), g(this.doc, r, u);
+      const a = u(s.data);
+      _(this.doc, a, p);
     }), this.channel.listenForWhisper("yjs-sync-request", (s) => {
       if (!this.doc) return;
-      const r = h(s.sv), a = C(this.doc, r);
-      console.log("[Reverb] sync-request received, responding with update size:", a.length), a.length > 2 && this.channel?.whisper("yjs-sync-response", { data: y(a) });
+      const a = u(s.sv), o = S(this.doc, a);
+      o.length > 2 && this.channel?.whisper("yjs-sync-response", { data: h(o) });
     }), this.channel.listenForWhisper("yjs-sync-response", (s) => {
       if (!this.doc) return;
-      const r = h(s.data);
-      console.log("[Reverb] sync-response received, size:", r.length, "yNodes before:", this.doc.getMap("nodes").size), g(this.doc, r, u), console.log("[Reverb] sync-response applied, yNodes after:", this.doc.getMap("nodes").size);
+      const a = u(s.data);
+      _(this.doc, a, p);
     }), this.channel.listenForWhisper("yjs-awareness", (s) => {
       if (!this.awareness) return;
-      const r = h(s.data);
-      m(this.awareness, r, u);
-    }), this.updateHandler = (s, r) => {
-      r !== u && this.channel?.whisper("yjs-update", { data: y(s) });
-    }, e.on("update", this.updateHandler), this.awarenessHandler = ({ added: s, updated: r }) => {
-      const a = [...s, ...r];
-      if (a.length === 0) return;
-      const l = b(t, a);
-      this.channel?.whisper("yjs-awareness", { data: y(l) });
+      const a = u(s.data);
+      m(this.awareness, a, p);
+    }), this.updateHandler = (s, a) => {
+      a !== p && (this.channel?.whisper("yjs-update", { data: h(s) }), this._markDirty());
+    }, e.on("update", this.updateHandler), this.awarenessHandler = ({ added: s, updated: a }) => {
+      const o = [...s, ...a];
+      if (o.length === 0) return;
+      const l = b(t, o);
+      this.channel?.whisper("yjs-awareness", { data: h(l) });
     }, t.on("update", this.awarenessHandler), this._connected = !0, this.emit("status", "connected"), this.stateUrl)
       this.fetchInitialState();
     else {
       const s = I(e);
-      console.log("[Reverb] sending sync-request, sv size:", s.length), this.channel.whisper("yjs-sync-request", { sv: y(s) }), setTimeout(() => {
-        console.log("[Reverb] sync timeout fired, yNodes size:", this.doc?.getMap("nodes").size), this.emit("sync", !0);
-      }, 500);
+      this.channel.whisper("yjs-sync-request", { sv: h(s) }), setTimeout(() => {
+        this.emit("sync", !0);
+      }, 1500);
     }
   }
   disconnect() {
@@ -318,7 +321,29 @@ class G {
     this.listeners[e]?.forEach((n) => n(t));
   }
   cleanupListeners() {
-    this.doc && this.updateHandler && (this.doc.off("update", this.updateHandler), this.updateHandler = null), this.awareness && this.awarenessHandler && (this.awareness.off("update", this.awarenessHandler), this.awarenessHandler = null);
+    this.doc && this.updateHandler && (this.doc.off("update", this.updateHandler), this.updateHandler = null), this.awareness && this.awarenessHandler && (this.awareness.off("update", this.awarenessHandler), this.awarenessHandler = null), this._saveTimer && (clearTimeout(this._saveTimer), this._saveTimer = null), this._saveDirty && this._saveStateNow();
+  }
+  /** Mark doc as dirty — will save to stateUrl within 5 seconds. */
+  _markDirty() {
+    this.stateUrl && (this._saveDirty = !0, this._saveTimer || (this._saveTimer = setTimeout(() => {
+      this._saveTimer = null, this._saveStateNow();
+    }, 5e3)));
+  }
+  /** Save current doc state to stateUrl. */
+  _saveStateNow() {
+    if (!(!this.stateUrl || !this.doc || !this._saveDirty)) {
+      this._saveDirty = !1;
+      try {
+        const e = S(this.doc), t = this.stateUrl.replace("{roomId}", this.roomId), n = typeof document < "u" ? document.querySelector('meta[name="csrf-token"]') : null, r = { "Content-Type": "application/json" };
+        n && (r["X-CSRF-TOKEN"] = n.getAttribute("content") || ""), fetch(t, {
+          method: "POST",
+          headers: r,
+          body: JSON.stringify({ state: h(e) })
+        }).catch(() => {
+        });
+      } catch {
+      }
+    }
   }
   async fetchInitialState() {
     if (!(!this.stateUrl || !this.doc))
@@ -327,8 +352,8 @@ class G {
         if (!t.ok) return;
         const n = await t.json();
         if (n.state && this.doc) {
-          const o = h(n.state);
-          g(this.doc, o, u);
+          const r = u(n.state);
+          _(this.doc, r, p);
         }
         this.emit("sync", !0);
       } catch {
@@ -343,11 +368,11 @@ class K {
     return this._connected;
   }
   connect(e, t) {
-    this.wsProvider = new x(this.url, this.roomId, e, {
+    this.wsProvider = new D(this.url, this.roomId, e, {
       awareness: t
     }), this.wsProvider.on("status", (n) => {
-      const o = n.status;
-      this._connected = o === "connected", this.emit("status", o);
+      const r = n.status;
+      this._connected = r === "connected", this.emit("status", r);
     }), this.wsProvider.on("sync", (n) => {
       this.emit("sync", n);
     });
@@ -395,46 +420,46 @@ class Z {
     if (!this.doc || !e?.doc || this._synced) return;
     this._synced = !0, e._synced = !0;
     const t = c.encodeStateAsUpdate(this.doc), n = c.encodeStateAsUpdate(e.doc);
-    if (c.applyUpdate(e.doc, t, "remote"), c.applyUpdate(this.doc, n, "remote"), this._docUpdateHandler = (o, s) => {
-      s !== "remote" && c.applyUpdate(e.doc, o, "remote");
-    }, this.doc.on("update", this._docUpdateHandler), this._peerDocUpdateHandler = (o, s) => {
-      s !== "remote" && c.applyUpdate(this.doc, o, "remote");
+    if (c.applyUpdate(e.doc, t, "remote"), c.applyUpdate(this.doc, n, "remote"), this._docUpdateHandler = (r, s) => {
+      s !== "remote" && c.applyUpdate(e.doc, r, "remote");
+    }, this.doc.on("update", this._docUpdateHandler), this._peerDocUpdateHandler = (r, s) => {
+      s !== "remote" && c.applyUpdate(this.doc, r, "remote");
     }, e.doc.on("update", this._peerDocUpdateHandler), this.awareness && e.awareness) {
-      const o = this.awareness, s = e.awareness;
-      this._awarenessUpdateHandler = (r) => {
-        const a = [...r.added, ...r.updated];
-        if (a.length === 0) return;
-        const l = b(o, a);
+      const r = this.awareness, s = e.awareness;
+      this._awarenessUpdateHandler = (a) => {
+        const o = [...a.added, ...a.updated];
+        if (o.length === 0) return;
+        const l = b(r, o);
         m(s, l, "remote");
-      }, o.on("update", this._awarenessUpdateHandler), this._peerAwarenessUpdateHandler = (r) => {
-        const a = [...r.added, ...r.updated];
-        if (a.length === 0) return;
-        const l = b(s, a);
-        m(o, l, "remote");
+      }, r.on("update", this._awarenessUpdateHandler), this._peerAwarenessUpdateHandler = (a) => {
+        const o = [...a.added, ...a.updated];
+        if (o.length === 0) return;
+        const l = b(s, o);
+        m(r, l, "remote");
       }, s.on("update", this._peerAwarenessUpdateHandler);
     }
     this._emit("sync", !0), e._emit("sync", !0);
   }
 }
-function Q(i, e) {
+function X(i, e) {
   i.peer = e, e.peer = i;
 }
-function X(i) {
-  W(i), B({ applyUpdate: N, encodeStateAsUpdate: A, encodeStateVector: H }), k("collab", {
-    Doc: j,
-    Awareness: R,
-    CollabBridge: M,
-    CollabAwareness: D
+function Q(i) {
+  J(i), V({ applyUpdate: H, encodeStateAsUpdate: N, encodeStateVector: C }), x("collab", {
+    Doc: T,
+    Awareness: j,
+    CollabBridge: k,
+    CollabAwareness: R
   });
 }
 export {
-  D as CollabAwareness,
-  M as CollabBridge,
+  R as CollabAwareness,
+  k as CollabBridge,
   Z as InMemoryProvider,
   G as ReverbProvider,
   K as WebSocketProvider,
-  X as default,
-  Q as linkProviders,
-  W as registerFlowCursorsDirective
+  Q as default,
+  X as linkProviders,
+  J as registerFlowCursorsDirective
 };
 //# sourceMappingURL=alpineflow-collab.esm.js.map
