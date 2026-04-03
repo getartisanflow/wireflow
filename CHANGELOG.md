@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.2-alpha — 2026-04-03
+
+### Fixed
+- Updated bundled AlpineFlow to v0.1.2-alpha — bundle no longer requires `alpinejs` as an external dependency
+- Fresh Livewire starter kits can now install WireFlow and run `npm run build` without any Vite configuration changes
+
 ## v0.1.1-alpha — 2026-04-03
 
 ### Fixed
