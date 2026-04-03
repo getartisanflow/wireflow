@@ -36,6 +36,9 @@ class InstallCommand extends Command
         // Add CSS import to app.css
         $this->addCssImport();
 
+        // Ensure Vite externalizes alpinejs (Livewire provides it at runtime)
+        $this->patchViteConfig();
+
         $this->newLine();
         $this->components->info('WireFlow installed successfully.');
         $this->components->bulletList([
@@ -76,6 +79,44 @@ JS;
         $contents = $importLine."\n".$contents.$registerBlock."\n";
         File::put($appJs, $contents);
         $this->components->task('JS import added to app.js', fn () => true);
+    }
+
+    private function patchViteConfig(): void
+    {
+        $viteConfig = base_path('vite.config.js');
+
+        if (! File::exists($viteConfig)) {
+            $this->components->task('Vite config (not found, skipped)', fn () => true);
+
+            return;
+        }
+
+        $contents = File::get($viteConfig);
+
+        if (str_contains($contents, "'alpinejs'") && str_contains($contents, 'external')) {
+            $this->components->task('Vite config (alpinejs already externalized)', fn () => true);
+
+            return;
+        }
+
+        // Add rollupOptions.external for alpinejs
+        if (str_contains($contents, 'build:')) {
+            // build key already exists — user needs manual setup
+            $this->components->warn('Add alpinejs to build.rollupOptions.external in vite.config.js:');
+            $this->line("  build: { rollupOptions: { external: ['alpinejs'] } }");
+
+            return;
+        }
+
+        // Insert build config before the closing of defineConfig
+        $contents = str_replace(
+            'plugins: [',
+            "build: {\n        rollupOptions: {\n            external: ['alpinejs'],\n        },\n    },\n    plugins: [",
+            $contents
+        );
+
+        File::put($viteConfig, $contents);
+        $this->components->task('Vite config patched (alpinejs externalized)', fn () => true);
     }
 
     private function addCssImport(): void
