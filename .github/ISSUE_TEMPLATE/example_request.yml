@@ -1,0 +1,47 @@
+name: Example Request
+description: Request a new example or demo for the documentation site
+title: "[Example]: "
+labels: ["example", "docs"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Want to see a specific Laravel/Livewire use case demonstrated? Let us know.
+
+  - type: input
+    id: title
+    attributes:
+      label: Example title
+      placeholder: "e.g. Workflow builder with Eloquent persistence"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What should it demonstrate?
+      description: Describe the use case and what WireFlow features it should showcase.
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: features
+    attributes:
+      label: Features involved
+      description: Which WireFlow features should this example highlight?
+      options:
+        - label: Blade components (<x-flow>, handles, panels)
+        - label: WithWireFlow trait methods
+        - label: Server-side events (@connect, @node-click, @node-drag)
+        - label: Sync modes (static, entangled, collab)
+        - label: Eloquent persistence (save/load flows)
+        - label: Custom node types with Blade slots
+        - label: Real-time collaboration (Reverb)
+        - label: Form validation integration
+        - label: Flux UI components inside nodes
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Real-world context
+      description: What are you trying to build that inspired this request?

@@ -1,0 +1,83 @@
+name: Bug Report
+description: Report something that isn't working correctly
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please fill out the information below to help us reproduce and fix it.
+
+  - type: input
+    id: version
+    attributes:
+      label: WireFlow version
+      description: What version are you using? (run `composer show getartisanflow/wireflow`)
+      placeholder: "e.g. v0.1.2-alpha"
+    validations:
+      required: true
+
+  - type: input
+    id: laravel-version
+    attributes:
+      label: Laravel version
+      placeholder: "e.g. 13.0"
+    validations:
+      required: true
+
+  - type: input
+    id: livewire-version
+    attributes:
+      label: Livewire version
+      placeholder: "e.g. 4.1"
+    validations:
+      required: true
+
+  - type: input
+    id: php-version
+    attributes:
+      label: PHP version
+      placeholder: "e.g. 8.4"
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of what the bug is and what you expected to happen.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps to reproduce the issue. A link to a reproduction repo is ideal.
+      placeholder: |
+        1. Create a Livewire component with <x-flow>...
+        2. Configure these nodes...
+        3. See error...
+    validations:
+      required: true
+
+  - type: textarea
+    id: blade
+    attributes:
+      label: Blade template
+      description: The minimal Blade snippet that triggers the bug.
+      render: blade
+
+  - type: textarea
+    id: component
+    attributes:
+      label: Livewire component
+      description: The minimal Livewire component class that triggers the bug.
+      render: php
+
+  - type: textarea
+    id: errors
+    attributes:
+      label: Errors
+      description: Any PHP errors, JavaScript console errors, or Livewire errors.
+      render: shell
