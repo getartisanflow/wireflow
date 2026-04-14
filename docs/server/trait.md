@@ -127,7 +127,14 @@ public function reset(): void
 |--------|-------------|
 | `$this->flowUpdate(array $targets, array $options)` | Update nodes/edges/viewport instantly |
 | `$this->flowAnimate(array $targets, array $options)` | Animate nodes/edges/viewport (300ms smooth default) |
-| `$this->flowSendParticle(string $edgeId, array $options)` | Fire particle along an edge |
+| `$this->flowSendParticle(string $edgeId, array $options)` | Fire one particle along an edge |
+| `$this->flowSendParticleAlongPath(string $path, array $options)` | Fire a particle along an arbitrary SVG path string — no edge required |
+| `$this->flowSendParticleBetween(string $source, string $target, array $options)` | Fire a particle on the straight line between two node centers — no edge required |
+| `$this->flowSendParticleBurst(string $edgeId, array $options)` | Fire `count` staggered particles along one edge |
+| `$this->flowSendConverging(array $sourceEdgeIds, array $options)` | Fan-in: fire particles on multiple edges with synchronized arrival (or start) |
+| `$this->flowCancelAll(array $filter, array $options)` | Cancel all animations matching `['tag' => …]` or `['tags' => […]]`. `options.mode`: `freeze` \| `rollback` \| `jump-end` |
+| `$this->flowPauseAll(array $filter)` | Pause all animations matching the tag filter |
+| `$this->flowResumeAll(array $filter)` | Resume paused animations matching the tag filter |
 | `$this->flowFollow(string $nodeId, array $options)` | Camera follows a node |
 | `$this->flowUnfollow()` | Stop following |
 
