@@ -248,4 +248,67 @@ trait WithWireFlow
     {
         $this->dispatch('flow:selectEdges', ids: $ids);
     }
+
+    // ── v0.2.0-alpha additions ──────────────────────────────────────────
+
+    /**
+     * Fire a particle along an arbitrary SVG path string (no edge required).
+     * Useful for ad-hoc visualizations that don't follow an existing edge.
+     */
+    public function flowSendParticleAlongPath(string $path, array $options = []): void
+    {
+        $this->dispatch('flow:sendParticleAlongPath', path: $path, options: $options);
+    }
+
+    /**
+     * Fire a particle along a straight line between two node centers.
+     */
+    public function flowSendParticleBetween(string $sourceNodeId, string $targetNodeId, array $options = []): void
+    {
+        $this->dispatch('flow:sendParticleBetween', source: $sourceNodeId, target: $targetNodeId, options: $options);
+    }
+
+    /**
+     * Fire a staggered burst of N particles along an edge. Pass `count`,
+     * `stagger` (ms between each), and any other ParticleOptions.
+     */
+    public function flowSendParticleBurst(string $edgeId, array $options): void
+    {
+        $this->dispatch('flow:sendParticleBurst', edgeId: $edgeId, options: $options);
+    }
+
+    /**
+     * Fire particles from multiple edges that converge at a target node.
+     * Pass `targetNodeId` in options and optionally `synchronize: 'arrival'|'departure'`.
+     */
+    public function flowSendConverging(array $sourceEdgeIds, array $options): void
+    {
+        $this->dispatch('flow:sendConverging', sources: $sourceEdgeIds, options: $options);
+    }
+
+    /**
+     * Cancel animations matching a tag filter. `$filter` accepts
+     * ['tag' => 'name'] or ['tags' => ['a', 'b']]. `$options` accepts
+     * ['mode' => 'jump-end'|'rollback'|'freeze'].
+     */
+    public function flowCancelAll(array $filter = [], array $options = []): void
+    {
+        $this->dispatch('flow:cancelAll', filter: $filter, options: $options);
+    }
+
+    /**
+     * Pause animations matching a tag filter.
+     */
+    public function flowPauseAll(array $filter = []): void
+    {
+        $this->dispatch('flow:pauseAll', filter: $filter);
+    }
+
+    /**
+     * Resume animations matching a tag filter.
+     */
+    public function flowResumeAll(array $filter = []): void
+    {
+        $this->dispatch('flow:resumeAll', filter: $filter);
+    }
 }
