@@ -20,7 +20,7 @@ The `WithWireFlow` trait includes convenience methods that wrap common multi-ste
 | `flowConnect(string $source, string $target, ?int $duration, ?string $edgeId, array $options)` | Create an edge between two nodes. Pass `duration` for draw-in animation. Auto-generates edge ID if omitted. |
 | `flowDisconnect(string $source, string $target, ?int $duration)` | Remove edge(s) between two nodes. Pass `duration` for fade-out animation. |
 | `flowHighlightNode(string $id, string $style, ?int $duration)` | Flash a preset visual state then revert. Presets: `'success'`, `'error'`, `'warning'`, `'info'`. Default: 1500ms. |
-| `flowHighlightPath(array $nodeIds, array $options)` | Fire particles along edges connecting a sequence of nodes. Options: `color`, `size`, `duration`, `delay`. |
+| `flowHighlightPath(array $nodeIds, array $options)` | Fire particles along edges connecting a sequence of nodes. Accepts any particle option (`renderer`, `color`, `size`, `duration`, `delay`, `gradient`, `length`, `width`, `easing`, …). |
 | `flowLockNode(string $id)` | Lock a node (prevent drag, show dashed border) |
 | `flowUnlockNode(string $id)` | Unlock a node |
 | `flowHideNode(string $id)` | Hide a node from rendering |
@@ -115,7 +115,7 @@ $this->flowHighlightNode('step-1', 'error', duration: 3000);
 
 ## flowHighlightPath
 
-Fire particles along edges connecting a sequence of nodes, creating a cascading trail effect.
+Fire particles along edges connecting a sequence of nodes, creating a cascading trail effect. Options are passed through to each particle, so any `$flow.sendParticle()` option works — renderer, gradient, beam geometry, easing, etc.
 
 ```php
 // Simple path highlight
@@ -128,7 +128,23 @@ $this->flowHighlightPath(['step-1', 'step-2', 'step-3'], [
     'duration' => 1000,
     'delay' => 200,       // Delay between each segment
 ]);
+
+// Beam with a multi-stop gradient (all options reach the particle)
+$this->flowHighlightPath(['step-1', 'step-2', 'step-3'], [
+    'renderer' => 'beam',
+    'length' => 60,
+    'width' => 4,
+    'duration' => 900,
+    'delay' => 220,
+    'gradient' => [
+        ['offset' => 0,   'color' => '#06B6D4', 'opacity' => 0],
+        ['offset' => 0.7, 'color' => '#D946EF', 'opacity' => 0.8],
+        ['offset' => 1,   'color' => '#fff',    'opacity' => 1],
+    ],
+]);
 ```
+
+> **v0.2.0-alpha fix:** prior versions silently dropped every option other than `color` / `size` / `duration` / `delay`. Renderer, gradient, and beam options now pass through unchanged.
 
 ## flowLockNode / flowUnlockNode
 
