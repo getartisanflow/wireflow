@@ -92,23 +92,78 @@ trait WithWireFlow
         $this->dispatch('flow:setViewport', viewport: $viewport);
     }
 
+    /**
+     * Append nodes to the server-side $nodes array (if present) and dispatch
+     * to the client. Keeps server state in sync with the canvas.
+     */
     public function flowAddNodes(array $nodes): void
     {
+        if (property_exists($this, 'nodes') && is_array($this->nodes)) {
+            $this->nodes = [...$this->nodes, ...$nodes];
+        }
+
         $this->dispatch('flow:addNodes', nodes: $nodes);
     }
 
+    /**
+     * Remove nodes by ID from the server-side $nodes array (if present),
+     * cascade-remove descendants (children via parentId), and cascade-remove
+     * edges touching any removed node. Then dispatch to the client.
+     *
+     * Mirrors the client-side removeNodes cascade so server and client state
+     * stay consistent without manual filtering in the consumer component.
+     */
     public function flowRemoveNodes(array $ids): void
     {
+        if (property_exists($this, 'nodes') && is_array($this->nodes)) {
+            $descendants = $this->collectDescendantIds($ids);
+            $allRemoved = array_unique([...$ids, ...$descendants]);
+            $removedSet = array_flip($allRemoved);
+
+            $this->nodes = array_values(array_filter(
+                $this->nodes,
+                fn (array $n) => ! isset($removedSet[$n['id'] ?? null]),
+            ));
+
+            if (property_exists($this, 'edges') && is_array($this->edges)) {
+                $this->edges = array_values(array_filter(
+                    $this->edges,
+                    fn (array $e) => ! isset($removedSet[$e['source'] ?? null])
+                                  && ! isset($removedSet[$e['target'] ?? null]),
+                ));
+            }
+        }
+
         $this->dispatch('flow:removeNodes', ids: $ids);
     }
 
+    /**
+     * Append edges to the server-side $edges array (if present) and dispatch
+     * to the client. Keeps server state in sync with the canvas.
+     */
     public function flowAddEdges(array $edges): void
     {
+        if (property_exists($this, 'edges') && is_array($this->edges)) {
+            $this->edges = [...$this->edges, ...$edges];
+        }
+
         $this->dispatch('flow:addEdges', edges: $edges);
     }
 
+    /**
+     * Remove edges by ID from the server-side $edges array (if present) and
+     * dispatch to the client. Keeps server state in sync with the canvas.
+     */
     public function flowRemoveEdges(array $ids): void
     {
+        if (property_exists($this, 'edges') && is_array($this->edges)) {
+            $idSet = array_flip($ids);
+            $this->edges = array_values(array_filter(
+                $this->edges,
+                fn (array $e) => ! isset($idSet[$e['id'] ?? null]),
+            ));
+        }
+
         $this->dispatch('flow:removeEdges', ids: $ids);
     }
 
@@ -310,5 +365,41 @@ trait WithWireFlow
     public function flowResumeAll(array $filter = []): void
     {
         $this->dispatch('flow:resumeAll', filter: $filter);
+    }
+
+    // ── Private Helpers ─────────────────────────────────────────────────
+
+    /**
+     * Collect all descendant node IDs (children, grandchildren, …) of the
+     * given root IDs by walking the $this->nodes array's parentId references.
+     *
+     * @param  array<int, string>  $rootIds
+     * @return array<int, string>
+     */
+    private function collectDescendantIds(array $rootIds): array
+    {
+        if (! property_exists($this, 'nodes') || ! is_array($this->nodes)) {
+            return [];
+        }
+
+        $allDescendants = [];
+        $toVisit = $rootIds;
+
+        while (! empty($toVisit)) {
+            $currentId = array_shift($toVisit);
+
+            foreach ($this->nodes as $node) {
+                if (($node['parentId'] ?? null) === $currentId) {
+                    $childId = $node['id'];
+
+                    if (! in_array($childId, $allDescendants, true)) {
+                        $allDescendants[] = $childId;
+                        $toVisit[] = $childId;
+                    }
+                }
+            }
+        }
+
+        return $allDescendants;
     }
 }
