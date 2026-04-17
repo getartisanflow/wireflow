@@ -124,3 +124,48 @@ class StateSyncNoArraysHarness extends Component
         $this->flowRemoveEdges(['e1']);
     }
 }
+
+/**
+ * Harness with $nodes pre-seeded for runState tests.
+ */
+class RunStateHarness extends Component
+{
+    use WithWireFlow;
+
+    public array $nodes = [
+        ['id' => 'n1', 'position' => ['x' => 0, 'y' => 0], 'data' => []],
+        ['id' => 'n2', 'position' => ['x' => 100, 'y' => 0], 'data' => []],
+        ['id' => 'n3', 'position' => ['x' => 200, 'y' => 0], 'data' => []],
+    ];
+
+    public array $edges = [];
+
+    public function render(): string
+    {
+        return '<div></div>';
+    }
+
+    public function setRunning(): void
+    {
+        $this->flowSetNodeState(['n1', 'n2'], 'running');
+    }
+
+    public function setSingleCompleted(): void
+    {
+        $this->flowSetNodeState('n3', 'completed');
+    }
+
+    public function seedRunState(): void
+    {
+        $this->nodes = [
+            ['id' => 'n1', 'position' => ['x' => 0, 'y' => 0], 'data' => [], 'runState' => 'running'],
+            ['id' => 'n2', 'position' => ['x' => 100, 'y' => 0], 'data' => [], 'runState' => 'completed'],
+            ['id' => 'n3', 'position' => ['x' => 200, 'y' => 0], 'data' => []],
+        ];
+    }
+
+    public function resetAll(): void
+    {
+        $this->flowResetStates();
+    }
+}

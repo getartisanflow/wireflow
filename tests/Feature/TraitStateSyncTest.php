@@ -7,6 +7,7 @@ require_once __DIR__.'/Fixtures/StateSyncHarness.php';
 beforeEach(function () {
     Livewire::component('state-sync-harness', StateSyncHarness::class);
     Livewire::component('state-sync-no-arrays-harness', StateSyncNoArraysHarness::class);
+    Livewire::component('run-state-harness', RunStateHarness::class);
 });
 
 it('flowAddNodes appends to server-side $nodes and dispatches', function () {
@@ -64,6 +65,40 @@ it('flowRemoveEdges removes matching ids from $edges and dispatches', function (
             ['id' => 'e2', 'source' => 'b', 'target' => 'c'],
         ])
         ->assertDispatched('flow:removeEdges', ids: ['e1']);
+});
+
+it('flowSetNodeState sets runState on matched server-side $nodes and dispatches', function () {
+    Livewire::test(RunStateHarness::class)
+        ->call('setRunning')
+        ->assertSet('nodes', [
+            ['id' => 'n1', 'position' => ['x' => 0, 'y' => 0], 'data' => [], 'runState' => 'running'],
+            ['id' => 'n2', 'position' => ['x' => 100, 'y' => 0], 'data' => [], 'runState' => 'running'],
+            ['id' => 'n3', 'position' => ['x' => 200, 'y' => 0], 'data' => []],
+        ])
+        ->assertDispatched('flow:setNodeState', ids: ['n1', 'n2'], state: 'running');
+});
+
+it('flowSetNodeState accepts a single string id', function () {
+    Livewire::test(RunStateHarness::class)
+        ->call('setSingleCompleted')
+        ->assertSet('nodes', [
+            ['id' => 'n1', 'position' => ['x' => 0, 'y' => 0], 'data' => []],
+            ['id' => 'n2', 'position' => ['x' => 100, 'y' => 0], 'data' => []],
+            ['id' => 'n3', 'position' => ['x' => 200, 'y' => 0], 'data' => [], 'runState' => 'completed'],
+        ])
+        ->assertDispatched('flow:setNodeState', ids: ['n3'], state: 'completed');
+});
+
+it('flowResetStates clears runState from all server-side $nodes and dispatches', function () {
+    Livewire::test(RunStateHarness::class)
+        ->call('seedRunState')
+        ->call('resetAll')
+        ->assertSet('nodes', [
+            ['id' => 'n1', 'position' => ['x' => 0, 'y' => 0], 'data' => []],
+            ['id' => 'n2', 'position' => ['x' => 100, 'y' => 0], 'data' => []],
+            ['id' => 'n3', 'position' => ['x' => 200, 'y' => 0], 'data' => []],
+        ])
+        ->assertDispatched('flow:resetStates');
 });
 
 it('gracefully handles components without $nodes/$edges — just dispatches', function () {

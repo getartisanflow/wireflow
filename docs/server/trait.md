@@ -201,6 +201,38 @@ public function redo(): void
 }
 ```
 
+## RunState
+
+| Method | Description |
+|--------|-------------|
+| `$this->flowSetNodeState(string\|array $ids, string $state)` | Set `runState` on one or more nodes. Auto-syncs server-side `$nodes`. Valid states: `pending`, `running`, `completed`, `failed`, `skipped` |
+| `$this->flowResetStates()` | Clear `runState` from all nodes. Auto-syncs server-side `$nodes` |
+
+### RunState example
+
+```php
+// Mark nodes as running when a job starts
+public function startWorkflow(): void
+{
+    $this->flowSetNodeState(['step-1', 'step-2'], 'running');
+}
+
+// Mark a node completed when a step finishes
+#[On('step-completed')]
+public function onStepCompleted(string $nodeId): void
+{
+    $this->flowSetNodeState($nodeId, 'completed');
+}
+
+// Reset everything for a fresh run
+public function resetWorkflow(): void
+{
+    $this->flowResetStates();
+}
+```
+
+The theme provides default visual treatments (violet pulse for `running`, teal flash for `completed`, red pulse for `failed`, dimmed for `skipped`). Override via `--flow-node-running-border-color` and related CSS variables on `.flow-container`.
+
 ## Collapse/Expand
 
 | Method | Description |

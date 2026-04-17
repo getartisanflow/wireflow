@@ -367,6 +367,44 @@ trait WithWireFlow
         $this->dispatch('flow:resumeAll', filter: $filter);
     }
 
+    // ── RunState (D2) ───────────────────────────────────────────────────
+
+    /**
+     * Set runState on one or more nodes. Auto-syncs server-side $nodes.
+     *
+     * @param  string|array<int, string>  $ids
+     */
+    public function flowSetNodeState(string|array $ids, string $state): void
+    {
+        $ids = is_array($ids) ? $ids : [$ids];
+
+        if (property_exists($this, 'nodes') && is_array($this->nodes)) {
+            foreach ($this->nodes as &$node) {
+                if (in_array($node['id'] ?? null, $ids, true)) {
+                    $node['runState'] = $state;
+                }
+            }
+            unset($node);
+        }
+
+        $this->dispatch('flow:setNodeState', ids: $ids, state: $state);
+    }
+
+    /**
+     * Clear all runState values. Auto-syncs server-side $nodes.
+     */
+    public function flowResetStates(): void
+    {
+        if (property_exists($this, 'nodes') && is_array($this->nodes)) {
+            foreach ($this->nodes as &$node) {
+                unset($node['runState']);
+            }
+            unset($node);
+        }
+
+        $this->dispatch('flow:resetStates');
+    }
+
     // ── Private Helpers ─────────────────────────────────────────────────
 
     /**
