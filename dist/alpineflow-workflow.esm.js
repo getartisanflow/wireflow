@@ -210,7 +210,7 @@ async function R(e, d, t, i, o, s, n) {
     }
   }
   if (d.type === "flow-condition") {
-    const r = C(d, u, s.payload), a = r ? u.find((p) => p.target === r) : null;
+    const r = x(d, u, s.payload), a = r ? u.find((p) => p.target === r) : null;
     if (a) {
       if (g(e, { type: "branch:chosen", nodeId: t, edgeId: a.id }, n), k(e, a.id), g(e, { type: "edge:taken", edgeId: a.id }, n), o.muteUntakenBranches)
         for (const p of u)
@@ -227,7 +227,7 @@ async function R(e, d, t, i, o, s, n) {
     k(e, r.id), g(e, { type: "edge:taken", edgeId: r.id }, n), o.particleOnEdges && e.sendParticle?.(r.id, o.particleOptions ?? {});
   return u.map((r) => r.target);
 }
-function C(e, d, t) {
+function x(e, d, t) {
   let i;
   if (typeof e.data?.evaluate == "function")
     i = !!e.data.evaluate(t);
@@ -241,7 +241,7 @@ function C(e, d, t) {
 function N(e) {
   return new Promise((d) => setTimeout(d, e));
 }
-function _(e) {
+function C(e) {
   return async function(t, i = {}) {
     const o = i.speed ?? 1;
     let s = !1, n = !1, u = null;
@@ -272,7 +272,7 @@ function _(e) {
         }), n))
           break;
         const w = (l.t - p) / o;
-        switch (w > 10 && await j(w), p = l.t, l.type) {
+        switch (w > 10 && await _(w), p = l.t, l.type) {
           case "node:enter":
             if (l.nodeId) {
               e.setNodeState(l.nodeId, "running");
@@ -315,13 +315,13 @@ function _(e) {
     return r.finished = a, r;
   };
 }
-function j(e) {
+function _(e) {
   return new Promise((d) => setTimeout(d, e));
 }
-function x(e) {
+function j(e) {
   M("workflow", {
     setup(d) {
-      d.run = q(d), d.replay = _(d), d.executionLog = [], d.resetExecutionLog = function() {
+      d.run = q(d), d.replayExecution = C(d), d.executionLog = [], d.resetExecutionLog = function() {
         this.executionLog = [];
       };
     }
@@ -334,6 +334,6 @@ function x(e) {
   });
 }
 export {
-  x as default
+  j as default
 };
 //# sourceMappingURL=alpineflow-workflow.esm.js.map
