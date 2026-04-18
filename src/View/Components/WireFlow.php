@@ -36,6 +36,7 @@ class WireFlow extends Component
         public bool $history = false,
         public ?array $autoLayout = null,
         public ?int $backgroundGap = null,
+        public bool $wireIgnore = true,
     ) {}
 
     /**
