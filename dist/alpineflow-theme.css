@@ -358,6 +358,12 @@
     --flow-guide-path-color: #52525b;
 }
 
+/* ── Node text alignment ────────────────────────────────────────── */
+.flow-node,
+.flow-ghost-node {
+    text-align: center;
+}
+
 /* ── Shape node defaults (clipped shapes use background-as-border) ── */
 .flow-node-diamond,
 .flow-node-hexagon,
@@ -444,6 +450,65 @@
 .flow-node.flow-node-primary.flow-node-selected {
     --flow-node-selected-border-color: #8b5cf6;
     --flow-node-selected-shadow: 0 0 0 1px #8b5cf6;
+}
+
+/* ── RunState visual defaults (D2) ────────────────────────────────── */
+
+.flow-node-running {
+    border-color: var(--flow-node-running-border-color, #8b5cf6);
+    animation: flow-node-pulse 1.4s ease-out infinite;
+}
+
+@keyframes flow-node-pulse {
+    0%   { box-shadow: 0 0 0 0 var(--flow-node-running-pulse-color, rgba(139, 92, 246, 0.55)); }
+    70%  { box-shadow: 0 0 0 10px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.flow-node-completed {
+    border-color: var(--flow-node-completed-border-color, #14b8a6);
+    animation: flow-node-flash 0.8s ease-out 1;
+}
+
+@keyframes flow-node-flash {
+    0%   { background: var(--flow-node-completed-flash-color, rgba(20, 184, 166, 0.12)); }
+    100% { background: var(--flow-node-bg, transparent); }
+}
+
+.flow-node-failed {
+    border-color: var(--flow-node-failed-border-color, #ef4444);
+    animation: flow-node-pulse 1.4s ease-out infinite;
+    --flow-node-running-pulse-color: var(--flow-node-failed-pulse-color, rgba(239, 68, 68, 0.55));
+}
+
+.flow-node-skipped {
+    opacity: var(--flow-node-skipped-opacity, 0.45);
+    filter: grayscale(0.3);
+}
+
+/* ── Workflow edge states ──────────────────────────────────────────── */
+
+.flow-edge-entering path {
+    stroke: var(--flow-edge-entering-stroke, #8b5cf6);
+    stroke-dasharray: var(--flow-edge-animated-dasharray, 5 3);
+    animation: flow-edge-dash var(--flow-edge-animated-duration, 0.6s) linear infinite;
+}
+
+@keyframes flow-edge-dash {
+    to { stroke-dashoffset: -16; }
+}
+
+.flow-edge-completed path {
+    stroke: var(--flow-edge-completed-stroke, #14b8a6);
+}
+
+.flow-edge-taken path {
+    stroke: var(--flow-edge-taken-stroke, #14b8a6);
+}
+
+.flow-edge-untaken path {
+    opacity: var(--flow-edge-untaken-opacity, 0.35);
+    stroke-dasharray: 4 3;
 }
 
 /* ── Edge utility classes (for class-based edge styling) ─────── */

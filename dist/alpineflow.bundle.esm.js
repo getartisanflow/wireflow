@@ -11198,7 +11198,7 @@ function Gh(t) {
           f.style.left = `${re.x}px`, f.style.top = `${re.y}px`;
         }
         for (const O of [c, d, f])
-          O && (O.classList.toggle("flow-edge-label-hover", ce === "hover"), O.classList.toggle("flow-edge-label-on-select", ce === "selected"), O.classList.toggle("flow-edge-label-selected", !!S.selected), S.class ? O.classList.add(S.class) : g && O.classList.remove(g));
+          O && (O.classList.toggle("flow-edge-label-hover", ce === "hover"), O.classList.toggle("flow-edge-label-on-select", ce === "selected"), O.classList.toggle("flow-edge-label-selected", !!S.selected), S.class ? O.classList.add(...S.class.split(" ").filter(Boolean)) : g && O.classList.remove(...g.split(" ").filter(Boolean)));
       }), r(() => {
         if (p) {
           const k = t.$data(e.closest("[x-data]"))?._markerDefsEl?.querySelector("defs");
@@ -13180,6 +13180,7 @@ function hp(t) {
             Y._emit("node-context-menu", { node: y, event: x });
       };
       e.addEventListener("contextmenu", A), requestAnimationFrame(() => {
+        if (!e.isConnected) return;
         const x = o(n);
         if (!x) return;
         const y = t.$data(e.closest("[x-data]"));
