@@ -405,6 +405,23 @@ trait WithWireFlow
         $this->dispatch('flow:resetStates');
     }
 
+    // ── Workflow Addon ───────────────────────────────────────────────────
+
+    /**
+     * Trigger a workflow run via the workflow addon's $flow.run().
+     *
+     * The client-side workflow addon handles traversal, state transitions,
+     * particles, and edge mirroring. Handlers (onEnter, pickBranch, etc.)
+     * must be pre-registered on the canvas via x-init — JS callbacks can't
+     * be serialized from PHP.
+     *
+     * @param  array<string, mixed>  $options  Run options: payload, defaultDurationMs, particleOnEdges, particleOptions, muteUntakenBranches, lock, logLimit
+     */
+    public function flowRun(string $startId, array $options = []): void
+    {
+        $this->dispatch('flow:run', startId: $startId, options: $options);
+    }
+
     // ── Private Helpers ─────────────────────────────────────────────────
 
     /**

@@ -5413,6 +5413,13 @@ function wf(t, e) {
       const r = t.getNode(i);
       r && (r.selected = !0);
     }
+  })), n.push(e.on("flow:run", (o) => {
+    if (typeof t.run != "function") {
+      console.warn("[wire-bridge] flow:run: canvas.run not available — is the workflow addon registered?");
+      return;
+    }
+    const i = t._workflowHandlers ?? {};
+    t.run(o.startId, i, o.options ?? {});
   })), n.push(e.on("flow:selectEdges", (o) => {
     t.deselectAll();
     for (const i of o.ids) {
