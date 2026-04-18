@@ -78,10 +78,10 @@ $this->flowPanBy(100, 0); // Pan 100px right
 
 | Method | Description |
 |--------|-------------|
-| `$this->flowAddNodes(array $nodes)` | Add nodes to the canvas |
-| `$this->flowRemoveNodes(array $ids)` | Remove nodes by ID |
-| `$this->flowAddEdges(array $edges)` | Add edges to the canvas |
-| `$this->flowRemoveEdges(array $ids)` | Remove edges by ID |
+| `$this->flowAddNodes(array $nodes)` | Add nodes to the canvas. Appends to server-side `$this->nodes` and dispatches to client. |
+| `$this->flowRemoveNodes(array $ids)` | Remove nodes from the canvas. Cascade-removes descendants (via parentId) and connected edges from server-side `$this->nodes` / `$this->edges`, then dispatches to client. |
+| `$this->flowAddEdges(array $edges)` | Add edges to the canvas. Appends to server-side `$this->edges` and dispatches to client. |
+| `$this->flowRemoveEdges(array $ids)` | Remove edges by ID. Removes from server-side `$this->edges` and dispatches to client. |
 | `$this->flowClear()` | Remove all nodes and edges |
 | `$this->flowDeselectAll()` | Deselect everything |
 
