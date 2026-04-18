@@ -193,7 +193,6 @@
     user-select: none;
     touch-action: none;
     -webkit-touch-callout: none;
-    text-align: center;
     min-width: var(--flow-node-min-width);
     background: var(--flow-node-bg);
     color: var(--flow-node-color);
@@ -1279,7 +1278,6 @@
     font-size: var(--flow-node-font-size);
     color: var(--flow-ghost-color, var(--flow-node-color));
     min-width: var(--flow-node-min-width);
-    text-align: center;
     transform: translate(-50%, 0);
     box-shadow: var(--flow-node-shadow);
 }
