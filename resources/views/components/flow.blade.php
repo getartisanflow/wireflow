@@ -5,6 +5,7 @@
 <div
     x-data="{!! $xData($hasDefaultSlot) !!}"
     class="flow-container"
+    wire:ignore
     {{ $attributes }}
 >
     {{-- Default node template --}}
