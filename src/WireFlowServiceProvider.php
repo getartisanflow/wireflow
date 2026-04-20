@@ -12,6 +12,7 @@ use ArtisanFlow\WireFlow\View\Components\Handle;
 use ArtisanFlow\WireFlow\View\Components\Loading;
 use ArtisanFlow\WireFlow\View\Components\Panel;
 use ArtisanFlow\WireFlow\View\Components\Resizer;
+use ArtisanFlow\WireFlow\View\Components\SchemaNode;
 use ArtisanFlow\WireFlow\View\Components\Toolbar;
 use ArtisanFlow\WireFlow\View\Components\WireFlow;
 use ArtisanFlow\WireFlow\Console\InstallCommand;
@@ -73,5 +74,6 @@ class WireFlowServiceProvider extends ServiceProvider
         Blade::component('flow-loading', Loading::class);
         Blade::component('flow-edge-toolbar', EdgeToolbar::class);
         Blade::component('flow-condense', Condense::class);
+        Blade::component('flow-schema-node', SchemaNode::class);
     }
 }
