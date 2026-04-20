@@ -1423,6 +1423,19 @@
   flex-direction: column;
 }
 
+/* Override .flow-container .flow-node's default padding so rows span
+   full width. Two cases:
+     1) directive usage — x-flow-node + x-flow-schema on the same element
+        (both classes land together).
+     2) slot usage (WireFlow) — the .flow-node wrapper contains the
+        .flow-schema-node element as a direct child.
+   Without this, rows are inset from the node edge and the per-row
+   handles sit inside the node's drag-catch area instead of on the edge. */
+.flow-node.flow-schema-node,
+.flow-node:has(> .flow-schema-node) {
+  padding: 0;
+}
+
 .flow-schema-header {
   padding: 0.5rem 0.75rem;
   font-weight: 600;
