@@ -367,6 +367,19 @@
     background: var(--flow-handle-invalid-bg) !important;
 }
 
+/* Handles show this while an async connectValidator is awaiting the result.
+   Default is a subtle outward pulse — devs can override the whole rule by
+   targeting `.flow-handle-validating` in their theme, or replace the class
+   name entirely via `validatingHandleClass` on the flowCanvas config. */
+.flow-handle-validating {
+    animation: flow-handle-validating-pulse 700ms ease-in-out infinite;
+}
+
+@keyframes flow-handle-validating-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--flow-handle-bg, #8B5CF6) 50%, transparent); }
+    50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--flow-handle-bg, #8B5CF6) 0%, transparent); }
+}
+
 /* ── Shape-aware handle positions ─────────────────────────────────
    Handles on clipped shapes appear as semicircles at the perimeter.
    All shapes use translate(-50%, -50%) centering on perimeter points. */
