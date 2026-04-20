@@ -8,6 +8,7 @@
 - `flowResetStates()` — clears `runState` from all nodes; auto-syncs server-side `$this->nodes` and dispatches `flow:resetStates`
 - `wireflow:install` now prompts for optional addons (workflow) via interactive multiselect. Non-interactive: `--no-interaction --with=workflow` for CI/AI agents
 - Workflow addon bundle (`alpineflow-workflow.esm.js`) published alongside core — includes parallel branches, execution replay (`$flow.replayExecution()`), auto-skip, auto-reset, `$workflowRun` magic, `particleOptions`, and `.flow-edge-failed` CSS class
+- `<x-flow-schema-node>` Blade component wrapping AlpineFlow's `x-flow-schema` directive. Renders database-schema-style nodes with per-row target/source handles keyed by field name. Supports an optional SSR fallback via `:label` + `:fields` props.
 
 ### Changed
 - `flowAddNodes`, `flowRemoveNodes`, `flowAddEdges`, `flowRemoveEdges` now mutate server-side `$this->nodes` / `$this->edges` automatically, mirroring client-side cascade behavior. `flowRemoveNodes` cascade-removes descendants (via `parentId` chain) and connected edges. Fully backwards-compatible — components without public `$nodes`/`$edges` arrays skip the mutation and just dispatch
