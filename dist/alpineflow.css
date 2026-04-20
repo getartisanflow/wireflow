@@ -1492,3 +1492,26 @@
   right: 0;
   transform: translate(50%, -50%);
 }
+
+/* Mirror handles — opposite-side phantom copies of each row's target/source
+   handles so edges can route to the geometrically closest side. Invisible
+   and non-interactive; only present so getBoundingClientRect returns a
+   measurable position for the edge-geometry picker. */
+.flow-schema-handle--mirror {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Mirror-target sits on the RIGHT (opposite its real target, which is left). */
+.flow-schema-handle--target.flow-schema-handle--mirror {
+  left: auto;
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+/* Mirror-source sits on the LEFT (opposite its real source, which is right). */
+.flow-schema-handle--source.flow-schema-handle--mirror {
+  left: 0;
+  right: auto;
+  transform: translate(-50%, -50%);
+}
