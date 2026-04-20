@@ -62,6 +62,40 @@ public function onConnectEnd(
 }
 ```
 
+## Connection validators
+
+### `@connect-validate`
+
+Runs **before** the edge is committed, unlike `@connect` which fires after. Return `true` to allow, `false` to silently reject, or `['allowed' => false, 'reason' => '...']` to reject with a user-facing toast.
+
+```blade
+<x-flow :nodes="$nodes" :edges="$edges" @connect-validate="canConnect">
+```
+
+```php
+public function canConnect(
+    string $source,
+    string $target,
+    ?string $sourceHandle,
+    ?string $targetHandle,
+): bool|array {
+    if ($source === $target) {
+        return ['allowed' => false, 'reason' => 'Self-connections not supported.'];
+    }
+    return true;
+}
+```
+
+While the Livewire roundtrip is in flight, AlpineFlow adds the CSS class `flow-handle-validating` to the source and target handles. Style it to indicate a pending state — the default theme ships a subtle pulse. Override the class name via `config.validatingHandleClass`.
+
+When the server rejects with a `reason`, WireFlow dispatches a `flux-toast` event (`{ variant: 'warning', text: reason }`). To suppress or customize the toast, listen for the validated DOM event and call `preventDefault()` — AlpineFlow respects it.
+
+Two DOM events fire on the canvas for deeper customization:
+- `flow-connect-validating` — `{ detail: { connection } }` fires on drop.
+- `flow-connect-validated`  — `{ detail: { connection, allowed, reason } }` fires when the server responds.
+
+Attach with `@flow-connect-validating="..."` on the `<x-flow>` element.
+
 ## Node events
 
 ```php
@@ -329,6 +363,7 @@ class PersistentFlow extends Component
 | `connect` | `onConnect` | `string $source, string $target, ?string $sourceHandle, ?string $targetHandle` |
 | `connect-start` | `onConnectStart` | `string $source, ?string $sourceHandle` |
 | `connect-end` | `onConnectEnd` | `?array $connection, ?string $source, ?string $sourceHandle, ?array $position` |
+| `connect-validate` | `canConnect` | `string $source, string $target, ?string $sourceHandle, ?string $targetHandle` → `bool\|array` |
 | `node-click` | `onNodeClick` | `string $nodeId, array $node` |
 | `node-drag-start` | `onNodeDragStart` | `string $nodeId` |
 | `node-drag-end` | `onNodeDragEnd` | `string $nodeId, array $position` |

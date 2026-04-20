@@ -117,6 +117,29 @@ class WireFlow extends Component
         }
 
         $wireEvents = $this->extractWireEvents();
+
+        // `connect-validate` is NOT an ordinary fire-and-forget event — it must
+        // be awaited before the edge commits. Pull it out of wireEvents (so
+        // registerWireEvents doesn't install a dead onConnectValidate callback)
+        // and inject it into config.connectValidator as a raw async JS function
+        // that defers to Livewire.
+        if (isset($wireEvents['connect-validate'])) {
+            $method = $wireEvents['connect-validate'];
+            unset($wireEvents['connect-validate']);
+            $methodLiteral = json_encode($method, JSON_THROW_ON_ERROR);
+            $config['connectValidator'] = new JsRaw(
+                "async (connection) => {\n"
+                ."    const result = await \$wire.call({$methodLiteral}, "
+                ."connection.source, connection.target, "
+                ."connection.sourceHandle ?? null, connection.targetHandle ?? null);\n"
+                ."    if (result && typeof result === 'object' && result.allowed === false && result.reason) {\n"
+                ."        Livewire.dispatch('flux-toast', { variant: 'warning', text: result.reason });\n"
+                ."    }\n"
+                ."    return result;\n"
+                .'}'
+            );
+        }
+
         if (! empty($wireEvents)) {
             $config['wireEvents'] = $wireEvents;
         }
@@ -145,7 +168,7 @@ class WireFlow extends Component
 
     /** Events that WireFlow knows how to bridge to Livewire methods. */
     private const KNOWN_EVENTS = [
-        'connect', 'connect-start', 'connect-end',
+        'connect', 'connect-start', 'connect-end', 'connect-validate',
         'node-click', 'node-drag-start', 'node-drag-end',
         'node-resize-start', 'node-resize-end',
         'node-collapse', 'node-expand', 'node-reparent',
