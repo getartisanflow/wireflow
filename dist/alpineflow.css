@@ -1411,3 +1411,71 @@
         transition: none !important;
     }
 }
+
+/* ----------------------------------------------------------------------------
+   Schema node — structural rules (layout only; colors live in the theme)
+   Rendered by the x-flow-schema directive.
+   ---------------------------------------------------------------------------- */
+
+.flow-schema-node {
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+.flow-schema-header {
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.flow-schema-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.flow-schema-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.flow-schema-row-icon {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.flow-schema-row-name {
+  flex: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.flow-schema-row-type {
+  flex-shrink: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6875rem;
+  padding: 0.0625rem 0.375rem;
+  border-radius: 0.25rem;
+}
+
+/* Handles hang on the row's outer edges. */
+.flow-schema-handle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.flow-schema-handle--target {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.flow-schema-handle--source {
+  right: 0;
+  transform: translate(50%, -50%);
+}
