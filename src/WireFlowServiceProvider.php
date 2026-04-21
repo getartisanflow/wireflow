@@ -12,7 +12,11 @@ use ArtisanFlow\WireFlow\View\Components\Handle;
 use ArtisanFlow\WireFlow\View\Components\Loading;
 use ArtisanFlow\WireFlow\View\Components\Panel;
 use ArtisanFlow\WireFlow\View\Components\Resizer;
+use ArtisanFlow\WireFlow\View\Components\SchemaDesigner;
+use ArtisanFlow\WireFlow\View\Components\SchemaEdgeInspector;
 use ArtisanFlow\WireFlow\View\Components\SchemaNode;
+use ArtisanFlow\WireFlow\View\Components\SchemaNodeInspector;
+use ArtisanFlow\WireFlow\View\Components\SchemaRowInspector;
 use ArtisanFlow\WireFlow\View\Components\Toolbar;
 use ArtisanFlow\WireFlow\View\Components\WireFlow;
 use ArtisanFlow\WireFlow\Console\InstallCommand;
@@ -75,5 +79,9 @@ class WireFlowServiceProvider extends ServiceProvider
         Blade::component('flow-edge-toolbar', EdgeToolbar::class);
         Blade::component('flow-condense', Condense::class);
         Blade::component('flow-schema-node', SchemaNode::class);
+        Blade::component('schema-designer', SchemaDesigner::class);
+        Blade::component('schema-node-inspector', SchemaNodeInspector::class);
+        Blade::component('schema-row-inspector', SchemaRowInspector::class);
+        Blade::component('schema-edge-inspector', SchemaEdgeInspector::class);
     }
 }

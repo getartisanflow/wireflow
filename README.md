@@ -48,11 +48,14 @@ Raw AlpineFlow directives (`x-flow-handle:target.top`, `x-flow-panel`, etc.) als
 ## Features
 
 - **12 Blade components** matching AlpineFlow directives: `<x-flow>`, `<x-flow-handle>`, `<x-flow-panel>`, `<x-flow-toolbar>`, `<x-flow-drag-handle>`, `<x-flow-resizer>`, and more
+- **Schema designer components** — `<x-schema-designer>` preset plus `<x-schema-node-inspector>`, `<x-schema-row-inspector>`, `<x-schema-edge-inspector>` slot-overridable wrappers
 - **`WithWireFlow` trait** for Livewire components with 50+ flow methods
+- **`WithSchemaDesigner` trait** — server-side field CRUD (`addField`, `renameField`, `removeField`, `removeNode`) with automatic edge cascade
+- **Validator rules** — `SchemaFieldName` and `SchemaEdgeShape` for reusable input validation
 - **Three sync modes**: static, entangled (`:sync`), and listen (server-driven)
 - **`WireFlow::js()`** for client-side JavaScript callbacks
-- **Server-side connection validation** via `@connect` events
-- **Bundled AlpineFlow assets** — no npm install required
+- **Server-side connection validation** via `@connect` events and async `@connect-validate` bridge
+- **Bundled AlpineFlow assets** — no npm install required, includes schema + workflow addons
 - **Artisan install command** (`php artisan wireflow:install`)
 - **Publishable configuration** with theme support (default, flux, structural)
 - **Collaboration support** with ReverbProvider

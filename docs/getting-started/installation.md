@@ -127,6 +127,7 @@ document.addEventListener('alpine:init', () => {
 | Tree layout | `@getartisanflow/alpineflow/hierarchy` | `d3-hierarchy` | `$flow.treeLayout()` |
 | ELK layout | `@getartisanflow/alpineflow/elk` | `elkjs` | `$flow.elkLayout()` |
 | Whiteboard | `@getartisanflow/alpineflow/whiteboard` | — | Drawing tools directives |
+| Schema | `@getartisanflow/alpineflow/schema` | — | Field CRUD, edge cascade, and inspector scopes for the [`<x-schema-designer>`](../components/schema-designer.md) preset |
 | Collaboration | `@getartisanflow/alpineflow/collab` | `yjs`, `y-websocket`, `y-protocols` | Real-time sync |
 
 See the [AlpineFlow addon docs](https://artisanflow.dev/docs/alpineflow/addons) for details.
