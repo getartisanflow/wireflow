@@ -136,3 +136,60 @@ it('passes custom classes through to the root wrapper', function () {
     expect($html)->toContain('flow-schema-designer');
     expect($html)->toContain('custom-wrapper');
 });
+
+it('forwards @connect-validate attribute to the inner <x-flow> where it becomes a wireEvent', function () {
+    $html = Blade::render('<x-schema-designer @connect-validate="myValidator" />');
+
+    // The attribute must NOT end up on the outer <div class="flow-schema-designer"> wrapper.
+    // (If it did, the wireflow event bridge would never see it.)
+    expect($html)->not->toMatch('/<div[^>]*flow-schema-designer[^>]*@connect-validate/');
+
+    // It should be consumed by <x-flow>'s extractWireEvents(), which promotes it
+    // into the flowCanvas config as a connectValidator callback that calls
+    // $wire.call('myValidator', ...). So the method name should appear in the
+    // serialized x-data expression.
+    expect($html)->toContain('myValidator');
+    expect($html)->toContain('connectValidator');
+});
+
+it('forwards multiple wire event attributes to the inner <x-flow>', function () {
+    $html = Blade::render('<x-schema-designer @node-click="onClick" @connect="onConnect" />');
+
+    // Outer wrapper must not carry the event attributes.
+    expect($html)->not->toMatch('/<div[^>]*flow-schema-designer[^>]*@node-click/');
+    expect($html)->not->toMatch('/<div[^>]*flow-schema-designer[^>]*@connect=/');
+
+    // <x-flow>'s extractWireEvents bridges them into the wireEvents map,
+    // so both method names appear inside the serialized canvas config.
+    expect($html)->toContain('onClick');
+    expect($html)->toContain('onConnect');
+    expect($html)->toContain('wireEvents');
+});
+
+it('forwards x-on: prefixed event attributes to the inner <x-flow>', function () {
+    $html = Blade::render('<x-schema-designer x-on:node-click="xOnHandler" />');
+
+    expect($html)->not->toMatch('/<div[^>]*flow-schema-designer[^>]*x-on:node-click/');
+    expect($html)->toContain('xOnHandler');
+    expect($html)->toContain('wireEvents');
+});
+
+it('forwards wire: prefixed attributes to the inner <x-flow>', function () {
+    $html = Blade::render('<x-schema-designer wire:key="my-designer-key" />');
+
+    // wire:key should ride along on the inner flow-container, not on the outer wrapper.
+    expect($html)->not->toMatch('/<div[^>]*flow-schema-designer[^>]*wire:key/');
+    expect($html)->toContain('wire:key="my-designer-key"');
+});
+
+it('keeps class, id, data-*, and style on the outer wrapper', function () {
+    $html = Blade::render(
+        '<x-schema-designer class="my-designer" id="designer-1" data-testid="t1" style="color:red" />'
+    );
+
+    // The outer <div class="... flow-schema-designer ..."> should carry each of these.
+    expect($html)->toMatch('/<div[^>]*flow-schema-designer[^>]*my-designer/');
+    expect($html)->toMatch('/<div[^>]*flow-schema-designer[^>]*id="designer-1"/');
+    expect($html)->toMatch('/<div[^>]*flow-schema-designer[^>]*data-testid="t1"/');
+    expect($html)->toMatch('/<div[^>]*flow-schema-designer[^>]*style="color:red/');
+});
