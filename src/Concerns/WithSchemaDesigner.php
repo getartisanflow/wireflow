@@ -2,6 +2,7 @@
 
 namespace ArtisanFlow\WireFlow\Concerns;
 
+use ArtisanFlow\WireFlow\Rules\SchemaFieldName;
 use Illuminate\Support\Facades\Validator;
 
 /**
@@ -27,10 +28,9 @@ trait WithSchemaDesigner
      */
     public function addField(string $nodeId, array $field): array
     {
-        // TODO: switch to SchemaFieldName rule (Task 20)
         $validator = Validator::make(
             ['name' => $field['name'] ?? ''],
-            ['name' => ['required', 'string', 'max:40', 'regex:/^[a-z][a-z0-9_]*$/']],
+            ['name' => [new SchemaFieldName]],
         );
         if ($validator->fails()) {
             return ['applied' => false, 'reason' => 'invalid-name'];
@@ -73,10 +73,9 @@ trait WithSchemaDesigner
             return ['applied' => false, 'reason' => 'unchanged'];
         }
 
-        // TODO: switch to SchemaFieldName rule (Task 20)
         $validator = Validator::make(
             ['name' => $newName],
-            ['name' => ['required', 'string', 'max:40', 'regex:/^[a-z][a-z0-9_]*$/']],
+            ['name' => [new SchemaFieldName]],
         );
         if ($validator->fails()) {
             return ['applied' => false, 'reason' => 'invalid-name'];
