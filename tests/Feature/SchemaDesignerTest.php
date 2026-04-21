@@ -193,3 +193,60 @@ it('keeps class, id, data-*, and style on the outer wrapper', function () {
     expect($html)->toMatch('/<div[^>]*flow-schema-designer[^>]*data-testid="t1"/');
     expect($html)->toMatch('/<div[^>]*flow-schema-designer[^>]*style="color:red/');
 });
+
+// ───────────────────────────────────────────────────────────────────────────
+// Full <x-flow> prop forwarding (drop-in parity)
+// ───────────────────────────────────────────────────────────────────────────
+
+it('forwards :controls to the inner flow', function () {
+    $html = Blade::render('<x-schema-designer :controls="true" />');
+    // <x-flow> emits `"controls":true` inside its x-data config (using
+    // Illuminate\Support\Js which escapes `"` to `\u0022`).
+    expect($html)->toMatch('/\\\\u0022controls\\\\u0022\s*:\s*true/');
+});
+
+it('forwards :fit-view-on-init to the inner flow', function () {
+    $html = Blade::render('<x-schema-designer :fit-view-on-init="true" />');
+    expect($html)->toMatch('/\\\\u0022fitViewOnInit\\\\u0022\s*:\s*true/');
+});
+
+it('forwards :background-gap to the inner flow', function () {
+    $html = Blade::render('<x-schema-designer :background-gap="40" />');
+    expect($html)->toMatch('/\\\\u0022backgroundGap\\\\u0022\s*:\s*40/');
+});
+
+it('forwards :minimap to the inner flow', function () {
+    $html = Blade::render('<x-schema-designer :minimap="true" />');
+    expect($html)->toMatch('/\\\\u0022minimap\\\\u0022\s*:\s*true/');
+});
+
+it('forwards :prevent-cycles to the inner flow', function () {
+    $html = Blade::render('<x-schema-designer :prevent-cycles="true" />');
+    expect($html)->toMatch('/\\\\u0022preventCycles\\\\u0022\s*:\s*true/');
+});
+
+it('forwards the node slot to the inner flow', function () {
+    $html = Blade::render(<<<'BLADE'
+        <x-schema-designer>
+            <x-slot:node>
+                <div class="custom-node">NODE TEMPLATE</div>
+            </x-slot:node>
+        </x-schema-designer>
+    BLADE);
+    // The preset should stamp the node slot into flow.blade.php's default-node <template>
+    expect($html)->toContain('custom-node');
+    expect($html)->toContain('NODE TEMPLATE');
+    expect($html)->toContain('id="wireflow-node-default"');
+});
+
+it('caller-provided config overrides preset defaults', function () {
+    $html = Blade::render("<x-schema-designer :config=\"['keyboardConnect' => false]\" />");
+    expect($html)->toMatch('/\\\\u0022keyboardConnect\\\\u0022\s*:\s*false/');
+});
+
+it('schema-specific defaults still apply when no overrides', function () {
+    $html = Blade::render('<x-schema-designer />');
+    expect($html)->toMatch('/\\\\u0022keyboardConnect\\\\u0022\s*:\s*true/');
+    // defaultEdgeType = 'avoidant' — should appear in the config
+    expect($html)->toMatch('/\\\\u0022defaultEdgeType\\\\u0022\s*:\s*\\\\u0022avoidant\\\\u0022/');
+});

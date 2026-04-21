@@ -1,12 +1,16 @@
 @php
-    $presetConfig = [
+    // Merge preset-specific config contributions with user-provided config.
+    // User-supplied keys WIN on collisions — so consumers can still disable
+    // keyboardConnect or tweak collapseBidirectionalEdges via :config.
+    $presetConfig = array_merge([
         'keyboardConnect' => $keyboardConnect,
         'collapseBidirectionalEdges' => $collapseBidirectionalEdges,
-    ];
+    ], $config);
 
     $hasNodeInspector = isset($nodeInspector) && $nodeInspector->isNotEmpty();
     $hasRowInspector = isset($rowInspector) && $rowInspector->isNotEmpty();
     $hasEdgeInspector = isset($edgeInspector) && $edgeInspector->isNotEmpty();
+    $hasNodeSlot = isset($node) && $node->isNotEmpty();
 
     // Partition attributes: wire event bindings (@event, x-on:event, wire:*)
     // must reach the inner <x-flow> so its extractWireEvents() can bridge
@@ -31,10 +35,38 @@
     <x-flow
         :nodes="$nodes"
         :edges="$edges"
+        :viewport="$viewport"
+        :sync="$sync"
+        :listen="$listen"
+        :background="$background"
+        :minimap="$minimap"
+        :controls="$controls"
+        :pannable="$pannable"
+        :zoomable="$zoomable"
+        :fit-view="$fitView"
+        :snap="$snap"
         :default-edge-type="$defaultEdgeType"
+        :edges-reconnectable="$edgesReconnectable"
+        :interactive="$interactive"
+        :node-types="$nodeTypes"
         :config="$presetConfig"
+        :min-zoom="$minZoom"
+        :max-zoom="$maxZoom"
+        :prevent-cycles="$preventCycles"
+        :color-mode="$colorMode"
+        :selection-on-drag="$selectionOnDrag"
+        :compute-mode="$computeMode"
+        :fit-view-on-init="$fitViewOnInit"
+        :history="$history"
+        :auto-layout="$autoLayout"
+        :background-gap="$backgroundGap"
+        :wire-ignore="$wireIgnore"
         {{ $attributes }}
     >
+        @if($hasNodeSlot)
+            <x-slot:node>{{ $node }}</x-slot:node>
+        @endif
+
         {{ $slot }}
 
         {{-- Inspector aside lives INSIDE flow-container so it inherits the canvas x-data scope. --}}
