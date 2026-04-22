@@ -53,6 +53,7 @@ class SchemaDesigner extends Component
         public ?array $autoLayout = null,
         public ?int $backgroundGap = null,
         public bool $wireIgnore = true,
+        public mixed $fullscreenTarget = null,
         // Schema-specific additions merged into $config
         public bool $keyboardConnect = true,
         public bool $collapseBidirectionalEdges = false,

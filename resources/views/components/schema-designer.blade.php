@@ -61,6 +61,7 @@
         :auto-layout="$autoLayout"
         :background-gap="$backgroundGap"
         :wire-ignore="$wireIgnore"
+        :fullscreen-target="$fullscreenTarget"
         {{ $attributes }}
     >
         @if($hasNodeSlot)

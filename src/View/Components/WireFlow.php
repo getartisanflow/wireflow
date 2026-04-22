@@ -37,6 +37,7 @@ class WireFlow extends Component
         public ?array $autoLayout = null,
         public ?int $backgroundGap = null,
         public bool $wireIgnore = true,
+        public mixed $fullscreenTarget = null,
     ) {}
 
     /**
@@ -72,6 +73,7 @@ class WireFlow extends Component
             'history' => $this->history ?: null,
             'autoLayout' => $this->autoLayout,
             'backgroundGap' => $this->backgroundGap,
+            'fullscreenTarget' => $this->fullscreenTarget,
         ], fn ($v) => $v !== null);
 
         if ($this->listen || ! $this->interactive) {

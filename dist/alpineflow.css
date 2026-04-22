@@ -5,7 +5,7 @@
    ================================================================ */
 
 /* ── Variable declarations ──────────────────────────────────────── */
-.flow-container {
+:where(.flow-container) {
     /* Container */
     --flow-container-height: 400px;
     --flow-bg-color: transparent;
@@ -149,7 +149,7 @@
 }
 
 /* ── Container & viewport ───────────────────────────────────────── */
-.flow-container {
+:where(.flow-container) {
     direction: ltr;
     position: relative;
     overflow: hidden;
