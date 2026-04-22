@@ -34,6 +34,18 @@ Schema companion — Blade wrappers + trait for the alpineflow schema addon.
 - `docs/traits/with-schema-designer.md` — trait method reference, reason values, validator rule quick reference
 - Installation guide updated with schema addon entry
 
+---
+
+Polish — flow component + schema-designer preset.
+
+### Added
+- **`fullscreenTarget` prop on `<x-flow>` and `<x-schema-designer>`** — forwards to alpineflow's new canvas config. Accepts a CSS selector string, or use `WireFlow::js('...')` to pass an HTMLElement resolver function. (`d072451`)
+- **`<x-schema-designer>` forwards every `<x-flow>` prop + `$node` slot** — the preset now exposes all 25 `<x-flow>` constructor props plus two schema-specific additions (`keyboardConnect`, `collapseBidirectionalEdges`) and overrides `defaultEdgeType` default to `'avoidant'`. The `$node` named slot is forwarded into `<x-flow>`'s node template. Previously only 5 props were exposed, making the preset unusable for rich integrations. (`159068d`)
+- **Wire event attribute forwarding on `<x-schema-designer>`** — attributes like `@connect-validate`, `@node-click`, `wire:*`, `x-on:*` on the preset now forward to the inner `<x-flow>` (where the wireflow event bridge lives). HTML attrs like `class` / `id` / `data-*` / `style` stay on the outer wrapper. (`3d5e8d1`)
+
+### Fixed
+- **`<x-flow>` class attribute merging** — template now uses `{{ $attributes->class(['flow-container']) }}` instead of a static `class="flow-container"` followed by `{{ $attributes }}`. Consumer `class="h-full w-full"` passes now correctly merge with `flow-container` instead of being silently dropped due to duplicate `class=` attributes. (`cd68d31`)
+
 ## v0.1.2-alpha — 2026-04-03
 
 ### Fixed
