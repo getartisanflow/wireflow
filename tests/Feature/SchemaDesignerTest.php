@@ -250,3 +250,27 @@ it('schema-specific defaults still apply when no overrides', function () {
     // defaultEdgeType = 'avoidant' — should appear in the config
     expect($html)->toMatch('/\\\\u0022defaultEdgeType\\\\u0022\s*:\s*\\\\u0022avoidant\\\\u0022/');
 });
+
+// ───────────────────────────────────────────────────────────────────────────
+// containerHeight forwarding
+// ───────────────────────────────────────────────────────────────────────────
+
+it('forwards :container-height to the inner flow as "fill"', function () {
+    $html = Blade::render('<x-schema-designer container-height="fill" />');
+    expect($html)->toMatch('/\\\\u0022containerHeight\\\\u0022\s*:\s*\\\\u0022fill\\\\u0022/');
+});
+
+it('forwards :container-height as number', function () {
+    $html = Blade::render('<x-schema-designer :container-height="600" />');
+    expect($html)->toMatch('/\\\\u0022containerHeight\\\\u0022\s*:\s*600/');
+});
+
+it('forwards :container-height as custom string', function () {
+    $html = Blade::render('<x-schema-designer container-height="80vh" />');
+    expect($html)->toMatch('/\\\\u0022containerHeight\\\\u0022\s*:\s*\\\\u002280vh\\\\u0022/');
+});
+
+it('omits containerHeight from config when prop is unset (default)', function () {
+    $html = Blade::render('<x-schema-designer />');
+    expect($html)->not->toMatch('/\\\\u0022containerHeight\\\\u0022/');
+});

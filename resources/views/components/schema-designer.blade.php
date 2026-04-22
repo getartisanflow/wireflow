@@ -62,6 +62,7 @@
         :background-gap="$backgroundGap"
         :wire-ignore="$wireIgnore"
         :fullscreen-target="$fullscreenTarget"
+        :container-height="$containerHeight"
         {{ $attributes }}
     >
         @if($hasNodeSlot)
