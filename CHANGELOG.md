@@ -54,6 +54,13 @@ Schema addon Phase A+B companion.
 - **`<x-schema-field>` Blade primitive** — composable row component for consumers writing custom `<x-slot:node>` templates. Renders a `.flow-schema-row` with target/source handles, mirror handles, row-select wiring, and PK/FK/required class bindings via Alpine `:class`. Reads `node` + `field` from the surrounding Alpine scope. Consumer-supplied slot content replaces the default body (icon/name/type) while handles always stamp. (`aafab49`)
 - **Dist resync** — bundled `alpineflow.bundle.esm.js` and `alpineflow-schema.esm.js` now include all Phase A+B surface (`validateSchema`, `diffSchemas`, `toDot`, `schemaLayout`, `attachSchemaHistory`, `rowsReorderable`, keyboard field navigation).
 
+---
+
+Follow-up fixes — containerHeight prop.
+
+### Added
+- **`containerHeight` prop on `<x-flow>` and `<x-schema-designer>`** — forwards to alpineflow's new canvas config. Accepts `'auto'`, `'fill'`, a number, or a CSS length string. Useful when the canvas is nested in a layout that drives its own height (flex row, dashboard panel, fullscreen wrapper). (`7747b71`)
+
 ## v0.1.2-alpha — 2026-04-03
 
 ### Fixed
