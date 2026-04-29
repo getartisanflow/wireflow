@@ -61,6 +61,21 @@ Follow-up fixes — containerHeight prop.
 ### Added
 - **`containerHeight` prop on `<x-flow>` and `<x-schema-designer>`** — forwards to alpineflow's new canvas config. Accepts `'auto'`, `'fill'`, a number, or a CSS length string. Useful when the canvas is nested in a layout that drives its own height (flex row, dashboard panel, fullscreen wrapper). (`7747b71`)
 
+---
+
+Workflow addon foundations — `<x-flow-wait>` Blade primitive + docs reorg.
+
+### Added
+- **`<x-flow-wait>` Blade component** — wraps AlpineFlow's `x-flow-wait` directive. Renders a wait node (header + formatted duration + top/bottom handles) inside `<x-flow>` slots, with an optional SSR fallback when `:label` and `:duration-ms` are passed for standalone previews. Includes a static `FlowWait::formatDuration(int $ms)` helper that mirrors the JS formatter. Registered as `<x-flow-wait>` in the service provider.
+- `docs/addons/schema.md` — consolidated WireFlow schema-addon page cross-linking components, trait, validators, and the wire bridge.
+- `docs/addons/workflow.md` — consolidated WireFlow workflow-addon page covering install, components, server trait methods, wire bridge events, `validateWorkflow()` reference, and a quick-start.
+- `docs/components/flow-wait.md` — component reference for `<x-flow-wait>`.
+
+### Changed
+- `docs/addons/_index.md` lists schema + workflow alongside the existing addons.
+- `docs/components/_index.md` groups components by area (core / schema / workflow) and includes the new `<x-flow-wait>` entry.
+- **Dist resync** — bundled `alpineflow.bundle.esm.js`, `alpineflow-workflow.esm.js`, `alpineflow.css`, and `alpineflow-theme.css` now include `validateWorkflow()`, the `x-flow-wait` directive, and the `.flow-wait-node` CSS.
+
 ## v0.1.2-alpha — 2026-04-03
 
 ### Fixed
