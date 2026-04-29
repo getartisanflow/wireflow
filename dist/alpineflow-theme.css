@@ -605,3 +605,29 @@
   color: var(--flow-red, #ef4444);
   margin-left: 0.25rem;
 }
+
+/* ----------------------------------------------------------------------------
+   Wait node — default theme (colors, borders, decorations)
+   Reuses existing tokens — no new CSS variables introduced.
+   ---------------------------------------------------------------------------- */
+
+.flow-wait-node {
+  background: var(--flow-node-bg, #1a1c23);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  border-radius: var(--flow-node-radius, 0.5rem);
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-wait-header {
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-wait-icon {
+  color: var(--flow-text-muted, #9598a5);
+}
+
+.flow-wait-duration {
+  background: var(--flow-surface, #0e1015);
+  color: var(--flow-text-faint, #6b6e7d);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+}
