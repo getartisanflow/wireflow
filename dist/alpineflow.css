@@ -5,7 +5,7 @@
    ================================================================ */
 
 /* ── Variable declarations ──────────────────────────────────────── */
-.flow-container {
+:where(.flow-container) {
     /* Container */
     --flow-container-height: 400px;
     --flow-bg-color: transparent;
@@ -149,7 +149,7 @@
 }
 
 /* ── Container & viewport ───────────────────────────────────────── */
-.flow-container {
+:where(.flow-container) {
     direction: ltr;
     position: relative;
     overflow: hidden;
@@ -172,6 +172,15 @@
    The .flow-ready class is added by flowCanvas after init completes. */
 .flow-container[data-fit-view]:not(.flow-ready) .flow-viewport {
     opacity: 0;
+}
+
+/* Fullscreen: let the canvas fill the viewport when the user toggles
+   the fullscreen control. :fullscreen matches whichever element the
+   browser made fullscreen. */
+.flow-container:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    background: var(--flow-bg-color);
 }
 
 /* ── Nodes ───────────────────────────────────────────────────────── */
@@ -365,6 +374,42 @@
 /* Invalid handle override — shown when validation rejects the connection */
 .flow-handle-invalid.flow-handle-active {
     background: var(--flow-handle-invalid-bg) !important;
+}
+
+/* Handles show this while an async connectValidator is awaiting the result.
+   Default is a subtle outward pulse — devs can override the whole rule by
+   targeting `.flow-handle-validating` in their theme, or replace the class
+   name entirely via `validatingHandleClass` on the flowCanvas config. */
+.flow-handle-validating {
+    animation: flow-handle-validating-pulse 700ms ease-in-out infinite;
+}
+
+@keyframes flow-handle-validating-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--flow-handle-bg, #8B5CF6) 50%, transparent); }
+    50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--flow-handle-bg, #8B5CF6) 0%, transparent); }
+}
+
+/* Keyboard drag-to-connect (a11y): source handle is "armed" — user pressed
+   Enter/Space and we're waiting for them to focus a target and press Enter
+   again. Visual-only; theme can override. */
+.flow-handle-connect-pending {
+    outline: 2px solid currentColor;
+    outline-offset: 2px;
+}
+
+/* Drag line (temporary SVG rendered from source handle to pointer) shows this
+   while an async connectValidator is awaiting. The marching-ants dash gives a
+   visual "pending" affordance on the line itself so a dropped-but-not-yet-
+   validated connection doesn't look frozen.
+   Targets both the parent SVG (.flow-connect-line) and its inner <path> since
+   the path sets its own stroke-dasharray attribute on create. */
+.flow-connect-line--validating,
+.flow-connect-line--validating > path {
+    stroke-dasharray: 6 4;
+    animation: flow-connect-line-validating 0.6s linear infinite;
+}
+@keyframes flow-connect-line-validating {
+    to { stroke-dashoffset: -10; }
 }
 
 /* ── Shape-aware handle positions ─────────────────────────────────
@@ -1410,4 +1455,168 @@
     .flow-viewport {
         transition: none !important;
     }
+}
+
+/* ----------------------------------------------------------------------------
+   Schema node — structural rules (layout only; colors live in the theme)
+   Rendered by the x-flow-schema directive.
+   ---------------------------------------------------------------------------- */
+
+.flow-schema-node {
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Override .flow-container .flow-node's default padding so rows span
+   full width. Two cases:
+     1) directive usage — x-flow-node + x-flow-schema on the same element
+        (both classes land together).
+     2) slot usage (WireFlow) — the .flow-node wrapper contains the
+        .flow-schema-node element as a direct child.
+   Without this, rows are inset from the node edge and the per-row
+   handles sit inside the node's drag-catch area instead of on the edge. */
+.flow-node.flow-schema-node,
+.flow-node:has(> .flow-schema-node) {
+  padding: 0;
+}
+
+.flow-schema-header {
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.flow-schema-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.flow-schema-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem 0.75rem;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.flow-schema-row-icon {
+  flex-shrink: 0;
+  font-size: 0.75rem;
+  line-height: 1;
+}
+
+.flow-schema-row-name {
+  flex: 1;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.flow-schema-row-type {
+  flex-shrink: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6875rem;
+  padding: 0.0625rem 0.375rem;
+  border-radius: 0.25rem;
+}
+
+/* Handles hang on the row's outer edges. */
+.flow-schema-handle {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.flow-schema-handle--target {
+  left: 0;
+  transform: translate(-50%, -50%);
+}
+
+.flow-schema-handle--source {
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+/* Mirror handles — opposite-side phantom copies of each row's target/source
+   handles so edges can route to the geometrically closest side. Invisible
+   and non-interactive; only present so getBoundingClientRect returns a
+   measurable position for the edge-geometry picker. */
+.flow-schema-handle--mirror {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* Mirror-target sits on the RIGHT (opposite its real target, which is left). */
+.flow-schema-handle--target.flow-schema-handle--mirror {
+  left: auto;
+  right: 0;
+  transform: translate(50%, -50%);
+}
+
+/* Mirror-source sits on the LEFT (opposite its real source, which is right). */
+.flow-schema-handle--source.flow-schema-handle--mirror {
+  left: 0;
+  right: auto;
+  transform: translate(-50%, -50%);
+}
+
+/* ----------------------------------------------------------------------------
+   Wait node — structural rules (layout only; colors live in the theme)
+   Rendered by the x-flow-wait directive.
+   ---------------------------------------------------------------------------- */
+
+.flow-wait-node {
+  min-width: 140px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.flow-node.flow-wait-node,
+.flow-node:has(> .flow-wait-node) {
+  padding: 0;
+}
+
+.flow-wait-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem;
+}
+
+.flow-wait-icon {
+  flex-shrink: 0;
+  font-size: 0.875rem;
+  line-height: 1;
+}
+
+.flow-wait-label {
+  flex: 1;
+  font-weight: 600;
+}
+
+.flow-wait-duration {
+  flex-shrink: 0;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6875rem;
+  padding: 0.0625rem 0.375rem;
+  border-radius: 0.25rem;
+}
+
+/* Handles anchored to the top + bottom edges of the node. */
+.flow-wait-handle {
+  position: absolute;
+  left: 50%;
+}
+
+.flow-wait-handle--target {
+  top: 0;
+  transform: translate(-50%, -50%);
+}
+
+.flow-wait-handle--source {
+  bottom: 0;
+  transform: translate(-50%, 50%);
 }

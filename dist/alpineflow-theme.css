@@ -536,3 +536,98 @@
     stroke: #8b5cf6;
     stroke-width: 2.5;
 }
+
+/* ----------------------------------------------------------------------------
+   Schema node — default theme (colors, borders, decorations)
+   ---------------------------------------------------------------------------- */
+
+.flow-schema-node {
+  background: var(--flow-node-bg, #1a1c23);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  border-radius: var(--flow-node-radius, 0.5rem);
+  color: var(--flow-text-body, #e4e5ea);
+  overflow: hidden;
+}
+
+.flow-schema-header {
+  background: var(--flow-surface-alt, #23252e);
+  border-bottom: 1px solid var(--flow-border-subtle, #2d3039);
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-schema-row {
+  border-bottom: 1px solid var(--flow-border-subtle, #2d3039);
+  color: var(--flow-text-muted, #9598a5);
+}
+
+.flow-schema-row:last-child {
+  border-bottom: none;
+}
+
+.flow-schema-row-name {
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-schema-row-type {
+  background: var(--flow-surface, #0e1015);
+  color: var(--flow-text-faint, #6b6e7d);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+}
+
+/* PK / FK / required decorations — pseudo-elements so the DOM structure
+   stays minimal. */
+.flow-schema-row--pk .flow-schema-row-name::before {
+  content: 'PK';
+  display: inline-block;
+  margin-right: 0.375rem;
+  padding: 0 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--flow-amber, #DAA532);
+  background: color-mix(in srgb, var(--flow-amber, #DAA532) 12%, transparent);
+  border-radius: 0.1875rem;
+}
+
+.flow-schema-row--fk .flow-schema-row-name::before {
+  content: 'FK';
+  display: inline-block;
+  margin-right: 0.375rem;
+  padding: 0 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--flow-violet, #8B5CF6);
+  background: color-mix(in srgb, var(--flow-violet, #8B5CF6) 12%, transparent);
+  border-radius: 0.1875rem;
+}
+
+.flow-schema-row--required .flow-schema-row-name::after {
+  content: '*';
+  color: var(--flow-red, #ef4444);
+  margin-left: 0.25rem;
+}
+
+/* ----------------------------------------------------------------------------
+   Wait node — default theme (colors, borders, decorations)
+   Reuses existing tokens — no new CSS variables introduced.
+   ---------------------------------------------------------------------------- */
+
+.flow-wait-node {
+  background: var(--flow-node-bg, #1a1c23);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  border-radius: var(--flow-node-radius, 0.5rem);
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-wait-header {
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-wait-icon {
+  color: var(--flow-text-muted, #9598a5);
+}
+
+.flow-wait-duration {
+  background: var(--flow-surface, #0e1015);
+  color: var(--flow-text-faint, #6b6e7d);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+}
