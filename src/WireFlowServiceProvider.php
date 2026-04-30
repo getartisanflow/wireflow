@@ -9,6 +9,7 @@ use ArtisanFlow\WireFlow\View\Components\Condense;
 use ArtisanFlow\WireFlow\View\Components\ContextMenu;
 use ArtisanFlow\WireFlow\View\Components\DragHandle;
 use ArtisanFlow\WireFlow\View\Components\EdgeToolbar;
+use ArtisanFlow\WireFlow\View\Components\FlowConditionNode;
 use ArtisanFlow\WireFlow\View\Components\FlowWait;
 use ArtisanFlow\WireFlow\View\Components\Handle;
 use ArtisanFlow\WireFlow\View\Components\Loading;
@@ -81,6 +82,7 @@ class WireFlowServiceProvider extends ServiceProvider
         Blade::component('flow-edge-toolbar', EdgeToolbar::class);
         Blade::component('flow-condense', Condense::class);
         Blade::component('flow-wait', FlowWait::class);
+        Blade::component('flow-condition-node', FlowConditionNode::class);
         Blade::component('flow-schema-node', SchemaNode::class);
         Blade::component('schema-field', SchemaField::class);
         Blade::component('schema-designer', SchemaDesigner::class);
