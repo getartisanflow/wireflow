@@ -39,3 +39,9 @@ Blade components that render canvas building blocks. Most are thin wrappers arou
 | Component | Purpose |
 |-----------|---------|
 | [`<x-flow-wait>`](flow-wait.md) | Wait-node template (formatted duration + top/bottom handles). |
+| [`<x-flow-condition-node>`](flow-condition-node.md) | Condition-node template — header + pretty-printed body + true/false handles + branch-taken decoration. |
+| [`<x-flow-replay-controls>`](flow-replay-controls.md) | Duck-typed playback toolbar — Play/Pause/Restart/Speed plus capability-detected scrubber or progress bar. |
+| [`<x-flow-execution-log>`](flow-execution-log.md) | Dense reactive event viewer — filterable, click-to-highlight, XSS-safe. |
+| [`<x-flow-run-button>`](flow-run-button.md) | Workflow run trigger — auto-disables during runs. |
+| [`<x-flow-stop-button>`](flow-stop-button.md) | Halt the active run; hidden when idle by default. |
+| [`<x-flow-reset-button>`](flow-reset-button.md) | Clear node runState and the execution log. |

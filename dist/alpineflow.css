@@ -1620,3 +1620,252 @@
   bottom: 0;
   transform: translate(-50%, 50%);
 }
+
+/* ----------------------------------------------------------------------------
+   Condition node — structural rules (layout only; colors live in the theme)
+   Rendered by the x-flow-condition directive.
+   ---------------------------------------------------------------------------- */
+
+.flow-condition-node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+.flow-node.flow-condition-node,
+.flow-node:has(> .flow-condition-node) {
+  padding: 0;
+}
+
+.flow-condition-header {
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.8125rem;
+}
+
+.flow-condition-body {
+  padding: 0.5rem 0.75rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+}
+
+/* Handles — positions vary by direction. Default horizontal:
+   target left, true on right at 35%, false on right at 75%. */
+.flow-condition-handle-target,
+.flow-condition-handle-source {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.flow-condition-node[data-flow-condition-direction="horizontal"] .flow-condition-handle-target {
+  left: 0;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.flow-condition-node[data-flow-condition-direction="horizontal"] .flow-condition-handle--true {
+  right: 0;
+  top: 35%;
+  transform: translate(50%, -50%);
+}
+
+.flow-condition-node[data-flow-condition-direction="horizontal"] .flow-condition-handle--false {
+  right: 0;
+  top: 75%;
+  transform: translate(50%, -50%);
+}
+
+.flow-condition-node[data-flow-condition-direction="vertical"] .flow-condition-handle-target {
+  left: 50%;
+  top: 0;
+  transform: translate(-50%, -50%);
+}
+
+.flow-condition-node[data-flow-condition-direction="vertical"] .flow-condition-handle--true {
+  left: 30%;
+  bottom: 0;
+  transform: translate(-50%, 50%);
+}
+
+.flow-condition-node[data-flow-condition-direction="vertical"] .flow-condition-handle--false {
+  left: 70%;
+  bottom: 0;
+  transform: translate(-50%, 50%);
+}
+
+/* ----------------------------------------------------------------------------
+   Replay controls — structural rules (layout only; colors live in the theme)
+   Rendered by the <x-flow-replay-controls> component (Alpine factory
+   `flowReplayControls`).
+   ---------------------------------------------------------------------------- */
+
+.flow-replay-controls {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 8px;
+  border-radius: 8px;
+}
+
+.flow-replay-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 5px;
+  cursor: pointer;
+  font: inherit;
+}
+
+.flow-replay-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.flow-replay-progress-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.flow-replay-progress {
+  width: 200px;
+  height: 4px;
+  border-radius: 2px;
+  position: relative;
+  overflow: hidden;
+}
+
+.flow-replay-progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 2px;
+}
+
+.flow-replay-scrubber {
+  width: 200px;
+  height: 6px;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+}
+
+.flow-replay-scrubber-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  border-radius: 3px;
+}
+
+.flow-replay-scrubber-thumb {
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.flow-replay-time {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  min-width: 70px;
+  text-align: center;
+}
+
+.flow-replay-speed {
+  height: 24px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 11px;
+}
+
+/* ----------------------------------------------------------------------------
+   Execution log — structural rules (layout only; colors live in the theme)
+   Rendered by the <x-flow-execution-log> component (Alpine factory
+   `flowExecutionLog`).
+   ---------------------------------------------------------------------------- */
+
+.flow-execution-log {
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.flow-execution-log-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+}
+
+.flow-execution-log-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 4px 0;
+}
+
+.flow-execution-log-row {
+  display: block;
+}
+
+.flow-execution-log-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.flow-execution-log-row-default {
+  display: grid;
+  grid-template-columns: 56px 16px 1fr;
+  gap: 8px;
+  padding: 4px 12px;
+  font-size: 11px;
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.flow-execution-log-empty {
+  padding: 24px 16px;
+  text-align: center;
+  font-size: 12px;
+}
+
+/* ----------------------------------------------------------------------------
+   Run / Stop / Reset trio — structural rules.
+   ---------------------------------------------------------------------------- */
+
+.flow-run-button,
+.flow-stop-button,
+.flow-reset-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 32px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 13px;
+}
+
+.flow-run-button:disabled,
+.flow-stop-button:disabled,
+.flow-reset-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.flow-run-button-label--running {
+  font-style: italic;
+}
