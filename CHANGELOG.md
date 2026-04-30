@@ -76,6 +76,25 @@ Workflow addon foundations — `<x-flow-wait>` Blade primitive + docs reorg.
 - `docs/components/_index.md` groups components by area (core / schema / workflow) and includes the new `<x-flow-wait>` entry.
 - **Dist resync** — bundled `alpineflow.bundle.esm.js`, `alpineflow-workflow.esm.js`, `alpineflow.css`, and `alpineflow-theme.css` now include `validateWorkflow()`, the `x-flow-wait` directive, and the `.flow-wait-node` CSS.
 
+---
+
+Workflow addon UI primitives — condition node + replay controls + execution log + run/stop/reset trio.
+
+### Added
+- `<x-flow-condition-node>` Blade wrapper — emits `x-flow-condition` directive with optional SSR fallback when `:label` / `:condition` / `:direction` / `:evaluate-label` are passed. Static `FlowConditionNode::prettyPrintCondition()` helper mirrors the JS pretty-printer so SSR matches runtime output.
+- `<x-flow-replay-controls>` — duck-typed playback toolbar around the addon's replay handles. Auto-binds to `$flow.lastReplayHandle` or lazy-builds `$flow.replayExecution($flow.executionLog)`. Renders Play/Pause/Restart/Speed always; adds an interactive scrubber + time when the handle exposes `scrubTo`/`currentTime`/`duration`, otherwise a non-interactive progress bar derived from log timestamps. Props: `:handle`, `:target`, `:speeds` (default `[0.5, 1, 2, 4]`).
+- `<x-flow-execution-log>` — dense reactive event viewer. Filter dropdown (`all` / `errors` / `lifecycle`), auto-scroll-while-running with manual override, click-to-highlight via `flow:highlight-node` CustomEvent dispatch. **XSS-safe by construction**: structured per-type templates render every dynamic field via `x-text` on a discrete element. Test asserts no `x-html` in output. Props: `:source`, `:target`, `:filter`, `:max-events` (default 500).
+- `<x-flow-run-button>`, `<x-flow-stop-button>`, `<x-flow-reset-button>` — workflow control trio. All accept `:target` for page-level placement; run-button reads handlers from canvas `$el.runHandlers` (overrideable via `:handlers-key`). Run-button auto-disables during runs. Stop-button hidden by default when idle (override via `:always-visible`). Reset-button always enabled.
+- All six new components support both in-canvas (panel slot) and page-level (`:target`) placement, mirroring the schema-inspector pattern.
+
+### Docs
+- New pages under `docs/components/` for each of the six components.
+- `docs/components/_index.md` updated to list the six new components under the Workflow addon group.
+- `docs/addons/workflow.md` extended with cross-links to each component.
+
+### Changed
+- Dist resync with alpineflow workflow-addon UI primitives — bundles `x-flow-condition` directive registration, the five Alpine.data factories, and the matching CSS.
+
 ## v0.1.2-alpha — 2026-04-03
 
 ### Fixed
