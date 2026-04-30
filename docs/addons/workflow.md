@@ -36,8 +36,12 @@ Once registered, every `<x-flow>` canvas gains the run/replay surface (`$flow.ru
 | Component | Purpose |
 | --- | --- |
 | [`<x-flow-wait>`](../components/flow-wait.md) | Wait-node template — header (icon + label + formatted duration) plus top/bottom handles. |
-
-More UI primitives — replay controls, execution-log viewer, condition node, run/stop/reset buttons — are tracked under the next plan.
+| [`<x-flow-condition-node>`](../components/flow-condition-node.md) | Condition-node template — header + pretty-printed body + true/false handles + branch-taken decoration. |
+| [`<x-flow-replay-controls>`](../components/flow-replay-controls.md) | Duck-typed playback toolbar (Play/Pause/Restart/Speed + scrubber/progress). |
+| [`<x-flow-execution-log>`](../components/flow-execution-log.md) | Dense reactive event viewer — filterable, click-to-highlight, XSS-safe. |
+| [`<x-flow-run-button>`](../components/flow-run-button.md) | Workflow run trigger that auto-disables during runs. |
+| [`<x-flow-stop-button>`](../components/flow-stop-button.md) | Halts an active run; hidden when idle by default. |
+| [`<x-flow-reset-button>`](../components/flow-reset-button.md) | Clears node runState and the execution log. |
 
 ## Server-side trait methods
 
