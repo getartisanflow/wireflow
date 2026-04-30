@@ -2,305 +2,305 @@ const S = "__alpineflow_registry__";
 function H() {
   return typeof globalThis < "u" ? (globalThis[S] || (globalThis[S] = /* @__PURE__ */ new Map()), globalThis[S]) : /* @__PURE__ */ new Map();
 }
-function M(e, o) {
-  H().set(e, o);
+function v(e, d) {
+  H().set(e, d);
 }
-function N(e, o) {
-  return o.split(".").reduce((n, t) => n?.[t], e);
+function N(e, d) {
+  return d.split(".").reduce((a, n) => a?.[n], e);
 }
-function C(e, o) {
-  const n = N(o, e.field);
+function M(e, d) {
+  const a = N(d, e.field);
   switch (e.op) {
     case "equals":
-      return n === e.value;
+      return a === e.value;
     case "notEquals":
-      return n !== e.value;
+      return a !== e.value;
     case "in":
-      return Array.isArray(e.value) && e.value.includes(n);
+      return Array.isArray(e.value) && e.value.includes(a);
     case "notIn":
-      return Array.isArray(e.value) && !e.value.includes(n);
+      return Array.isArray(e.value) && !e.value.includes(a);
     case "greaterThan":
-      return n > e.value;
+      return a > e.value;
     case "lessThan":
-      return n < e.value;
+      return a < e.value;
     case "greaterThanOrEqual":
-      return n >= e.value;
+      return a >= e.value;
     case "lessThanOrEqual":
-      return n <= e.value;
+      return a <= e.value;
     case "exists":
-      return n != null;
+      return a != null;
     case "matches":
-      return new RegExp(e.value).test(String(n ?? ""));
+      return new RegExp(e.value).test(String(a ?? ""));
     default:
       return !1;
   }
 }
-function m(e, o, n) {
-  const t = e.getEdge?.(o) ?? e.edges?.find((d) => d.id === o);
-  if (!t)
+function m(e, d, a) {
+  const n = e.getEdge?.(d) ?? e.edges?.find((s) => s.id === d);
+  if (!n)
     return;
-  const s = t.class ?? "";
-  s.split(" ").includes(n) || (t.class = s ? `${s} ${n}` : n);
+  const t = n.class ?? "";
+  t.split(" ").includes(a) || (n.class = t ? `${t} ${a}` : a);
 }
-function R(e, o, n) {
-  const t = e.getEdge?.(o) ?? e.edges?.find((d) => d.id === o);
-  if (!t)
+function T(e, d, a) {
+  const n = e.getEdge?.(d) ?? e.edges?.find((s) => s.id === d);
+  if (!n)
     return;
-  const s = (t.class ?? "").split(" ").filter((d) => d !== n).join(" ");
-  t.class = s || void 0;
+  const t = (n.class ?? "").split(" ").filter((s) => s !== a).join(" ");
+  n.class = t || void 0;
 }
-function x(e, o) {
-  m(e, o, "flow-edge-entering");
+function $(e, d) {
+  m(e, d, "flow-edge-entering");
 }
-function k(e, o) {
-  R(e, o, "flow-edge-entering"), m(e, o, "flow-edge-completed");
+function k(e, d) {
+  T(e, d, "flow-edge-entering"), m(e, d, "flow-edge-completed");
 }
-function _(e, o) {
-  m(e, o, "flow-edge-taken");
+function w(e, d) {
+  m(e, d, "flow-edge-taken");
 }
-function I(e, o) {
-  m(e, o, "flow-edge-untaken");
+function E(e, d) {
+  m(e, d, "flow-edge-untaken");
 }
-function $(e, o) {
-  R(e, o, "flow-edge-entering"), m(e, o, "flow-edge-failed");
+function x(e, d) {
+  T(e, d, "flow-edge-entering"), m(e, d, "flow-edge-failed");
 }
-function p(e, o, n) {
-  const t = e.executionLog, s = { t: Date.now(), ...o };
-  for (t.push(s); t.length > n; )
-    t.shift();
+function p(e, d, a) {
+  const n = e.executionLog, t = { t: Date.now(), ...d };
+  for (n.push(t); n.length > a; )
+    n.shift();
 }
-function A(e) {
-  return async function(n, t = {}, s = {}) {
-    const d = {
-      payload: { ...s.payload ?? {} },
+function C(e) {
+  return async function(a, n = {}, t = {}) {
+    const s = {
+      payload: { ...t.payload ?? {} },
       nodeResults: {},
       currentNodeId: null,
       startedAt: Date.now()
-    }, a = {
+    }, o = {
       isPaused: !1,
       isStopped: !1,
       pausePromise: null,
       pauseResolve: null
-    }, u = {
+    }, l = {
       get isPaused() {
-        return a.isPaused;
+        return o.isPaused;
       },
       get isStopped() {
-        return a.isStopped;
+        return o.isStopped;
       },
       pause() {
-        !a.isPaused && !a.isStopped && (a.isPaused = !0, a.pausePromise = new Promise((l) => {
-          a.pauseResolve = l;
+        !o.isPaused && !o.isStopped && (o.isPaused = !0, o.pausePromise = new Promise((u) => {
+          o.pauseResolve = u;
         }));
       },
       resume() {
-        a.isPaused && (a.isPaused = !1, a.pauseResolve?.(), a.pausePromise = null, a.pauseResolve = null);
+        o.isPaused && (o.isPaused = !1, o.pauseResolve?.(), o.pausePromise = null, o.pauseResolve = null);
       },
       stop() {
-        a.isStopped = !0, a.isPaused = !1, a.pauseResolve?.(), a.pausePromise = null, a.pauseResolve = null;
+        o.isStopped = !0, o.isPaused = !1, o.pauseResolve?.(), o.pausePromise = null, o.pauseResolve = null;
       },
       finished: null
-    }, i = s.logLimit ?? 500, c = /* @__PURE__ */ new Set(), r = (async () => {
+    }, i = t.logLimit ?? 500, c = /* @__PURE__ */ new Set(), r = (async () => {
       if (await Promise.resolve(), typeof e.resetStates == "function" && e.resetStates(), Array.isArray(e.edges))
-        for (const l of e.edges) l.class = void 0;
-      typeof e.resetExecutionLog == "function" && e.resetExecutionLog(), s.lock && e.toggleInteractive?.(), p(e, { type: "run:started", payload: d.payload }, i);
+        for (const u of e.edges) u.class = void 0;
+      typeof e.resetExecutionLog == "function" && e.resetExecutionLog(), t.lock && e.toggleInteractive?.(), p(e, { type: "run:started", payload: s.payload }, i);
       try {
-        if (await E(e, n, d, t, s, a, c, i), d.currentNodeId = null, !a.isStopped) {
+        if (await I(e, a, s, n, t, o, c, i), s.currentNodeId = null, !o.isStopped) {
           if (Array.isArray(e.nodes))
-            for (const l of e.nodes)
-              !c.has(l.id) && !l.runState && e.setNodeState(l.id, "skipped");
-          p(e, { type: "run:complete", payload: d.payload }, i), t.onComplete?.(d);
+            for (const u of e.nodes)
+              !c.has(u.id) && !u.runState && e.setNodeState(u.id, "skipped");
+          p(e, { type: "run:complete", payload: s.payload }, i), n.onComplete?.(s);
         }
-      } catch (l) {
-        throw a.isStopped = !0, a.pauseResolve?.(), l;
+      } catch (u) {
+        throw o.isStopped = !0, o.pauseResolve?.(), u;
       } finally {
-        s.lock && e.toggleInteractive?.(), e._currentRunHandle === u && (e._currentRunHandle = null);
+        t.lock && e.toggleInteractive?.(), e._currentRunHandle === l && (e._currentRunHandle = null);
       }
-      return d;
+      return s;
     })();
-    return u.finished = r, e._currentRunHandle = u, u;
+    return l.finished = r, e._currentRunHandle = l, l;
   };
 }
-async function E(e, o, n, t, s, d, a, u) {
-  let i = o;
+async function I(e, d, a, n, t, s, o, l) {
+  let i = d;
   for (; i; ) {
-    if (d.isStopped) {
-      p(e, { type: "run:stopped", nodeId: n.currentNodeId ?? void 0 }, u);
+    if (s.isStopped) {
+      p(e, { type: "run:stopped", nodeId: a.currentNodeId ?? void 0 }, l);
       break;
     }
-    if (a.has(i))
+    if (o.has(i))
       break;
-    if (a.add(i), d.isPaused && d.pausePromise && (await d.pausePromise, d.isStopped)) {
-      p(e, { type: "run:stopped", nodeId: n.currentNodeId ?? void 0 }, u);
+    if (o.add(i), s.isPaused && s.pausePromise && (await s.pausePromise, s.isStopped)) {
+      p(e, { type: "run:stopped", nodeId: a.currentNodeId ?? void 0 }, l);
       break;
     }
     const c = e.getNode(i);
     if (!c)
       break;
-    n.currentNodeId = i;
+    a.currentNodeId = i;
     const r = (e.edges ?? []).filter((f) => f.target === i);
     for (const f of r)
-      x(e, f.id);
+      $(e, f.id);
     if (c.type === "flow-wait") {
       e.setNodeState(i, "running");
-      const f = c.data?.durationMs ?? s.defaultDurationMs ?? 1e3;
-      p(e, { type: "wait:start", nodeId: i }, u);
+      const f = c.data?.durationMs ?? t.defaultDurationMs ?? 1e3;
+      p(e, { type: "wait:start", nodeId: i }, l);
       const y = Date.now();
-      await T(f), p(e, { type: "wait:end", nodeId: i, runtimeMs: Date.now() - y }, u), e.setNodeState(i, "completed");
+      await R(f), p(e, { type: "wait:end", nodeId: i, runtimeMs: Date.now() - y }, l), e.setNodeState(i, "completed");
       for (const b of r)
         k(e, b.id);
-      const w = await P(e, c, i, t, s, n, u);
-      if (w.length === 0)
+      const _ = await P(e, c, i, n, t, a, l);
+      if (_.length === 0)
         break;
-      if (w.length === 1)
-        i = w[0];
+      if (_.length === 1)
+        i = _[0];
       else {
-        p(e, { type: "parallel:fork", nodeId: i, payload: { branches: w } }, u), await Promise.all(w.map(
-          (b) => E(e, b, { ...n, payload: { ...n.payload } }, t, s, d, a, u)
+        p(e, { type: "parallel:fork", nodeId: i, payload: { branches: _ } }, l), await Promise.all(_.map(
+          (b) => I(e, b, { ...a, payload: { ...a.payload } }, n, t, s, o, l)
         ));
         break;
       }
       continue;
     }
     e.setNodeState(i, "running");
-    const l = Date.now();
-    p(e, { type: "node:enter", nodeId: i }, u);
+    const u = Date.now();
+    p(e, { type: "node:enter", nodeId: i }, l);
     try {
-      const f = await t.onEnter?.(c, n);
-      f && typeof f == "object" && (n.nodeResults[i] = f, Object.assign(n.payload, f));
+      const f = await n.onEnter?.(c, a);
+      f && typeof f == "object" && (a.nodeResults[i] = f, Object.assign(a.payload, f));
     } catch (f) {
       e.setNodeState(i, "failed");
       for (const y of r)
-        $(e, y.id);
-      throw p(e, { type: "run:error", nodeId: i, payload: { error: f.message } }, u), t.onError?.(f, c, n), f;
+        x(e, y.id);
+      throw p(e, { type: "run:error", nodeId: i, payload: { error: f.message } }, l), n.onError?.(f, c, a), f;
     }
-    s.defaultDurationMs && await T(s.defaultDurationMs), e.setNodeState(i, "completed");
+    t.defaultDurationMs && await R(t.defaultDurationMs), e.setNodeState(i, "completed");
     for (const f of r)
       k(e, f.id);
-    const g = await t.onExit?.(c, n);
-    g && typeof g == "object" && (n.nodeResults[`${i}:exit`] = g, Object.assign(n.payload, g)), p(e, { type: "node:exit", nodeId: i, runtimeMs: Date.now() - l, outputs: n.nodeResults[i] }, u);
-    const h = await P(e, c, i, t, s, n, u);
+    const g = await n.onExit?.(c, a);
+    g && typeof g == "object" && (a.nodeResults[`${i}:exit`] = g, Object.assign(a.payload, g)), p(e, { type: "node:exit", nodeId: i, runtimeMs: Date.now() - u, outputs: a.nodeResults[i] }, l);
+    const h = await P(e, c, i, n, t, a, l);
     if (h.length === 0)
       break;
     if (h.length === 1)
       i = h[0];
     else {
-      p(e, { type: "parallel:fork", nodeId: i, payload: { branches: h } }, u), await Promise.all(h.map(
-        (f) => E(e, f, { ...n, payload: { ...n.payload } }, t, s, d, a, u)
+      p(e, { type: "parallel:fork", nodeId: i, payload: { branches: h } }, l), await Promise.all(h.map(
+        (f) => I(e, f, { ...a, payload: { ...a.payload } }, n, t, s, o, l)
       ));
       break;
     }
   }
 }
-async function P(e, o, n, t, s, d, a) {
-  const u = (e.edges ?? []).filter((i) => i.source === n);
-  if (u.length === 0)
+async function P(e, d, a, n, t, s, o) {
+  const l = (e.edges ?? []).filter((i) => i.source === a);
+  if (l.length === 0)
     return [];
-  if (t.pickBranch) {
-    const i = await t.pickBranch(o, u, d);
+  if (n.pickBranch) {
+    const i = await n.pickBranch(d, l, s);
     if (i) {
-      const c = u.find((r) => r.id === i) ?? null;
+      const c = l.find((r) => r.id === i) ?? null;
       if (c) {
-        if (o.type === "flow-condition" && typeof c.sourceHandle == "string" && (o.data = o.data ?? {}, o.data._branchTaken = c.sourceHandle), _(e, c.id), p(e, { type: "edge:taken", edgeId: c.id }, a), s.muteUntakenBranches)
-          for (const r of u)
-            r.id !== c.id && (I(e, r.id), p(e, { type: "edge:untaken", edgeId: r.id }, a));
-        return s.particleOnEdges && e.sendParticle?.(c.id, s.particleOptions ?? {}), [c.target];
+        if (d.type === "flow-condition" && typeof c.sourceHandle == "string" && (d.data = d.data ?? {}, d.data._branchTaken = c.sourceHandle), w(e, c.id), p(e, { type: "edge:taken", edgeId: c.id }, o), t.muteUntakenBranches)
+          for (const r of l)
+            r.id !== c.id && (E(e, r.id), p(e, { type: "edge:untaken", edgeId: r.id }, o));
+        return t.particleOnEdges && e.sendParticle?.(c.id, t.particleOptions ?? {}), [c.target];
       }
       return [];
     }
   }
-  if (o.type === "flow-condition") {
-    const i = v(o, u, d.payload), c = i ? u.find((r) => r.target === i) : null;
+  if (d.type === "flow-condition") {
+    const i = A(d, l, s.payload), c = i ? l.find((r) => r.target === i) : null;
     if (c) {
-      if (typeof c.sourceHandle == "string" && (o.data = o.data ?? {}, o.data._branchTaken = c.sourceHandle), p(e, { type: "branch:chosen", nodeId: n, edgeId: c.id }, a), _(e, c.id), p(e, { type: "edge:taken", edgeId: c.id }, a), s.muteUntakenBranches)
-        for (const r of u)
-          r.id !== c.id && (I(e, r.id), p(e, { type: "edge:untaken", edgeId: r.id }, a));
-      return s.particleOnEdges && e.sendParticle?.(c.id, s.particleOptions ?? {}), [c.target];
+      if (typeof c.sourceHandle == "string" && (d.data = d.data ?? {}, d.data._branchTaken = c.sourceHandle), p(e, { type: "branch:chosen", nodeId: a, edgeId: c.id }, o), w(e, c.id), p(e, { type: "edge:taken", edgeId: c.id }, o), t.muteUntakenBranches)
+        for (const r of l)
+          r.id !== c.id && (E(e, r.id), p(e, { type: "edge:untaken", edgeId: r.id }, o));
+      return t.particleOnEdges && e.sendParticle?.(c.id, t.particleOptions ?? {}), [c.target];
     }
     return [];
   }
-  if (u.length === 1) {
-    const i = u[0];
-    return _(e, i.id), p(e, { type: "edge:taken", edgeId: i.id }, a), s.particleOnEdges && e.sendParticle?.(i.id, s.particleOptions ?? {}), [i.target];
+  if (l.length === 1) {
+    const i = l[0];
+    return w(e, i.id), p(e, { type: "edge:taken", edgeId: i.id }, o), t.particleOnEdges && e.sendParticle?.(i.id, t.particleOptions ?? {}), [i.target];
   }
-  for (const i of u)
-    _(e, i.id), p(e, { type: "edge:taken", edgeId: i.id }, a), s.particleOnEdges && e.sendParticle?.(i.id, s.particleOptions ?? {});
-  return u.map((i) => i.target);
+  for (const i of l)
+    w(e, i.id), p(e, { type: "edge:taken", edgeId: i.id }, o), t.particleOnEdges && e.sendParticle?.(i.id, t.particleOptions ?? {});
+  return l.map((i) => i.target);
 }
-function v(e, o, n) {
-  let t;
+function A(e, d, a) {
+  let n;
   if (typeof e.data?.evaluate == "function")
-    t = !!e.data.evaluate(n);
+    n = !!e.data.evaluate(a);
   else if (e.data?.condition)
-    t = C(e.data.condition, n);
+    n = M(e.data.condition, a);
   else
-    return o[0]?.target ?? null;
-  const s = t ? "true" : "false";
-  return o.find((a) => a.sourceHandle === s)?.target ?? null;
+    return d[0]?.target ?? null;
+  const t = n ? "true" : "false";
+  return d.find((o) => o.sourceHandle === t)?.target ?? null;
 }
-function T(e) {
-  return new Promise((o) => setTimeout(o, e));
+function R(e) {
+  return new Promise((d) => setTimeout(d, e));
 }
 function B(e) {
-  return async function(n, t = {}) {
-    const s = t.speed ?? 1;
-    let d = !1, a = !1, u = null;
+  return async function(a, n = {}) {
+    const t = n.speed ?? 1;
+    let s = !1, o = !1, l = null;
     const i = {
       get isPaused() {
-        return d;
+        return s;
       },
       get isStopped() {
-        return a;
+        return o;
       },
       pause() {
-        !d && !a && (d = !0);
+        !s && !o && (s = !0);
       },
       resume() {
-        d && (d = !1, u?.(), u = null);
+        s && (s = !1, l?.(), l = null);
       },
       stop() {
-        a = !0, d = !1, u?.(), u = null;
+        o = !0, s = !1, l?.(), l = null;
       },
       finished: null
     }, c = (async () => {
       if (await Promise.resolve(), typeof e.resetStates == "function" && e.resetStates(), Array.isArray(e.edges))
-        for (const l of e.edges) l.class = void 0;
-      let r = n[0]?.t ?? Date.now();
-      for (const l of n) {
-        if (a || d && (await new Promise((h) => {
-          u = h;
-        }), a))
+        for (const u of e.edges) u.class = void 0;
+      let r = a[0]?.t ?? Date.now();
+      for (const u of a) {
+        if (o || s && (await new Promise((h) => {
+          l = h;
+        }), o))
           break;
-        const g = (l.t - r) / s;
-        switch (g > 10 && await O(g), r = l.t, l.type) {
+        const g = (u.t - r) / t;
+        switch (g > 10 && await O(g), r = u.t, u.type) {
           case "node:enter":
-            if (l.nodeId) {
-              e.setNodeState(l.nodeId, "running");
-              const h = (e.edges ?? []).filter((f) => f.target === l.nodeId);
+            if (u.nodeId) {
+              e.setNodeState(u.nodeId, "running");
+              const h = (e.edges ?? []).filter((f) => f.target === u.nodeId);
               for (const f of h)
-                x(e, f.id);
+                $(e, f.id);
             }
             break;
           case "node:exit":
-            if (l.nodeId) {
-              e.setNodeState(l.nodeId, "completed");
-              const h = (e.edges ?? []).filter((f) => f.target === l.nodeId);
+            if (u.nodeId) {
+              e.setNodeState(u.nodeId, "completed");
+              const h = (e.edges ?? []).filter((f) => f.target === u.nodeId);
               for (const f of h)
                 k(e, f.id);
             }
             break;
           case "run:error":
-            if (l.nodeId) {
-              e.setNodeState(l.nodeId, "failed");
-              const h = (e.edges ?? []).filter((f) => f.target === l.nodeId);
+            if (u.nodeId) {
+              e.setNodeState(u.nodeId, "failed");
+              const h = (e.edges ?? []).filter((f) => f.target === u.nodeId);
               for (const f of h)
-                $(e, f.id);
+                x(e, f.id);
             }
             break;
           case "edge:taken":
-            if (l.edgeId) {
-              _(e, l.edgeId);
-              const h = (e.edges ?? []).find((f) => f.id === l.edgeId);
+            if (u.edgeId) {
+              w(e, u.edgeId);
+              const h = (e.edges ?? []).find((f) => f.id === u.edgeId);
               if (h && typeof h.sourceHandle == "string") {
                 const f = (e.nodes ?? []).find((y) => y.id === h.source) ?? e.getNode?.(h.source);
                 f && f.type === "flow-condition" && (f.data = f.data ?? {}, f.data._branchTaken = h.sourceHandle);
@@ -308,13 +308,13 @@ function B(e) {
             }
             break;
           case "edge:untaken":
-            l.edgeId && I(e, l.edgeId);
+            u.edgeId && E(e, u.edgeId);
             break;
           case "wait:start":
-            l.nodeId && e.setNodeState(l.nodeId, "running");
+            u.nodeId && e.setNodeState(u.nodeId, "running");
             break;
           case "wait:end":
-            l.nodeId && e.setNodeState(l.nodeId, "completed");
+            u.nodeId && e.setNodeState(u.nodeId, "completed");
             break;
         }
       }
@@ -323,54 +323,54 @@ function B(e) {
   };
 }
 function O(e) {
-  return new Promise((o) => setTimeout(o, e));
+  return new Promise((d) => setTimeout(d, e));
 }
-function D(e, o) {
-  for (const i of o)
+function D(e, d) {
+  for (const i of d)
     if (i && typeof i.source == "string" && i.source === i.target)
       return !0;
-  const n = /* @__PURE__ */ new Map(), t = (i) => {
-    let c = n.get(i);
-    return c || (c = [], n.set(i, c)), c;
+  const a = /* @__PURE__ */ new Map(), n = (i) => {
+    let c = a.get(i);
+    return c || (c = [], a.set(i, c)), c;
   };
   for (const i of e)
-    i && typeof i.id == "string" && t(i.id);
-  for (const i of o)
-    !i || typeof i.source != "string" || typeof i.target != "string" || (t(i.source).push(i.target), t(i.target));
-  const s = 0, d = 1, a = 2, u = /* @__PURE__ */ new Map();
-  for (const i of n.keys()) u.set(i, s);
-  for (const i of n.keys()) {
-    if (u.get(i) !== s) continue;
+    i && typeof i.id == "string" && n(i.id);
+  for (const i of d)
+    !i || typeof i.source != "string" || typeof i.target != "string" || (n(i.source).push(i.target), n(i.target));
+  const t = 0, s = 1, o = 2, l = /* @__PURE__ */ new Map();
+  for (const i of a.keys()) l.set(i, t);
+  for (const i of a.keys()) {
+    if (l.get(i) !== t) continue;
     const c = [{ node: i, idx: 0 }];
-    for (u.set(i, d); c.length > 0; ) {
-      const r = c[c.length - 1], l = n.get(r.node) ?? [];
-      if (r.idx < l.length) {
-        const g = l[r.idx++], h = u.get(g);
-        if (h === d) return !0;
-        h === s && (u.set(g, d), c.push({ node: g, idx: 0 }));
+    for (l.set(i, s); c.length > 0; ) {
+      const r = c[c.length - 1], u = a.get(r.node) ?? [];
+      if (r.idx < u.length) {
+        const g = u[r.idx++], h = l.get(g);
+        if (h === s) return !0;
+        h === t && (l.set(g, s), c.push({ node: g, idx: 0 }));
       } else
-        u.set(r.node, a), c.pop();
+        l.set(r.node, o), c.pop();
     }
   }
   return !1;
 }
-function q(e) {
-  const o = [], n = Array.isArray(e?.nodes) ? e.nodes : [], t = Array.isArray(e?.edges) ? e.edges : [], s = /* @__PURE__ */ new Set(), d = /* @__PURE__ */ new Set();
-  for (const r of n)
-    !r || typeof r.id != "string" || (s.has(r.id) && d.add(r.id), s.add(r.id));
-  for (const r of d)
-    o.push({
+function F(e) {
+  const d = [], a = Array.isArray(e?.nodes) ? e.nodes : [], n = Array.isArray(e?.edges) ? e.edges : [], t = /* @__PURE__ */ new Set(), s = /* @__PURE__ */ new Set();
+  for (const r of a)
+    !r || typeof r.id != "string" || (t.has(r.id) && s.add(r.id), t.add(r.id));
+  for (const r of s)
+    d.push({
       severity: "error",
       code: "duplicate-node-id",
       nodeId: r,
       message: `Duplicate node id "${r}".`
     });
-  for (const r of n) {
+  for (const r of a) {
     if (!r || typeof r.id != "string") continue;
-    const l = r.data ?? {};
+    const u = r.data ?? {};
     if (r.type === "flow-condition") {
-      const g = l.condition !== void 0 && l.condition !== null, h = typeof l.evaluate == "function";
-      !g && !h && o.push({
+      const g = u.condition !== void 0 && u.condition !== null, h = typeof u.evaluate == "function";
+      !g && !h && d.push({
         severity: "error",
         code: "missing-condition",
         nodeId: r.id,
@@ -378,8 +378,8 @@ function q(e) {
       });
     }
     if (r.type === "flow-wait") {
-      const g = l.durationMs;
-      (typeof g != "number" || !Number.isFinite(g)) && o.push({
+      const g = u.durationMs;
+      (typeof g != "number" || !Number.isFinite(g)) && d.push({
         severity: "error",
         code: "wait-missing-duration",
         nodeId: r.id,
@@ -387,69 +387,69 @@ function q(e) {
       });
     }
   }
-  for (const r of t) {
+  for (const r of n) {
     if (!r) continue;
-    const l = typeof r.id == "string" ? r.id : void 0;
-    (typeof r.source != "string" || !s.has(r.source)) && o.push({
+    const u = typeof r.id == "string" ? r.id : void 0;
+    (typeof r.source != "string" || !t.has(r.source)) && d.push({
       severity: "error",
       code: "dangling-edge",
-      edgeId: l,
+      edgeId: u,
       nodeId: typeof r.source == "string" ? r.source : void 0,
-      message: `Edge ${l ? `"${l}" ` : ""}references missing source node "${r.source}".`
-    }), (typeof r.target != "string" || !s.has(r.target)) && o.push({
+      message: `Edge ${u ? `"${u}" ` : ""}references missing source node "${r.source}".`
+    }), (typeof r.target != "string" || !t.has(r.target)) && d.push({
       severity: "error",
       code: "dangling-edge",
-      edgeId: l,
+      edgeId: u,
       nodeId: typeof r.target == "string" ? r.target : void 0,
-      message: `Edge ${l ? `"${l}" ` : ""}references missing target node "${r.target}".`
+      message: `Edge ${u ? `"${u}" ` : ""}references missing target node "${r.target}".`
     });
   }
-  const a = n.filter((r) => r && r.type === "flow-condition" && typeof r.id == "string");
-  for (const r of a) {
-    const l = t.filter((h) => h && h.source === r.id), g = /* @__PURE__ */ new Set();
-    for (const h of l)
-      typeof h.sourceHandle == "string" && (g.add(h.sourceHandle), h.sourceHandle !== "true" && h.sourceHandle !== "false" && o.push({
+  const o = a.filter((r) => r && r.type === "flow-condition" && typeof r.id == "string");
+  for (const r of o) {
+    const u = n.filter((h) => h && h.source === r.id), g = /* @__PURE__ */ new Set();
+    for (const h of u)
+      typeof h.sourceHandle == "string" && (g.add(h.sourceHandle), h.sourceHandle !== "true" && h.sourceHandle !== "false" && d.push({
         severity: "error",
         code: "unhandled-source-handle",
         edgeId: typeof h.id == "string" ? h.id : void 0,
         nodeId: r.id,
         message: `Condition node "${r.id}" has an outgoing edge with sourceHandle "${h.sourceHandle}" — only "true" / "false" are recognised.`
       }));
-    g.has("true") || o.push({
+    g.has("true") || d.push({
       severity: "error",
       code: "condition-missing-branch",
       nodeId: r.id,
       message: `Condition node "${r.id}" is missing the "true" branch.`
-    }), g.has("false") || o.push({
+    }), g.has("false") || d.push({
       severity: "error",
       code: "condition-missing-branch",
       nodeId: r.id,
       message: `Condition node "${r.id}" is missing the "false" branch.`
     });
   }
-  const u = /* @__PURE__ */ new Set(), i = /* @__PURE__ */ new Set();
-  for (const r of t)
-    r && (typeof r.target == "string" && u.add(r.target), typeof r.source == "string" && i.add(r.source));
+  const l = /* @__PURE__ */ new Set(), i = /* @__PURE__ */ new Set();
   for (const r of n)
-    !r || typeof r.id != "string" || !u.has(r.id) && !i.has(r.id) && o.push({
+    r && (typeof r.target == "string" && l.add(r.target), typeof r.source == "string" && i.add(r.source));
+  for (const r of a)
+    !r || typeof r.id != "string" || !l.has(r.id) && !i.has(r.id) && d.push({
       severity: "warning",
       code: "unreachable-node",
       nodeId: r.id,
       message: `Node "${r.id}" has no connected edges.`
     });
-  return D(n, t) && o.push({
+  return D(a, n) && d.push({
     severity: "warning",
     code: "cycle",
     message: "Directed cycle detected in workflow graph."
-  }), { valid: !o.some((r) => r.severity === "error"), issues: o };
+  }), { valid: !d.some((r) => r.severity === "error"), issues: d };
 }
-function F(e) {
-  M("workflow", {
+function j(e) {
+  v("workflow", {
     setup(n) {
-      n.run = A(n), n.replayExecution = B(n), n.executionLog = [], n.resetExecutionLog = function() {
+      n.run = C(n), n.replayExecution = B(n), n.executionLog = [], n.resetExecutionLog = function() {
         this.executionLog = [];
       }, n.validateWorkflow = function() {
-        return q(this);
+        return F(this);
       }, n._currentRunHandle = null, Object.defineProperty(n, "runState", {
         get() {
           const s = this._currentRunHandle;
@@ -462,27 +462,33 @@ function F(e) {
       const t = typeof n.resetStates == "function" ? n.resetStates.bind(n) : null;
       n.resetStates = function(...s) {
         if (t && t(...s), Array.isArray(this.nodes))
-          for (const d of this.nodes)
-            d && d.type === "flow-condition" && d.data && delete d.data._branchTaken;
+          for (const o of this.nodes)
+            o && o.type === "flow-condition" && o.data && delete o.data._branchTaken;
       };
     }
-  }), e.magic("workflowRun", (n) => async (t, s, d) => {
-    const a = n.closest(".flow-container") ?? n.querySelector(".flow-container") ?? document.querySelector(".flow-container");
-    if (!a)
+  }), e.magic("workflowRun", (n) => async (t, s, o) => {
+    const l = n.closest(".flow-container") ?? n.querySelector(".flow-container") ?? document.querySelector(".flow-container");
+    if (!l)
       return console.warn("[workflow] $workflowRun: no .flow-container found"), null;
-    const u = e.$data(a);
-    return typeof u?.run != "function" ? (console.warn("[workflow] $workflowRun: canvas.run not available — is the workflow addon registered?"), null) : u.run(t, s, d);
+    const i = e.$data(l);
+    return typeof i?.run != "function" ? (console.warn("[workflow] $workflowRun: canvas.run not available — is the workflow addon registered?"), null) : i.run(t, s, o);
   });
-  const o = (n, t) => {
+  const d = (n, t) => {
     const s = t ? document.querySelector(t) : n.closest(".flow-container") ?? document.querySelector(".flow-container");
     return {
       canvas: s ? e.$data(s) : null,
       el: s
     };
+  }, a = (n, t) => {
+    if (t !== "__any__" && typeof n._canvas?.[t] == "function")
+      return !0;
+    const s = n.$el, o = n._canvasEl ?? s?.closest?.(".flow-container") ?? document.querySelector(".flow-container");
+    return o ? (n._canvas = e.$data(o) ?? null, n._canvasEl = o, t === "__any__" ? !!n._canvas : typeof n._canvas?.[t] == "function") : !1;
   };
   e.data("flowReplayControls", (n) => ({
     _handle: null,
     _canvas: null,
+    _canvasEl: null,
     _pollHandle: 0,
     _runStart: 0,
     _scrubbing: !1,
@@ -493,14 +499,14 @@ function F(e) {
     currentTimeMs: 0,
     durationMs: 0,
     get hasPlayableSource() {
-      return this._handle ? !0 : Array.isArray(this._canvas?.executionLog) && this._canvas.executionLog.length > 0;
+      return a(this, "__any__"), this._handle ? !0 : Array.isArray(this._canvas?.executionLog) && this._canvas.executionLog.length > 0;
     },
     get progressPercent() {
       return this.durationMs <= 0 ? 0 : Math.min(100, this.currentTimeMs / this.durationMs * 100);
     },
     init() {
-      const { canvas: t } = o(this.$el, n.target);
-      this._canvas = t, n.handleExpr && this._canvas && (this._handle = this._canvas[n.handleExpr] ?? null), !this._handle && this._canvas?.lastReplayHandle && (this._handle = this._canvas.lastReplayHandle), this._detectCapabilities();
+      const { canvas: t, el: s } = d(this.$el, n.target);
+      this._canvas = t, this._canvasEl = s, n.handleExpr && this._canvas && (this._handle = this._canvas[n.handleExpr] ?? null), !this._handle && this._canvas?.lastReplayHandle && (this._handle = this._canvas.lastReplayHandle), this._detectCapabilities();
     },
     _detectCapabilities() {
       if (!this._handle) {
@@ -511,13 +517,14 @@ function F(e) {
     },
     _ensureHandle() {
       if (this._handle) return !0;
+      a(this, "replayExecution");
       const t = this._canvas?.executionLog;
-      return Array.isArray(t) && t.length > 0 && typeof this._canvas.replayExecution == "function" ? (this._handle = this._canvas.replayExecution(t, { speed: this.speed }), this._detectCapabilities(), Array.isArray(t) && t.length > 0 && (this.durationMs = (t[t.length - 1]?.t ?? 0) - (t[0]?.t ?? 0)), !0) : !1;
+      return Array.isArray(t) && t.length > 0 && typeof this._canvas?.replayExecution == "function" ? (this._handle = this._canvas.replayExecution(t, { speed: this.speed }), this._detectCapabilities(), Array.isArray(t) && t.length > 0 && (this.durationMs = (t[t.length - 1]?.t ?? 0) - (t[0]?.t ?? 0)), !0) : !1;
     },
     formatTime(t) {
       if ((!Number.isFinite(t) || t < 0) && (t = 0), t < 1e3) return `0:${String(Math.floor(t / 100)).padStart(2, "0")}`;
-      const s = Math.floor(t / 1e3), d = Math.floor(s / 60), a = s % 60;
-      return `${d}:${String(a).padStart(2, "0")}`;
+      const s = Math.floor(t / 1e3), o = Math.floor(s / 60), l = s % 60;
+      return `${o}:${String(l).padStart(2, "0")}`;
     },
     _startPolling() {
       this._pollHandle || (this._runStart = performance.now(), this._pollHandle = setInterval(() => {
@@ -548,39 +555,40 @@ function F(e) {
     _applyScrub(t) {
       const s = this.$el.querySelector(".flow-replay-scrubber");
       if (!s || !this._handle?.scrubTo) return;
-      const d = s.getBoundingClientRect(), a = Math.max(0, Math.min(1, (t.clientX - d.left) / d.width));
-      this._handle.scrubTo(a * this.durationMs), this.currentTimeMs = a * this.durationMs;
+      const o = s.getBoundingClientRect(), l = Math.max(0, Math.min(1, (t.clientX - o.left) / o.width));
+      this._handle.scrubTo(l * this.durationMs), this.currentTimeMs = l * this.durationMs;
     }
   })), e.data("flowExecutionLog", (n) => ({
     _canvas: null,
-    _source: [],
+    _canvasEl: null,
     _autoScroll: !0,
     filter: n.initialFilter || "all",
     baseTime: 0,
     init() {
-      const t = this, { canvas: s } = o(t.$el, n.target);
-      this._canvas = s, n.sourceExpr && this._canvas ? this._source = this._canvas[n.sourceExpr] ?? [] : this._source = this._canvas?.executionLog ?? [], t.$watch("filteredEvents", () => {
+      const t = this, { canvas: s, el: o } = d(t.$el, n.target);
+      this._canvas = s, this._canvasEl = o, t.$watch("filteredEvents", () => {
         this._autoScroll && t.$nextTick(() => this._scrollToBottom());
       });
     },
     get filteredEvents() {
-      const t = this._source ?? [];
-      if (t.length === 0) return [];
-      this.baseTime = t[0]?.t ?? 0;
-      let s = t;
+      a(this, "__any__");
+      const t = n.sourceExpr ? this._canvas?.[n.sourceExpr] ?? [] : this._canvas?.executionLog ?? [], s = Array.isArray(t) ? t : [];
+      if (s.length === 0) return [];
+      this.baseTime = s[0]?.t ?? 0;
+      let o = s;
       if (this.filter === "errors")
-        s = t.filter((d) => d.type === "run:error" || d.type === "edge:failed");
+        o = s.filter((l) => l.type === "run:error" || l.type === "edge:failed");
       else if (this.filter === "lifecycle") {
-        const d = /* @__PURE__ */ new Set(["run:started", "run:complete", "run:stopped", "node:enter", "node:exit"]);
-        s = t.filter((a) => d.has(a.type));
+        const l = /* @__PURE__ */ new Set(["run:started", "run:complete", "run:stopped", "node:enter", "node:exit"]);
+        o = s.filter((i) => l.has(i.type));
       }
-      return s.slice(-n.maxEvents);
+      return o.slice(-n.maxEvents);
     },
     formatTime(t) {
       if ((!Number.isFinite(t) || t < 0) && (t = 0), t < 1e3) return `+${Math.round(t)}ms`;
       if (t < 6e4) return `+${(t / 1e3).toFixed(1)}s`;
-      const s = Math.floor(t / 6e4), d = Math.floor(t % 6e4 / 1e3);
-      return `+${s}m${d ? ` ${d}s` : ""}`;
+      const s = Math.floor(t / 6e4), o = Math.floor(t % 6e4 / 1e3);
+      return `+${s}m${o ? ` ${o}s` : ""}`;
     },
     iconFor(t) {
       return {
@@ -632,7 +640,7 @@ function F(e) {
     _canvas: null,
     _canvasEl: null,
     init() {
-      const { canvas: t, el: s } = o(this.$el, n.target);
+      const { canvas: t, el: s } = d(this.$el, n.target);
       this._canvas = t, this._canvasEl = s;
     },
     get isRunning() {
@@ -641,8 +649,8 @@ function F(e) {
     },
     async onClick() {
       if (this.isRunning) return;
-      if (!this._canvas) {
-        console.warn("[wireflow] <x-flow-run-button>: no canvas found");
+      if (!a(this, "run")) {
+        console.warn("[wireflow] <x-flow-run-button>: canvas not ready (no .flow-container or workflow addon not registered)");
         return;
       }
       const t = this._canvasEl?.[n.handlersKey] ?? {};
@@ -650,31 +658,34 @@ function F(e) {
     }
   })), e.data("flowStopButton", (n) => ({
     _canvas: null,
+    _canvasEl: null,
     alwaysVisible: !!n.alwaysVisible,
     init() {
-      const { canvas: t } = o(this.$el, n.target);
-      this._canvas = t;
+      const { canvas: t, el: s } = d(this.$el, n.target);
+      this._canvas = t, this._canvasEl = s;
     },
     get isRunning() {
+      a(this, "__any__");
       const t = this._canvas?.runState;
       return t === "running" || t === "paused";
     },
     onClick() {
-      this._canvas?.stopRun?.();
+      a(this, "stopRun") && this._canvas.stopRun();
     }
   })), e.data("flowResetButton", (n) => ({
     _canvas: null,
+    _canvasEl: null,
     init() {
-      const { canvas: t } = o(this.$el, n.target);
-      this._canvas = t;
+      const { canvas: t, el: s } = d(this.$el, n.target);
+      this._canvas = t, this._canvasEl = s;
     },
     onClick() {
-      this._canvas?.resetStates?.(), this._canvas?.resetExecutionLog?.();
+      a(this, "resetStates") && (this._canvas.resetStates(), this._canvas.resetExecutionLog?.());
     }
   }));
 }
 export {
-  F as default,
-  q as validateWorkflow
+  j as default,
+  F as validateWorkflow
 };
 //# sourceMappingURL=alpineflow-workflow.esm.js.map
