@@ -95,6 +95,14 @@ Workflow addon UI primitives — condition node + replay controls + execution lo
 ### Changed
 - Dist resync with alpineflow workflow-addon UI primitives — bundles `x-flow-condition` directive registration, the five Alpine.data factories, and the matching CSS.
 
+---
+
+Audit follow-ups — trait doc cross-link + internal notes.
+
+### Docs
+- `docs/server/trait.md` — RunState section renamed to "Workflow & RunState" and now lists `flowRun()` alongside `flowSetNodeState()` / `flowResetStates()`, with a cross-link to `docs/addons/workflow.md` and the matching `<x-flow-run-button>` / `<x-flow-stop-button>` / `<x-flow-reset-button>` / `<x-flow-replay-controls>` / `<x-flow-execution-log>` components.
+- `CLAUDE.md` — committed the repo-internal working notes (tech stack, test/format commands, dist resync procedure, branching rules) for human and AI contributors working inside the package.
+
 ## v0.1.2-alpha — 2026-04-03
 
 ### Fixed
