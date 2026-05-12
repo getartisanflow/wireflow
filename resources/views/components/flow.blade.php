@@ -4,8 +4,8 @@
 
 <div
     x-data="{!! $xData($hasDefaultSlot) !!}"
-    class="flow-container"
-    {{ $attributes }}
+    @if($wireIgnore) wire:ignore @endif
+    {{ $attributes->class(['flow-container']) }}
 >
     {{-- Default node template --}}
     @if($hasDefaultSlot)

@@ -358,6 +358,12 @@
     --flow-guide-path-color: #52525b;
 }
 
+/* ── Node text alignment ────────────────────────────────────────── */
+.flow-node,
+.flow-ghost-node {
+    text-align: center;
+}
+
 /* ── Shape node defaults (clipped shapes use background-as-border) ── */
 .flow-node-diamond,
 .flow-node-hexagon,
@@ -446,6 +452,65 @@
     --flow-node-selected-shadow: 0 0 0 1px #8b5cf6;
 }
 
+/* ── RunState visual defaults (D2) ────────────────────────────────── */
+
+.flow-node-running {
+    border-color: var(--flow-node-running-border-color, #8b5cf6);
+    animation: flow-node-pulse 1.4s ease-out infinite;
+}
+
+@keyframes flow-node-pulse {
+    0%   { box-shadow: 0 0 0 0 var(--flow-node-running-pulse-color, rgba(139, 92, 246, 0.55)); }
+    70%  { box-shadow: 0 0 0 10px transparent; }
+    100% { box-shadow: 0 0 0 0 transparent; }
+}
+
+.flow-node-completed {
+    border-color: var(--flow-node-completed-border-color, #14b8a6);
+    animation: flow-node-flash 0.8s ease-out 1;
+}
+
+@keyframes flow-node-flash {
+    0%   { background: var(--flow-node-completed-flash-color, rgba(20, 184, 166, 0.12)); }
+    100% { background: var(--flow-node-bg, transparent); }
+}
+
+.flow-node-failed {
+    border-color: var(--flow-node-failed-border-color, #ef4444);
+    animation: flow-node-pulse 1.4s ease-out infinite;
+    --flow-node-running-pulse-color: var(--flow-node-failed-pulse-color, rgba(239, 68, 68, 0.55));
+}
+
+.flow-node-skipped {
+    opacity: var(--flow-node-skipped-opacity, 0.45);
+    filter: grayscale(0.3);
+}
+
+/* ── Workflow edge states ──────────────────────────────────────────── */
+
+.flow-edge-entering path {
+    stroke: var(--flow-edge-entering-stroke, #8b5cf6);
+    stroke-dasharray: var(--flow-edge-animated-dasharray, 5 3);
+    animation: flow-edge-dash var(--flow-edge-animated-duration, 0.6s) linear infinite;
+}
+
+@keyframes flow-edge-dash {
+    to { stroke-dashoffset: -16; }
+}
+
+.flow-edge-completed path {
+    stroke: var(--flow-edge-completed-stroke, #14b8a6);
+}
+
+.flow-edge-taken path {
+    stroke: var(--flow-edge-taken-stroke, #14b8a6);
+}
+
+.flow-edge-untaken path {
+    opacity: var(--flow-edge-untaken-opacity, 0.35);
+    stroke-dasharray: 4 3;
+}
+
 /* ── Edge utility classes (for class-based edge styling) ─────── */
 .flow-edge-svg path.flow-edge-highlight {
     stroke: #64748b;
@@ -470,4 +535,326 @@
 .flow-edge-svg path.flow-edge-primary {
     stroke: #8b5cf6;
     stroke-width: 2.5;
+}
+
+/* ----------------------------------------------------------------------------
+   Schema node — default theme (colors, borders, decorations)
+   ---------------------------------------------------------------------------- */
+
+.flow-schema-node {
+  background: var(--flow-node-bg, #1a1c23);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  border-radius: var(--flow-node-radius, 0.5rem);
+  color: var(--flow-text-body, #e4e5ea);
+  overflow: hidden;
+}
+
+.flow-schema-header {
+  background: var(--flow-surface-alt, #23252e);
+  border-bottom: 1px solid var(--flow-border-subtle, #2d3039);
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-schema-row {
+  border-bottom: 1px solid var(--flow-border-subtle, #2d3039);
+  color: var(--flow-text-muted, #9598a5);
+}
+
+.flow-schema-row:last-child {
+  border-bottom: none;
+}
+
+.flow-schema-row-name {
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-schema-row-type {
+  background: var(--flow-surface, #0e1015);
+  color: var(--flow-text-faint, #6b6e7d);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+}
+
+/* PK / FK / required decorations — pseudo-elements so the DOM structure
+   stays minimal. */
+.flow-schema-row--pk .flow-schema-row-name::before {
+  content: 'PK';
+  display: inline-block;
+  margin-right: 0.375rem;
+  padding: 0 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--flow-amber, #DAA532);
+  background: color-mix(in srgb, var(--flow-amber, #DAA532) 12%, transparent);
+  border-radius: 0.1875rem;
+}
+
+.flow-schema-row--fk .flow-schema-row-name::before {
+  content: 'FK';
+  display: inline-block;
+  margin-right: 0.375rem;
+  padding: 0 0.25rem;
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--flow-violet, #8B5CF6);
+  background: color-mix(in srgb, var(--flow-violet, #8B5CF6) 12%, transparent);
+  border-radius: 0.1875rem;
+}
+
+.flow-schema-row--required .flow-schema-row-name::after {
+  content: '*';
+  color: var(--flow-red, #ef4444);
+  margin-left: 0.25rem;
+}
+
+/* ----------------------------------------------------------------------------
+   Wait node — default theme (colors, borders, decorations)
+   Reuses existing tokens — no new CSS variables introduced.
+   ---------------------------------------------------------------------------- */
+
+.flow-wait-node {
+  background: var(--flow-node-bg, #1a1c23);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  border-radius: var(--flow-node-radius, 0.5rem);
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-wait-header {
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-wait-icon {
+  color: var(--flow-text-muted, #9598a5);
+}
+
+.flow-wait-duration {
+  background: var(--flow-surface, #0e1015);
+  color: var(--flow-text-faint, #6b6e7d);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+}
+
+/* ----------------------------------------------------------------------------
+   Condition node — default theme (colors, borders, decorations)
+   Reuses existing tokens — no new CSS variables introduced.
+   ---------------------------------------------------------------------------- */
+
+.flow-condition-node {
+  background: var(--flow-node-bg, #1a1c23);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  border-radius: var(--flow-node-radius, 0.5rem);
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-condition-header {
+  background: var(--flow-surface-alt, #23252e);
+  border-bottom: 1px solid var(--flow-border-subtle, #2d3039);
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-condition-body {
+  color: var(--flow-text-muted, #9598a5);
+}
+
+.flow-condition-handle-target {
+  background: var(--flow-edge-stroke, #52525b);
+  border: 2px solid var(--flow-node-bg, #1a1c23);
+}
+
+.flow-condition-handle--true {
+  background: var(--flow-edge-taken-stroke, #14b8a6);
+  border: 2px solid var(--flow-node-bg, #1a1c23);
+}
+
+.flow-condition-handle--false {
+  background: #ef4444;
+  border: 2px solid var(--flow-node-bg, #1a1c23);
+}
+
+/* Branch-taken decoration — highlight chosen branch, mute the other. */
+.flow-condition-node[data-flow-condition-branch-taken="true"] .flow-condition-handle--true {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--flow-edge-taken-stroke, #14b8a6) 30%, transparent);
+}
+
+.flow-condition-node[data-flow-condition-branch-taken="true"] .flow-condition-handle--false {
+  opacity: 0.4;
+}
+
+.flow-condition-node[data-flow-condition-branch-taken="false"] .flow-condition-handle--false {
+  box-shadow: 0 0 0 3px color-mix(in srgb, #ef4444 30%, transparent);
+}
+
+.flow-condition-node[data-flow-condition-branch-taken="false"] .flow-condition-handle--true {
+  opacity: 0.4;
+}
+
+/* ----------------------------------------------------------------------------
+   Replay controls — default theme.
+   Reuses existing tokens — no new CSS variables introduced.
+   ---------------------------------------------------------------------------- */
+
+.flow-replay-controls {
+  background: var(--flow-node-bg, #1a1c23);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-replay-button {
+  background: transparent;
+  color: var(--flow-text-muted, #9598a5);
+}
+
+.flow-replay-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-replay-button--primary {
+  background: var(--flow-edge-stroke, #52525b);
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-replay-progress {
+  background: var(--flow-border-subtle, #2d3039);
+}
+
+.flow-replay-progress-fill {
+  background: var(--flow-edge-taken-stroke, #14b8a6);
+}
+
+.flow-replay-scrubber {
+  background: var(--flow-border-subtle, #2d3039);
+}
+
+.flow-replay-scrubber-fill {
+  background: var(--flow-edge-taken-stroke, #14b8a6);
+}
+
+.flow-replay-scrubber-thumb {
+  background: var(--flow-text-body, #e4e5ea);
+  border: 2px solid var(--flow-edge-taken-stroke, #14b8a6);
+}
+
+.flow-replay-time {
+  color: var(--flow-text-muted, #9598a5);
+}
+
+.flow-replay-speed {
+  background: transparent;
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  color: var(--flow-text-muted, #9598a5);
+}
+
+/* ----------------------------------------------------------------------------
+   Execution log — default theme.
+   Reuses existing tokens — no new CSS variables introduced.
+   ---------------------------------------------------------------------------- */
+
+.flow-execution-log {
+  background: var(--flow-node-bg, #1a1c23);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  color: var(--flow-text-body, #e4e5ea);
+  font-family: ui-sans-serif, system-ui, sans-serif;
+  font-size: 12px;
+}
+
+.flow-execution-log-header {
+  border-bottom: 1px solid var(--flow-border-subtle, #2d3039);
+  background: var(--flow-surface-alt, #23252e);
+}
+
+.flow-execution-log-title {
+  font-weight: 500;
+  font-size: 12px;
+}
+
+.flow-execution-log-filter {
+  background: var(--flow-node-bg, #1a1c23);
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  color: var(--flow-text-muted, #9598a5);
+  border-radius: 4px;
+  padding: 2px 6px;
+  font-size: 10px;
+  height: 22px;
+}
+
+.flow-execution-log-ts {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--flow-text-muted, #9598a5);
+  font-size: 10px;
+}
+
+.flow-execution-log-node-id {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-weight: 500;
+}
+
+.flow-execution-log-edge-id {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--flow-text-muted, #9598a5);
+}
+
+.flow-execution-log-duration {
+  color: var(--flow-text-muted, #9598a5);
+  font-size: 11px;
+}
+
+.flow-execution-log-empty {
+  color: var(--flow-text-muted, #9598a5);
+}
+
+.flow-execution-log-icon--enter {
+  color: var(--flow-edge-entering-stroke, #8b5cf6);
+}
+
+.flow-execution-log-icon--exit,
+.flow-execution-log-icon--complete,
+.flow-execution-log-icon--edge-taken {
+  color: var(--flow-edge-taken-stroke, #14b8a6);
+}
+
+.flow-execution-log-icon--fork {
+  color: #d4a85a;
+}
+
+.flow-execution-log-icon--error {
+  color: #ef4444;
+}
+
+.flow-execution-log-icon--start {
+  color: var(--flow-text-body, #e4e5ea);
+  font-weight: 500;
+}
+
+/* ----------------------------------------------------------------------------
+   Run / Stop / Reset trio — default theme.
+   Reuses existing tokens — no new CSS variables introduced.
+   ---------------------------------------------------------------------------- */
+
+.flow-run-button {
+  background: var(--flow-edge-taken-stroke, #14b8a6);
+  color: #fff;
+}
+
+.flow-run-button:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+.flow-stop-button {
+  background: transparent;
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  color: var(--flow-text-body, #e4e5ea);
+}
+
+.flow-stop-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.flow-reset-button {
+  background: transparent;
+  border: 1px solid var(--flow-border-subtle, #2d3039);
+  color: var(--flow-text-muted, #9598a5);
+}
+
+.flow-reset-button:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--flow-text-body, #e4e5ea);
 }

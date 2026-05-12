@@ -319,6 +319,42 @@ class AnimationDemo extends Component
 </div>
 ```
 
+## Tagging animations for bulk control *(v0.2.0-alpha)*
+
+Pass a `tag` (or `tags` array) on any animate call, then stop/pause/resume all animations matching the tag from another handler. Useful for ambient loops, progress indicators, or "cancel all running transitions" UX flows.
+
+```php
+// Start several animations all tagged 'progress-loop'
+#[Renderless]
+public function startProgressLoop(): void
+{
+    foreach ($this->nodes as $node) {
+        $this->flowAnimate([
+            'nodes' => [$node['id'] => ['position' => ['y' => 10]]],
+        ], [
+            'duration' => 1200,
+            'loop' => 'ping-pong',
+            'tag' => 'progress-loop',
+        ]);
+    }
+}
+
+// Later — pause, resume, or cancel the whole group
+#[Renderless]
+public function pauseLoop(): void { $this->flowPauseAll(['tag' => 'progress-loop']); }
+
+#[Renderless]
+public function resumeLoop(): void { $this->flowResumeAll(['tag' => 'progress-loop']); }
+
+#[Renderless]
+public function cancelLoop(): void
+{
+    $this->flowCancelAll(['tag' => 'progress-loop'], ['mode' => 'rollback']);
+}
+```
+
+`flowCancelAll()` accepts a stop mode: `'jump-end'` (default), `'rollback'` (revert to starting values), or `'freeze'` (leave mid-flight). See the AlpineFlow [stop modes](https://artisanflow.dev/docs/alpineflow/animation/animate#stop-modes) reference.
+
 ## Related
 
 - [Timeline](timeline.md) -- multi-step animations via Alpine

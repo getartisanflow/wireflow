@@ -2,19 +2,32 @@
 
 namespace ArtisanFlow\WireFlow;
 
+use ArtisanFlow\WireFlow\Console\InstallCommand;
 use ArtisanFlow\WireFlow\View\Components\Action;
 use ArtisanFlow\WireFlow\View\Components\Collapse;
 use ArtisanFlow\WireFlow\View\Components\Condense;
 use ArtisanFlow\WireFlow\View\Components\ContextMenu;
 use ArtisanFlow\WireFlow\View\Components\DragHandle;
 use ArtisanFlow\WireFlow\View\Components\EdgeToolbar;
+use ArtisanFlow\WireFlow\View\Components\FlowConditionNode;
+use ArtisanFlow\WireFlow\View\Components\FlowExecutionLog;
+use ArtisanFlow\WireFlow\View\Components\FlowReplayControls;
+use ArtisanFlow\WireFlow\View\Components\FlowResetButton;
+use ArtisanFlow\WireFlow\View\Components\FlowRunButton;
+use ArtisanFlow\WireFlow\View\Components\FlowStopButton;
+use ArtisanFlow\WireFlow\View\Components\FlowWait;
 use ArtisanFlow\WireFlow\View\Components\Handle;
 use ArtisanFlow\WireFlow\View\Components\Loading;
 use ArtisanFlow\WireFlow\View\Components\Panel;
 use ArtisanFlow\WireFlow\View\Components\Resizer;
+use ArtisanFlow\WireFlow\View\Components\SchemaDesigner;
+use ArtisanFlow\WireFlow\View\Components\SchemaEdgeInspector;
+use ArtisanFlow\WireFlow\View\Components\SchemaField;
+use ArtisanFlow\WireFlow\View\Components\SchemaNode;
+use ArtisanFlow\WireFlow\View\Components\SchemaNodeInspector;
+use ArtisanFlow\WireFlow\View\Components\SchemaRowInspector;
 use ArtisanFlow\WireFlow\View\Components\Toolbar;
 use ArtisanFlow\WireFlow\View\Components\WireFlow;
-use ArtisanFlow\WireFlow\Console\InstallCommand;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 
@@ -73,5 +86,18 @@ class WireFlowServiceProvider extends ServiceProvider
         Blade::component('flow-loading', Loading::class);
         Blade::component('flow-edge-toolbar', EdgeToolbar::class);
         Blade::component('flow-condense', Condense::class);
+        Blade::component('flow-wait', FlowWait::class);
+        Blade::component('flow-condition-node', FlowConditionNode::class);
+        Blade::component('flow-replay-controls', FlowReplayControls::class);
+        Blade::component('flow-execution-log', FlowExecutionLog::class);
+        Blade::component('flow-run-button', FlowRunButton::class);
+        Blade::component('flow-stop-button', FlowStopButton::class);
+        Blade::component('flow-reset-button', FlowResetButton::class);
+        Blade::component('flow-schema-node', SchemaNode::class);
+        Blade::component('schema-field', SchemaField::class);
+        Blade::component('schema-designer', SchemaDesigner::class);
+        Blade::component('schema-node-inspector', SchemaNodeInspector::class);
+        Blade::component('schema-row-inspector', SchemaRowInspector::class);
+        Blade::component('schema-edge-inspector', SchemaEdgeInspector::class);
     }
 }

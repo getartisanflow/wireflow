@@ -1,0 +1,276 @@
+<?php
+
+use Illuminate\Support\Facades\Blade;
+
+it('renders <x-schema-designer> with nodes and edges passed through', function () {
+    $html = Blade::render(
+        '<x-schema-designer :nodes="$nodes" :edges="$edges" />',
+        [
+            'nodes' => [
+                [
+                    'id' => 'user',
+                    'position' => ['x' => 0, 'y' => 0],
+                    'data' => [
+                        'label' => 'User',
+                        'fields' => [['name' => 'id', 'type' => 'uuid']],
+                    ],
+                ],
+            ],
+            'edges' => [],
+        ]
+    );
+
+    expect($html)->toContain('flow-schema-designer');
+    expect($html)->toContain('flow-schema-designer-inspector');
+    expect($html)->toContain('flow-container');
+    expect($html)->toContain('x-schema-node-inspector');
+    expect($html)->toContain('x-schema-row-inspector');
+    expect($html)->toContain('x-schema-edge-inspector');
+    // Nodes payload should be serialized into the x-data expression.
+    expect($html)->toContain('User');
+});
+
+it('defaults to avoidant edge type', function () {
+    $html = Blade::render('<x-schema-designer />');
+
+    expect($html)->toContain('avoidant');
+    expect($html)->toContain('defaultEdgeType');
+});
+
+it('forwards keyboardConnect default (true) into the canvas config', function () {
+    $html = Blade::render('<x-schema-designer />');
+
+    expect($html)->toContain('keyboardConnect');
+});
+
+it('forwards collapseBidirectionalEdges default (false) into the canvas config', function () {
+    $html = Blade::render('<x-schema-designer />');
+
+    expect($html)->toContain('collapseBidirectionalEdges');
+});
+
+it('allows overriding keyboard-connect and collapse-bidirectional-edges', function () {
+    $html = Blade::render(
+        '<x-schema-designer :keyboard-connect="false" :collapse-bidirectional-edges="true" />'
+    );
+
+    // Both names still present in the serialized config.
+    expect($html)->toContain('keyboardConnect');
+    expect($html)->toContain('collapseBidirectionalEdges');
+});
+
+it('uses named slot when node inspector is overridden', function () {
+    $html = Blade::render(<<<'BLADE'
+        <x-schema-designer>
+            <x-slot:node-inspector>
+                <p class="custom-node-inspector">CUSTOM_NODE</p>
+            </x-slot:node-inspector>
+        </x-schema-designer>
+    BLADE);
+
+    expect($html)->toContain('custom-node-inspector');
+    expect($html)->toContain('CUSTOM_NODE');
+    // When node slot is overridden, the default node-inspector directive should NOT appear,
+    // but the row + edge default directives should still be there.
+    expect($html)->not->toContain('x-schema-node-inspector');
+    expect($html)->toContain('x-schema-row-inspector');
+    expect($html)->toContain('x-schema-edge-inspector');
+});
+
+it('uses named slot when row inspector is overridden', function () {
+    $html = Blade::render(<<<'BLADE'
+        <x-schema-designer>
+            <x-slot:row-inspector>
+                <p class="custom-row-inspector">CUSTOM_ROW</p>
+            </x-slot:row-inspector>
+        </x-schema-designer>
+    BLADE);
+
+    expect($html)->toContain('custom-row-inspector');
+    expect($html)->toContain('CUSTOM_ROW');
+    expect($html)->not->toContain('x-schema-row-inspector');
+    expect($html)->toContain('x-schema-node-inspector');
+    expect($html)->toContain('x-schema-edge-inspector');
+});
+
+it('uses named slot when edge inspector is overridden', function () {
+    $html = Blade::render(<<<'BLADE'
+        <x-schema-designer>
+            <x-slot:edge-inspector>
+                <p class="custom-edge-inspector">CUSTOM_EDGE</p>
+            </x-slot:edge-inspector>
+        </x-schema-designer>
+    BLADE);
+
+    expect($html)->toContain('custom-edge-inspector');
+    expect($html)->toContain('CUSTOM_EDGE');
+    expect($html)->not->toContain('x-schema-edge-inspector');
+    expect($html)->toContain('x-schema-node-inspector');
+    expect($html)->toContain('x-schema-row-inspector');
+});
+
+it('defaults all three inspectors when no slots are passed', function () {
+    $html = Blade::render('<x-schema-designer />');
+
+    expect($html)->toContain('x-schema-node-inspector');
+    expect($html)->toContain('x-schema-row-inspector');
+    expect($html)->toContain('x-schema-edge-inspector');
+    // The default-UI template should also be stamped for each.
+    expect(substr_count($html, 'x-schema-default-ui'))->toBe(3);
+});
+
+it('forwards the default slot into the underlying <x-flow>', function () {
+    $html = Blade::render(<<<'BLADE'
+        <x-schema-designer>
+            <div class="my-panel-marker">INSIDE_FLOW</div>
+        </x-schema-designer>
+    BLADE);
+
+    expect($html)->toContain('my-panel-marker');
+    expect($html)->toContain('INSIDE_FLOW');
+});
+
+it('passes custom classes through to the root wrapper', function () {
+    $html = Blade::render('<x-schema-designer class="custom-wrapper" />');
+
+    expect($html)->toContain('flow-schema-designer');
+    expect($html)->toContain('custom-wrapper');
+});
+
+it('forwards @connect-validate attribute to the inner <x-flow> where it becomes a wireEvent', function () {
+    $html = Blade::render('<x-schema-designer @connect-validate="myValidator" />');
+
+    // The attribute must NOT end up on the outer <div class="flow-schema-designer"> wrapper.
+    // (If it did, the wireflow event bridge would never see it.)
+    expect($html)->not->toMatch('/<div[^>]*flow-schema-designer[^>]*@connect-validate/');
+
+    // It should be consumed by <x-flow>'s extractWireEvents(), which promotes it
+    // into the flowCanvas config as a connectValidator callback that calls
+    // $wire.call('myValidator', ...). So the method name should appear in the
+    // serialized x-data expression.
+    expect($html)->toContain('myValidator');
+    expect($html)->toContain('connectValidator');
+});
+
+it('forwards multiple wire event attributes to the inner <x-flow>', function () {
+    $html = Blade::render('<x-schema-designer @node-click="onClick" @connect="onConnect" />');
+
+    // Outer wrapper must not carry the event attributes.
+    expect($html)->not->toMatch('/<div[^>]*flow-schema-designer[^>]*@node-click/');
+    expect($html)->not->toMatch('/<div[^>]*flow-schema-designer[^>]*@connect=/');
+
+    // <x-flow>'s extractWireEvents bridges them into the wireEvents map,
+    // so both method names appear inside the serialized canvas config.
+    expect($html)->toContain('onClick');
+    expect($html)->toContain('onConnect');
+    expect($html)->toContain('wireEvents');
+});
+
+it('forwards x-on: prefixed event attributes to the inner <x-flow>', function () {
+    $html = Blade::render('<x-schema-designer x-on:node-click="xOnHandler" />');
+
+    expect($html)->not->toMatch('/<div[^>]*flow-schema-designer[^>]*x-on:node-click/');
+    expect($html)->toContain('xOnHandler');
+    expect($html)->toContain('wireEvents');
+});
+
+it('forwards wire: prefixed attributes to the inner <x-flow>', function () {
+    $html = Blade::render('<x-schema-designer wire:key="my-designer-key" />');
+
+    // wire:key should ride along on the inner flow-container, not on the outer wrapper.
+    expect($html)->not->toMatch('/<div[^>]*flow-schema-designer[^>]*wire:key/');
+    expect($html)->toContain('wire:key="my-designer-key"');
+});
+
+it('keeps class, id, data-*, and style on the outer wrapper', function () {
+    $html = Blade::render(
+        '<x-schema-designer class="my-designer" id="designer-1" data-testid="t1" style="color:red" />'
+    );
+
+    // The outer <div class="... flow-schema-designer ..."> should carry each of these.
+    expect($html)->toMatch('/<div[^>]*flow-schema-designer[^>]*my-designer/');
+    expect($html)->toMatch('/<div[^>]*flow-schema-designer[^>]*id="designer-1"/');
+    expect($html)->toMatch('/<div[^>]*flow-schema-designer[^>]*data-testid="t1"/');
+    expect($html)->toMatch('/<div[^>]*flow-schema-designer[^>]*style="color:red/');
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// Full <x-flow> prop forwarding (drop-in parity)
+// ───────────────────────────────────────────────────────────────────────────
+
+it('forwards :controls to the inner flow', function () {
+    $html = Blade::render('<x-schema-designer :controls="true" />');
+    // <x-flow> emits `"controls":true` inside its x-data config (using
+    // Illuminate\Support\Js which escapes `"` to `\u0022`).
+    expect($html)->toMatch('/\\\\u0022controls\\\\u0022\s*:\s*true/');
+});
+
+it('forwards :fit-view-on-init to the inner flow', function () {
+    $html = Blade::render('<x-schema-designer :fit-view-on-init="true" />');
+    expect($html)->toMatch('/\\\\u0022fitViewOnInit\\\\u0022\s*:\s*true/');
+});
+
+it('forwards :background-gap to the inner flow', function () {
+    $html = Blade::render('<x-schema-designer :background-gap="40" />');
+    expect($html)->toMatch('/\\\\u0022backgroundGap\\\\u0022\s*:\s*40/');
+});
+
+it('forwards :minimap to the inner flow', function () {
+    $html = Blade::render('<x-schema-designer :minimap="true" />');
+    expect($html)->toMatch('/\\\\u0022minimap\\\\u0022\s*:\s*true/');
+});
+
+it('forwards :prevent-cycles to the inner flow', function () {
+    $html = Blade::render('<x-schema-designer :prevent-cycles="true" />');
+    expect($html)->toMatch('/\\\\u0022preventCycles\\\\u0022\s*:\s*true/');
+});
+
+it('forwards the node slot to the inner flow', function () {
+    $html = Blade::render(<<<'BLADE'
+        <x-schema-designer>
+            <x-slot:node>
+                <div class="custom-node">NODE TEMPLATE</div>
+            </x-slot:node>
+        </x-schema-designer>
+    BLADE);
+    // The preset should stamp the node slot into flow.blade.php's default-node <template>
+    expect($html)->toContain('custom-node');
+    expect($html)->toContain('NODE TEMPLATE');
+    expect($html)->toContain('id="wireflow-node-default"');
+});
+
+it('caller-provided config overrides preset defaults', function () {
+    $html = Blade::render("<x-schema-designer :config=\"['keyboardConnect' => false]\" />");
+    expect($html)->toMatch('/\\\\u0022keyboardConnect\\\\u0022\s*:\s*false/');
+});
+
+it('schema-specific defaults still apply when no overrides', function () {
+    $html = Blade::render('<x-schema-designer />');
+    expect($html)->toMatch('/\\\\u0022keyboardConnect\\\\u0022\s*:\s*true/');
+    // defaultEdgeType = 'avoidant' — should appear in the config
+    expect($html)->toMatch('/\\\\u0022defaultEdgeType\\\\u0022\s*:\s*\\\\u0022avoidant\\\\u0022/');
+});
+
+// ───────────────────────────────────────────────────────────────────────────
+// containerHeight forwarding
+// ───────────────────────────────────────────────────────────────────────────
+
+it('forwards :container-height to the inner flow as "fill"', function () {
+    $html = Blade::render('<x-schema-designer container-height="fill" />');
+    expect($html)->toMatch('/\\\\u0022containerHeight\\\\u0022\s*:\s*\\\\u0022fill\\\\u0022/');
+});
+
+it('forwards :container-height as number', function () {
+    $html = Blade::render('<x-schema-designer :container-height="600" />');
+    expect($html)->toMatch('/\\\\u0022containerHeight\\\\u0022\s*:\s*600/');
+});
+
+it('forwards :container-height as custom string', function () {
+    $html = Blade::render('<x-schema-designer container-height="80vh" />');
+    expect($html)->toMatch('/\\\\u0022containerHeight\\\\u0022\s*:\s*\\\\u002280vh\\\\u0022/');
+});
+
+it('omits containerHeight from config when prop is unset (default)', function () {
+    $html = Blade::render('<x-schema-designer />');
+    expect($html)->not->toMatch('/\\\\u0022containerHeight\\\\u0022/');
+});

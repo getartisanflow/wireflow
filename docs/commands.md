@@ -29,6 +29,23 @@ If imports already exist in your files, they won't be duplicated.
 | Flag | Description |
 |------|-------------|
 | `--force` | Overwrite existing config and asset files |
+| `--with=*` | Install addons non-interactively. Repeat the flag for multiple addons (e.g. `--with=workflow`). |
+
+### Addons
+
+When you run the command interactively, WireFlow prompts you to pick optional addons to install. Each selected addon adds the matching import and `Alpine.plugin()` registration to `resources/js/app.js`.
+
+| Addon | Description |
+|-------|-------------|
+| `workflow` | `$flow.run()` execution helper, condition nodes, and edge state mirroring. |
+
+Use `--with` to skip the prompt in CI, containers, or scripts:
+
+```bash
+php artisan wireflow:install --no-interaction --with=workflow
+```
+
+Unknown addon names are warned but don't fail the command. Running `wireflow:install` again safely re-registers any missing imports without duplicating them.
 
 ### After running
 

@@ -185,6 +185,119 @@ class ParticleDemo extends Component
 </div>
 ```
 
+## v0.2.0-alpha additions
+
+### More firing methods
+
+Four additional server-side particle methods cover cases beyond "fire one particle on an existing edge":
+
+| Method | What it does |
+|---|---|
+| `flowSendParticleAlongPath(string $path, array $options)` | Fire along an arbitrary SVG path string — no edge required |
+| `flowSendParticleBetween(string $sourceId, string $targetId, array $options)` | Fire along a straight line between two node centers |
+| `flowSendParticleBurst(string $edgeId, array $options)` | Fire N particles on one edge, staggered in time (`count`, `stagger`) |
+| `flowSendConverging(array $edgeIds, array $options)` | Fire particles from multiple edges that converge at a target node simultaneously |
+
+```php
+// Arbitrary path — good for ad-hoc visualizations (e.g. a "transfer" effect
+// between canvases or elements that aren't connected by an edge)
+$this->flowSendParticleAlongPath('M 60 180 Q 220 40 380 180', [
+    'color' => '#8b5cf6',
+    'duration' => 1600,
+]);
+
+// Burst of 6 orbs, 120ms apart
+$this->flowSendParticleBurst('e-main', [
+    'count' => 6,
+    'stagger' => 120,
+    'renderer' => 'orb',
+    'size' => 5,
+    'duration' => 1000,
+]);
+
+// Converging fan-in — 3 sources arrive at a sink node simultaneously
+$this->flowSendConverging(['e-src-1', 'e-src-2', 'e-src-3'], [
+    'targetNodeId' => 'sink',
+    'synchronize' => 'arrival',
+    'duration' => 1400,
+]);
+```
+
+### Renderers — including the beam
+
+`$options['renderer']` picks which visual renderer draws the particle. Built-ins: `'circle'` *(default)*, `'orb'`, `'beam'`, `'pulse'`, `'image'`.
+
+The **beam** renderer is the photogenic one — it renders as a traveling segment of the path itself (follows curvature correctly on bezier edges) and supports multi-stop gradients painted tail→head:
+
+```php
+$this->flowSendParticle('e-1', [
+    'renderer' => 'beam',
+    'length' => 60,          // beam length in SVG user units
+    'width' => 4,            // stroke thickness
+    'gradient' => [
+        ['offset' => 0,    'color' => '#8B5CF6', 'opacity' => 0],    // transparent tail
+        ['offset' => 0.7,  'color' => '#D946EF', 'opacity' => 0.9],  // magenta mid
+        ['offset' => 1,    'color' => '#fff',    'opacity' => 1],    // bright head
+    ],
+]);
+```
+
+By default the beam's tail catches up to the target after the head arrives (follow-through). If you need `onComplete`-equivalent timing at head-arrival, pass `'followThrough' => false`:
+
+```php
+$this->flowSendParticle('e-1', [
+    'renderer' => 'beam',
+    'followThrough' => false,  // beam vanishes when head hits target
+    'duration' => 800,
+]);
+```
+
+All beam options pass through transparently — refer to the AlpineFlow [Beam renderer](https://artisanflow.dev/docs/alpineflow/animation/particles#beam-renderer) docs for the full option reference.
+
+### Bulk animation control by tag
+
+Long-running animations (loops, ambient effects) can be tagged and then cancelled/paused/resumed as a group from the server:
+
+```php
+// Start an ambient loop, all tagged 'ambient'
+$this->flowAnimate([
+    'nodes' => [
+        'pulse-1' => ['position' => ['x' => 200]],
+        'pulse-2' => ['position' => ['x' => 200]],
+    ],
+], [
+    'duration' => 3000,
+    'loop' => true,
+    'tag' => 'ambient',
+]);
+
+// …later, pause everything with that tag
+$this->flowPauseAll(['tag' => 'ambient']);
+$this->flowResumeAll(['tag' => 'ambient']);
+
+// Or cancel with a specific stop mode
+$this->flowCancelAll(['tag' => 'ambient'], ['mode' => 'rollback']);
+```
+
+`$filter` accepts `['tag' => 'name']` or `['tags' => ['a', 'b']]`. `$options` for `flowCancelAll` accepts `['mode' => 'jump-end' | 'rollback' | 'freeze']` — see the AlpineFlow [stop modes](https://artisanflow.dev/docs/alpineflow/animation/animate#stop-modes) reference for behavior.
+
+### flowHighlightPath option pass-through (bug fix)
+
+Prior to v0.2.0-alpha, `flowHighlightPath()` silently dropped any option other than `color`/`size`/`duration`/`delay`. This is now fixed — all particle options pass through, so you can use the beam renderer with gradients along a highlighted path:
+
+```php
+$this->flowHighlightPath(['start', 'process', 'review', 'done'], [
+    'renderer' => 'beam',
+    'length' => 50,
+    'gradient' => [
+        ['offset' => 0, 'color' => '#8b5cf6', 'opacity' => 0],
+        ['offset' => 1, 'color' => '#fff',    'opacity' => 1],
+    ],
+    'duration' => 900,
+    'delay' => 200,
+]);
+```
+
 ::demo
 ```toolbar
 <button id="demo-particle-fire" class="rounded-md border border-border-subtle bg-elevated px-3 py-1 font-mono text-[11px] text-text-muted cursor-pointer hover:text-text-body">Fire</button>

@@ -75,7 +75,7 @@ return [
 
 ## Passing AlpineFlow config
 
-For AlpineFlow-specific options not exposed as `<x-flow>` props, use the `config` prop:
+The [`<x-flow>`](components/flow.md) component promotes the most common options to named props. For everything else, use the `config` prop:
 
 ```blade
 <x-flow
@@ -163,5 +163,5 @@ See [WithWireFlow Trait](server/trait.md#layout--state) for details.
 ## Related
 
 - [Installation](getting-started/installation.md) — importing CSS and JS
-- [Components](components/_index.md) — `<x-flow>` props
+- [x-flow component](components/flow.md) — full props reference
 - [AlpineFlow Configuration](https://artisanflow.dev/docs/alpineflow/configuration) — full config reference
