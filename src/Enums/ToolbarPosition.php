@@ -1,6 +1,6 @@
 <?php
 
-namespace ArtisanFlow\WireFlow\View\Components;
+namespace ArtisanFlow\WireFlow\Enums;
 
 /**
  * Valid `position` values for <x-flow-toolbar> — maps to the alpineflow

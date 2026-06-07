@@ -1,6 +1,6 @@
 <?php
 
-namespace ArtisanFlow\WireFlow\View\Components;
+namespace ArtisanFlow\WireFlow\Enums;
 
 /**
  * Valid `show` values shared by <x-flow-toolbar> and <x-flow-edge-toolbar>:

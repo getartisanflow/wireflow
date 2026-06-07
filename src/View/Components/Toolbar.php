@@ -3,6 +3,9 @@
 namespace ArtisanFlow\WireFlow\View\Components;
 
 use ArtisanFlow\WireFlow\Concerns\ValidatesEnumProps;
+use ArtisanFlow\WireFlow\Enums\ToolbarAlign;
+use ArtisanFlow\WireFlow\Enums\ToolbarPosition;
+use ArtisanFlow\WireFlow\Enums\ToolbarShow;
 use Illuminate\View\Component;
 
 class Toolbar extends Component

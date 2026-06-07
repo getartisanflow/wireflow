@@ -1,6 +1,6 @@
 <?php
 
-namespace ArtisanFlow\WireFlow\View\Components;
+namespace ArtisanFlow\WireFlow\Enums;
 
 /**
  * Valid `align` values for <x-flow-toolbar>. Flow-relative (not physical):
