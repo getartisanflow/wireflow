@@ -2,10 +2,16 @@
 
 namespace ArtisanFlow\WireFlow\View\Components;
 
+use ArtisanFlow\WireFlow\Concerns\ValidatesEnumProps;
+use ArtisanFlow\WireFlow\Enums\ToolbarAlign;
+use ArtisanFlow\WireFlow\Enums\ToolbarPosition;
+use ArtisanFlow\WireFlow\Enums\ToolbarShow;
 use Illuminate\View\Component;
 
 class Toolbar extends Component
 {
+    use ValidatesEnumProps;
+
     public string $directive;
 
     public function __construct(
@@ -14,6 +20,10 @@ class Toolbar extends Component
         public int $offset = 10,
         public string $show = 'selected',
     ) {
+        self::validateEnum(ToolbarPosition::class, $position, 'position');
+        self::validateEnum(ToolbarAlign::class, $align, 'align');
+        self::validateEnum(ToolbarShow::class, $show, 'show');
+
         $this->directive = "x-flow-node-toolbar:{$this->position}";
         if ($this->align !== 'center') {
             $this->directive .= ".{$this->align}";

@@ -103,6 +103,13 @@ Audit follow-ups — trait doc cross-link + internal notes.
 - `docs/server/trait.md` — RunState section renamed to "Workflow & RunState" and now lists `flowRun()` alongside `flowSetNodeState()` / `flowResetStates()`, with a cross-link to `docs/addons/workflow.md` and the matching `<x-flow-run-button>` / `<x-flow-stop-button>` / `<x-flow-reset-button>` / `<x-flow-replay-controls>` / `<x-flow-execution-log>` components.
 - `CLAUDE.md` — committed the repo-internal working notes (tech stack, test/format commands, dist resync procedure, branching rules) for human and AI contributors working inside the package.
 
+---
+
+Toolbar enum-prop validation.
+
+### Changed (alpha-breaking)
+- `<x-flow-toolbar>` and `<x-flow-edge-toolbar>` now validate their enum props in the constructor and throw `InvalidArgumentException` (naming the valid values) instead of silently falling back. Covers `position` (`top`/`bottom`/`left`/`right`), `align` (`center`/`start`/`end`), and `show` (`selected`/`always`). Previously an unknown value — e.g. the pre-#22 `align="right"` — was passed through as an Alpine modifier and silently centered. Backed by new `ToolbarPosition` / `ToolbarAlign` / `ToolbarShow` enums and a `ValidatesEnumProps` concern.
+
 ## v0.1.2-alpha — 2026-04-03
 
 ### Fixed
