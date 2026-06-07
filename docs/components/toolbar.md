@@ -49,6 +49,8 @@ A floating toolbar that appears adjacent to a node. By default it shows when the
 | `offset` | `int` | `10` | Distance from node in pixels |
 | `show` | `string` | `'selected'` | `'selected'` or `'always'` |
 
+`position`, `align`, and `show` are validated: an unrecognized value throws an `InvalidArgumentException` naming the valid options, rather than silently falling back to the default.
+
 ## Usage
 
 Place `<x-flow-toolbar>` inside your node template:
