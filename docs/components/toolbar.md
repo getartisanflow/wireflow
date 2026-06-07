@@ -45,7 +45,7 @@ A floating toolbar that appears adjacent to a node. By default it shows when the
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `position` | `string` | `'top'` | `'top'`, `'bottom'`, `'left'`, `'right'` |
-| `align` | `string` | `'center'` | `'center'`, `'left'`, `'right'` |
+| `align` | `string` | `'center'` | `'center'`, `'start'`, `'end'` |
 | `offset` | `int` | `10` | Distance from node in pixels |
 | `show` | `string` | `'selected'` | `'selected'` or `'always'` |
 
@@ -79,8 +79,8 @@ Show the toolbar regardless of selection state:
 ### Position and alignment
 
 ```blade
-{{-- Bottom-right aligned --}}
-<x-flow-toolbar position="bottom" align="right">
+{{-- Bottom-end aligned --}}
+<x-flow-toolbar position="bottom" align="end">
     <button @click="removeNodes([node.id])">Delete</button>
 </x-flow-toolbar>
 
