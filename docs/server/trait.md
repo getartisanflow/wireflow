@@ -201,12 +201,15 @@ public function redo(): void
 }
 ```
 
-## RunState
+## Workflow & RunState
 
 | Method | Description |
 |--------|-------------|
+| `$this->flowRun(string $startId, array $options)` | Trigger a `$flow.run()` on the canvas, starting from `$startId`. Server-side handlers are not exposed — pass `options` (e.g. `payload`, `defaultDurationMs`, `particleOnEdges`) and define handlers in client-side JS via the workflow addon. |
 | `$this->flowSetNodeState(string\|array $ids, string $state)` | Set `runState` on one or more nodes. Auto-syncs server-side `$nodes`. Valid states: `pending`, `running`, `completed`, `failed`, `skipped` |
 | `$this->flowResetStates()` | Clear `runState` from all nodes. Auto-syncs server-side `$nodes` |
+
+These methods require the [workflow addon](../addons/workflow.md) to be loaded on the client. The addon also ships the `<x-flow-run-button>`, `<x-flow-stop-button>`, `<x-flow-reset-button>`, `<x-flow-replay-controls>`, and `<x-flow-execution-log>` components that pair with these trait methods.
 
 ### RunState example
 
