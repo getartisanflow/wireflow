@@ -40,7 +40,8 @@
     "require-dev": {
         "orchestra/testbench": "^11.0",
         "pestphp/pest": "^4.4",
-        "pestphp/pest-plugin-laravel": "^4.1"
+        "pestphp/pest-plugin-laravel": "^4.1",
+        "laravel/pint": "^1.0"
     },
     "config": {
         "allow-plugins": {
