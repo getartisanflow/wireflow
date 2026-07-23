@@ -22,10 +22,10 @@ namespace ArtisanFlow\WireFlow\Concerns;
  * @method void onNodeExpand(string $nodeId)
  * @method void onNodeReparent(string $nodeId, ?string $newParentId, ?string $oldParentId)
  * @method void onNodeContextMenu(string $nodeId, array $screenPosition)
- * @method void onNodesChange(array $changes)
+ * @method void onNodesChange(array $changes) // $changes = ['type' => 'add'|'remove', 'nodes' => [...], 'origin' => 'drop'|'paste'|'api'|'load']
  * @method void onEdgeClick(string $edgeId)
  * @method void onEdgeContextMenu(string $edgeId, array $screenPosition)
- * @method void onEdgesChange(array $changes)
+ * @method void onEdgesChange(array $changes) // $changes = ['type' => 'add'|'remove', 'edges' => [...], 'origin' => 'drop'|'paste'|'api'|'load']
  * @method void onReconnect(string $oldEdgeId, array $newConnection)
  * @method void onReconnectStart(string $edgeId, string $handleType)
  * @method void onReconnectEnd(string $edgeId, bool $successful)
@@ -47,6 +47,13 @@ namespace ArtisanFlow\WireFlow\Concerns;
  * above, forwarded via the `flow-*` DOM events / Livewire. No handler signature
  * changes: the added JS argument is a client convenience, not part of the
  * server bridge.
+ *
+ * Note: `onNodesChange` / `onEdgesChange` now receive an `origin` key in their
+ * `$changes` payload — one of `'drop'` (drag-drop), `'paste'` (clipboard),
+ * `'load'` (bulk `fromObject`/reset) or `'api'` (a direct call). Forwarded
+ * automatically by the wire bridge (the whole change detail is passed through),
+ * so a handler can persist only user intent, e.g.
+ * `if (($changes['origin'] ?? null) === 'drop') { … }`.
  */
 trait WithWireFlow
 {
