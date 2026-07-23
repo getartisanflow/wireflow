@@ -108,7 +108,7 @@ Audit follow-ups — trait doc cross-link + internal notes.
 Toolbar enum-prop validation.
 
 ### Changed (alpha-breaking)
-- `<x-flow-toolbar>` and `<x-flow-edge-toolbar>` now validate their enum props in the constructor and throw `InvalidArgumentException` (naming the valid values) instead of silently falling back. Covers `position` (`top`/`bottom`/`left`/`right`), `align` (`center`/`start`/`end`), and `show` (`selected`/`always`). Previously an unknown value — e.g. the pre-#22 `align="right"` — was passed through as an Alpine modifier and silently centered. Backed by new `ToolbarPosition` / `ToolbarAlign` / `ToolbarShow` enums and a `ValidatesEnumProps` concern.
+- `<x-flow-toolbar>` validates `position` (`top`/`bottom`/`left`/`right`), `align` (`center`/`start`/`end`), and `show` (`selected`/`always`); `<x-flow-edge-toolbar>` validates `show` only — its `position` is a `float` offset along the edge, not an enum. Both now throw `InvalidArgumentException` (naming the valid values) in the constructor instead of silently falling back. Previously an unknown value — e.g. the pre-#22 `align="right"` — was passed through as an Alpine modifier and silently centered. Backed by new `ToolbarPosition` / `ToolbarAlign` / `ToolbarShow` enums and a `ValidatesEnumProps` concern.
 
 ## v0.1.2-alpha — 2026-04-03
 
