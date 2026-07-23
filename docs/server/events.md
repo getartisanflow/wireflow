@@ -156,7 +156,10 @@ public function onNodeContextMenu(
 
 public function onNodesChange(array $changes): void {
     // Batch notification of node additions or removals
-    // $changes = ['type' => 'add'|'remove', 'nodes' => [['id' => '...', ...], ...]]
+    // $changes = ['type' => 'add'|'remove', 'nodes' => [['id' => '...', ...], ...],
+    //             'origin' => 'drop'|'paste'|'api'|'load']
+    // Filter on origin to persist only user intent, e.g.:
+    //   if (($changes['origin'] ?? null) === 'drop') { /* the user dropped a node */ }
 }
 ```
 
@@ -176,7 +179,8 @@ public function onEdgeContextMenu(
 
 public function onEdgesChange(array $changes): void {
     // Batch notification of edge additions or removals
-    // $changes = ['type' => 'add'|'remove', 'edges' => [['id' => '...', ...], ...]]
+    // $changes = ['type' => 'add'|'remove', 'edges' => [['id' => '...', ...], ...],
+    //             'origin' => 'drop'|'paste'|'api'|'load']
 }
 
 public function onReconnect(
@@ -373,10 +377,10 @@ class PersistentFlow extends Component
 | `node-expand` | `onNodeExpand` | `string $nodeId` |
 | `node-reparent` | `onNodeReparent` | `string $nodeId, ?string $newParentId, ?string $oldParentId` |
 | `node-context-menu` | `onNodeContextMenu` | `string $nodeId, array $screenPosition` |
-| `nodes-change` | `onNodesChange` | `array $changes` |
+| `nodes-change` | `onNodesChange` | `array $changes` (incl. `origin`) |
 | `edge-click` | `onEdgeClick` | `string $edgeId` |
 | `edge-context-menu` | `onEdgeContextMenu` | `string $edgeId, array $screenPosition` |
-| `edges-change` | `onEdgesChange` | `array $changes` |
+| `edges-change` | `onEdgesChange` | `array $changes` (incl. `origin`) |
 | `reconnect` | `onReconnect` | `string $oldEdgeId, array $newConnection` |
 | `reconnect-start` | `onReconnectStart` | `string $edgeId, string $handleType` |
 | `reconnect-end` | `onReconnectEnd` | `string $edgeId, bool $successful` |
