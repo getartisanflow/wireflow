@@ -8,5 +8,4 @@ section: Reference
 
 | Version | Focus |
 |---------|-------|
-| [v0.2.1-alpha](v0.2.1-alpha.md) | Resyncs the bundled AlpineFlow v0.2.1-alpha engine (broad correctness/perf pass — routing, culling, history, interaction). WireFlow-native: enum validation throws, server-state-syncing trait methods, `<x-flow>` `wire:ignore` default. |
-| [v0.2.0-alpha](v0.2.0-alpha.md) | New `WithWireFlow` trait methods for particles and bulk control. First upgrade since the v0.1.x line. |
+| [v0.2.1-alpha](v0.2.1-alpha.md) | The v0.1.x → v0.2.1-alpha upgrade — resyncs the bundled AlpineFlow engine (routing, culling, history, interaction), the WireFlow-native changes (enum validation throws, server-state-syncing traits, `<x-flow>` `wire:ignore` default), and the particle/bulk-animation trait surface staged as the never-tagged v0.2.0-alpha. |
