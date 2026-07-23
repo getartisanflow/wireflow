@@ -39,6 +39,14 @@ namespace ArtisanFlow\WireFlow\Concerns;
  * @method void onRowSelect(string $nodeId, string $attrId)
  * @method void onRowDeselect(string $nodeId, string $attrId)
  * @method void onRowSelectionChange(array $rows)
+ *
+ * Note: alpineflow now passes the live canvas context as a second argument to
+ * its JS config callbacks (onConnect(detail, ctx), onDrop(detail, ctx), …).
+ * That context is a client-only object and never crosses to PHP — these
+ * server-side handlers still receive only the serialized event data documented
+ * above, forwarded via the `flow-*` DOM events / Livewire. No handler signature
+ * changes: the added JS argument is a client convenience, not part of the
+ * server bridge.
  */
 trait WithWireFlow
 {
