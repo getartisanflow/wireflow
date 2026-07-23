@@ -12,10 +12,17 @@ class EdgeToolbar extends Component
 
     public string $directive;
 
+    /**
+     * @param  string|null  $target  CSS selector of the canvas to act on when this
+     *                               toolbar is placed OUTSIDE the canvas element.
+     *                               Rendered as `data-flow-target` for alpineflow's
+     *                               shared canvas resolver.
+     */
     public function __construct(
         public float $position = 0.5,
         public bool $below = false,
         public string $show = 'selected',
+        public ?string $target = null,
     ) {
         self::validateEnum(ToolbarShow::class, $show, 'show');
 
