@@ -94,6 +94,8 @@ All props are optional unless noted. Props whose default value appears as `—` 
 |------|------|---------|-------------|
 | `config` | `array` | `[]` | Pass-through of AlpineFlow config keys not promoted to props. Merged last, so it overrides everything. See [Configuration](../configuration.md#passing-alpineflow-config). |
 | `wireIgnore` | `bool` | `true` | Adds `wire:ignore` to the canvas `<div>` so Livewire morphing never clobbers Alpine-managed DOM. Set to `false` only if you intentionally want Livewire to re-render the entire canvas element. |
+| `containerHeight` | `string\|int\|null` | `—` | Canvas height. A number is pixels; a string is any CSS length (`'80vh'`, `'fill'` for 100% of the parent). Overrides the `--flow-container-height` CSS variable. |
+| `fullscreenTarget` | `mixed` | `—` | Element the fullscreen toggle expands — a CSS selector for the element to take fullscreen instead of the canvas container itself. |
 
 ## Slots
 

@@ -47,7 +47,8 @@ Click an edge to see its toolbar appear:
 |------|------|---------|-------------|
 | `position` | `float` | `0.5` | Position along the edge path, from `0` (source) to `1` (target) |
 | `below` | `bool` | `false` | Render below the path instead of above |
-| `show` | `string` | `'selected'` | When to show: `'selected'` (only when edge is selected) or `'always'` |
+| `show` | `string` | `'selected'` | When to show: `'selected'` (only when edge is selected) or `'always'`. An unrecognized value throws `InvalidArgumentException`. |
+| `target` | `string\|null` | `—` | CSS selector of the canvas to act on when the toolbar is placed **outside** the `<x-flow>` element. Rendered as `data-flow-target` for AlpineFlow's shared canvas resolver. |
 
 ## Usage
 

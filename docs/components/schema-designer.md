@@ -70,7 +70,7 @@ That renders the canvas, wires the default node / row / edge inspectors, enables
 | `keyboardConnect` | `bool` | `true` | Enable the addon's keyboard-to-connect flow (select a row, press a key, click another row). |
 | `collapseBidirectionalEdges` | `bool` | `false` | When `true`, edges between the same two nodes in opposite directions are visually merged into a single two-headed arrow. |
 
-The preset passes the last two props through to the addon via the canvas `config` (`keyboardConnect`, `collapseBidirectionalEdges`). All other [`<x-flow>` props](flow.md#props) are not exposed directly — if you need to customise the canvas further, drop down to `<x-flow>` and add the three `x-schema-*-inspector` mount points by hand (see [`<x-schema-node-inspector>`](schema-inspector.md)).
+The table above lists the schema-specific props; **every other [`<x-flow>` prop](flow.md#props) is forwarded to the underlying `<x-flow>` one-to-one** (`viewport`, `sync`, `listen`, `background`, `minimap`, `controls`, `pannable`, `zoomable`, `fitView`, `snap`, `edgesReconnectable`, `interactive`, `nodeTypes`, `config`, `minZoom`/`maxZoom`, `preventCycles`, `colorMode`, `selectionOnDrag`, `computeMode`, `fitViewOnInit`, `history`, `autoLayout`, `backgroundGap`, `wireIgnore`, `fullscreenTarget`, `containerHeight`), so this preset is a true drop-in replacement for `<x-flow>` with the schema inspectors already wired. Drop down to a raw `<x-flow>` only if you want to place the three `x-schema-*-inspector` mount points by hand (see [`<x-schema-node-inspector>`](schema-inspector.md)).
 
 ## Slot overrides
 
