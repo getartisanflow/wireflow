@@ -665,5 +665,5 @@ class WhiteboardDemo extends Component
 
 ## Related
 
-- [Installation](../installation.md#optional-addons) -- addon setup
+- [Installation](../getting-started/installation.md#optional-addons) -- addon setup
 - [Collaboration](collab.md) -- annotations sync with Yjs
