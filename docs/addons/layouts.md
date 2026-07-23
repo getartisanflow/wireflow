@@ -384,6 +384,6 @@ The transition duration for animated layouts can be customized via CSS:
 
 ## Related
 
-- [Installation](../installation.md#optional-addons) -- addon setup
+- [Installation](../getting-started/installation.md#optional-addons) -- addon setup
 - [Server Commands](../server/trait.md#layout--state) -- `flowLayout()` trait method
 - [Animation Basics](../animation/basics.md) -- animating node positions

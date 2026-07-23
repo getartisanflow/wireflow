@@ -48,7 +48,7 @@ A floating overlay panel anchored to a position within the canvas. Panels stay f
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `position` | `string` | `'top-left'` | Anchor position (see below) |
+| `position` | `string` | `'top-left'` | Anchor position (see below). An unrecognized value throws `InvalidArgumentException`. |
 | `resizable` | `bool` | `false` | Enable drag-to-resize |
 
 ### Positions

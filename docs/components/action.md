@@ -47,6 +47,7 @@ Declarative canvas action buttons that map to common flow canvas operations. Eac
 | Prop | Type | Required | Default | Description |
 |------|------|----------|---------|-------------|
 | `type` | `string` | Yes | — | Action type: `'undo'`, `'redo'`, `'fit-view'`, `'zoom-in'`, `'zoom-out'`, `'toggle-interactive'`, `'clear'`, `'reset'`, `'export'` |
+| `target` | `string\|null` | No | `—` | CSS selector of the canvas to act on when the button is placed **outside** the `<x-flow>` element (a sidebar or toolbar). Rendered as `data-flow-target`, which AlpineFlow's shared canvas resolver reads. Omit it when the button lives inside the canvas. |
 
 ## Usage
 
