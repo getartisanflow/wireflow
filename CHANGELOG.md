@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.2.2-alpha — 2026-08-05
+
+### Fixed — right-click no longer dismisses the context menu (via the bundled engine)
+
+Resyncs the bundled AlpineFlow engine to [v0.2.2-alpha](https://github.com/getartisanflow/alpineflow/blob/main/CHANGELOG.md#v022-alpha--2026-08-05), which fixes a right-click that could start a canvas pan and dismiss the context menu it just opened. WireFlow users receive it on upgrade + asset republish (`php artisan wireflow:install --force` + `npm run build`) — there are no WireFlow-side changes.
+
 ## v0.2.1-alpha — 2026-08-04
 
 > Companion release: [AlpineFlow v0.2.1-alpha](https://github.com/getartisanflow/alpineflow/blob/main/CHANGELOG.md#v021-alpha--2026-08-04) ships the underlying Tier A/B/C core polish, D2 runState, workflow addon, and schema addon that this release bundles and wraps.

@@ -2247,14 +2247,7 @@ function os(t) {
       const d = !c.touches || c.touches.length < 2;
       if (s?.() && d || !e && !a?.() && d || !n && !d) return !1;
     }
-    if (c.type === "mousedown") {
-      if (a?.()) return !0;
-      if (!e) return !1;
-      if (Array.isArray(l))
-        return l.includes(c.button);
-      if (l === !1) return !1;
-    }
-    return !0;
+    return c.type === "mousedown" ? a?.() ? !0 : e ? Array.isArray(l) ? l.includes(c.button) : l === !1 ? !1 : !c.button : !1 : !0;
   };
 }
 const lf = 300, cf = 1.5;
