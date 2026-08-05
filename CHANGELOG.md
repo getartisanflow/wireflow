@@ -1,8 +1,8 @@
 # Changelog
 
-## v0.2.1-alpha — 2026-04-14
+## v0.2.1-alpha — 2026-08-04
 
-> Companion release: [AlpineFlow v0.2.1-alpha](https://github.com/getartisanflow/alpineflow/blob/main/CHANGELOG.md#v021-alpha--2026-04-14) ships the underlying Tier A/B/C core polish, D2 runState, workflow addon, and schema addon that this release bundles and wraps.
+> Companion release: [AlpineFlow v0.2.1-alpha](https://github.com/getartisanflow/alpineflow/blob/main/CHANGELOG.md#v021-alpha--2026-08-04) ships the underlying Tier A/B/C core polish, D2 runState, workflow addon, and schema addon that this release bundles and wraps.
 
 ### Added
 - **AlpineFlow v0.2.1-alpha bundle** — includes Tier A measurement/layout lifecycle fixes, Tier B API additions (B1–B6), Tier C convenience/polish (C1–C4), D2 runState, and the workflow addon

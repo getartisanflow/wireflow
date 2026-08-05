@@ -1140,7 +1140,7 @@
 .flow-devtools {
     position: absolute;
     bottom: 12px;
-    left: 56px;
+    left: 12px;
     z-index: 60;
     display: flex;
     align-items: flex-end;
@@ -1149,6 +1149,12 @@
 }
 .flow-devtools > * {
     pointer-events: auto;
+}
+/* The zoom controls live bottom-left; when they're rendered, shift the
+   devtools cluster right so they don't overlap. Without controls the
+   toggle sits flush at the canvas inset. */
+.flow-container:has(.flow-controls) .flow-devtools {
+    left: 56px;
 }
 .flow-devtools-toggle {
     display: flex;
