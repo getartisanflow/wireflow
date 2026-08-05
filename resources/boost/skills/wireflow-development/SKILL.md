@@ -1,6 +1,6 @@
 ---
 name: wireflow-development
-description: Build flow diagrams with WireFlow Blade components and Livewire integration. Covers Blade components, WithWireFlow trait, server-side flow control, and WireFlow-specific patterns. Activates when working with <x-flow> components, WithWireFlow trait methods, or Livewire flow diagrams.
+description: Build flow diagrams with WireFlow Blade components and Livewire integration. Covers the <x-flow> canvas plus schema-designer and workflow Blade components, the WithWireFlow and WithSchemaDesigner traits, server-side flow control, and WireFlow-specific patterns. Activates when working with <x-flow>, <x-flow-schema-node> / <x-schema-*-inspector>, workflow run/replay components, WithWireFlow or WithSchemaDesigner methods, or Livewire flow diagrams.
 ---
 
 # WireFlow Development
@@ -14,6 +14,8 @@ Activate this skill when:
 - Configuring WireFlow (theme, asset injection)
 - Using convenience methods (flowConnect, flowHighlightNode, etc.)
 - Combining whiteboard tools with WireFlow's `<x-flow>` component
+- Building a schema/ER designer (`<x-flow-schema-node>`, `<x-schema-*-inspector>`, the `WithSchemaDesigner` trait)
+- Building a workflow runner (`<x-flow-run-button>`, `<x-flow-execution-log>`, `<x-flow-condition-node>`, `flowRun`/`flowSetNodeState`)
 
 Also activate the `alpineflow-development` skill — WireFlow wraps AlpineFlow, and the AlpineFlow rules apply.
 
@@ -56,7 +58,7 @@ To add custom properties (like `tool` for whiteboard), use `x-init` with `Object
 <!-- CORRECT — inject into flowCanvas scope -->
 <x-flow
     x-init="Object.assign($data, { tool: null, toolSettings: { strokeColor: '#333', strokeWidth: 2, opacity: 1 } })"
-    x-flow-freehand.filled="tool === 'draw'"
+    x-flow-freehand="tool === 'draw'"
     ...
 >
 ```
@@ -146,18 +148,44 @@ Content inside `<x-slot:node>` is regular Blade, not a component attribute. Use 
 
 | Component | Purpose |
 |-----------|---------|
-| `<x-flow>` | Main canvas |
+| `<x-flow>` | Main canvas. Renders `wire:ignore` **by default** (`wireIgnore=true`) so Livewire morphs don't clobber the Alpine-managed canvas — pass `:wire-ignore="false"` to opt out. Extra props: `containerHeight` (`'fill'`/px/CSS length), `fullscreenTarget` (selector) |
 | `<x-flow-handle>` | Connection handle (type, position, id) |
-| `<x-flow-panel>` | Floating overlay panel (position, resizable) |
-| `<x-flow-toolbar>` | Node toolbar (position, align, offset, show) |
+| `<x-flow-panel>` | Floating overlay panel (position, resizable). Invalid `position` **throws** `InvalidArgumentException` |
+| `<x-flow-toolbar>` | Node toolbar — `position` top/bottom/left/right, `align` **start/center/end** (flow-relative, NOT left/right), `offset`, `show` selected/always. Invalid enum values **throw** `InvalidArgumentException` |
 | `<x-flow-drag-handle>` | Restrict drag to element |
 | `<x-flow-resizer>` | Resize handles (min-width, min-height) |
-| `<x-flow-action>` | Action button (type: undo, redo, fit-view, etc.) |
+| `<x-flow-action>` | Action button (type: undo, redo, fit-view, etc.). `target` = canvas CSS selector when the button lives **outside** `<x-flow>` (renders `data-flow-target`) |
 | `<x-flow-context-menu>` | Right-click menu (scope: node, edge, pane, selection) |
 | `<x-flow-collapse>` | Collapse toggle (instant, all, expand, children) |
 | `<x-flow-condense>` | Condense toggle |
-| `<x-flow-edge-toolbar>` | Edge toolbar (position, below, show) |
+| `<x-flow-edge-toolbar>` | Edge toolbar — `position` float 0–1 (point along edge), `below` bool, `show` selected/always (invalid `show` **throws**), `target` = canvas selector for out-of-canvas placement |
 | `<x-flow-loading>` | Loading overlay (fade) |
+
+Toolbar/EdgeToolbar enum props are validated by the `ValidatesEnumProps` trait against `src/Enums/*` and throw `InvalidArgumentException` on bad values — so `align="left"` is an error, not a silent center. Search docs for full prop reference per component.
+
+### Schema-designer components
+
+Registered by the provider but separate from the table above (note the prefix split: the node is `flow-schema-*`, the rest are `schema-*`):
+
+| Component | Purpose |
+|-----------|---------|
+| `<x-flow-schema-node>` | Schema/table node renderer (`label`, `fields`) — drop into `<x-slot:node>` |
+| `<x-schema-designer>` | Full schema canvas variant (~30 props; schema-tuned defaults like `default-edge-type="avoidant"`, `prevent-cycles`, `keyboard-connect`) |
+| `<x-schema-field>` | Single field row |
+| `<x-schema-node-inspector>` | Selected-node inspector (`default-ui`) → injects `selectedNode` + `inspector` |
+| `<x-schema-row-inspector>` | Selected-field inspector → `selectedRow {nodeId, fieldName}` + `inspector` |
+| `<x-schema-edge-inspector>` | Selected-relationship inspector → `selectedEdge` + `inspector` |
+
+### Workflow components
+
+| Component | Purpose |
+|-----------|---------|
+| `<x-flow-condition-node>` | Condition/branch node (`label`, `condition`, `direction`, `evaluate-label`) |
+| `<x-flow-wait>` | Timed wait node (`label`, `duration-ms`, `icon`) |
+| `<x-flow-run-button>` | Start a run (required `start-id`, `options`, `handlers-key="runHandlers"`, `target`) |
+| `<x-flow-stop-button>` / `<x-flow-reset-button>` | Stop / reset the run (`target`) |
+| `<x-flow-replay-controls>` | Replay the execution log (`handle`, `target`, `speeds=[0.5,1,2,4]`) |
+| `<x-flow-execution-log>` | Live execution log (`source`, `filter="all"`, `max-events=500`) |
 
 Search docs for full prop reference per component.
 
@@ -207,14 +235,26 @@ class MyFlow extends Component
 | `flowFitView()` | Fit all nodes |
 | `flowZoomIn()` / `flowZoomOut()` | Zoom |
 | `flowSetCenter(x, y, zoom?)` | Center viewport |
-| `flowAddNodes(nodes)` / `flowRemoveNodes(ids)` | Add/remove nodes |
-| `flowAddEdges(edges)` / `flowRemoveEdges(ids)` | Add/remove edges |
+| `flowAddNodes(nodes)` / `flowRemoveNodes(ids)` | Add/remove nodes. Now **mutate server-side `$this->nodes`** too (when it's a public array) — `flowRemoveNodes` cascades to descendants (parentId chain) and connected edges, mirroring the client. Delete your manual `$nodes` filters. |
+| `flowAddEdges(edges)` / `flowRemoveEdges(ids)` | Add/remove edges. Also mutate server-side `$this->edges` when present. |
 | `flowLayout(options)` | Apply auto-layout |
 | `flowUndo()` / `flowRedo()` | History (requires history: true) |
-| `flowClear()` | Clear all |
+| `flowClear()` | **Destructive** — empties nodes/edges and resets the viewport to the origin (dispatches `flow:clear`; applied immediately). |
 | `flowSetLoading(bool)` | Loading overlay |
 | `flowPatchConfig(changes)` | Update config at runtime |
 | `flowCollapseNode(id)` / `flowExpandNode(id)` | Collapse/expand |
+
+### Run-state, particles & lifecycle (also on `WithWireFlow`)
+
+| Method | Description |
+|--------|-------------|
+| `flowRun(startId, options)` | Drive a workflow run from the server (pairs with `<x-flow-run-button>` / `<x-flow-execution-log>`) |
+| `flowSetNodeState(ids, state)` / `flowResetStates()` | Set/clear per-node run state — `'pending'` / `'running'` / `'completed'` / `'failed'` / `'skipped'` (drives `.flow-node-*` classes). Distinct from the *workflow* run state (`idle`/`running`/`paused`/`stopped`) that `flowRun` drives. |
+| `flowSendParticle` / `flowSendParticleAlongPath` / `flowSendParticleBetween` / `flowSendParticleBurst` / `flowSendConverging` | Particle effects |
+| `flowCancelAll()` / `flowPauseAll()` / `flowResumeAll()` | Animation lifecycle |
+| `flowFollow(id)` / `flowUnfollow()` | Camera follow a node |
+| `flowSetViewport` / `flowPanBy` / `flowFitBounds` | Viewport control |
+| `flowFromObject(obj)` / `flowDeselectAll()` / `flowToggleInteractive()` | Misc |
 
 ### Event handlers
 
@@ -237,6 +277,18 @@ public function onConnect(string $source, string $target, ?string $sourceHandle,
 
 Use `#[Renderless]` (Livewire 3.3+ / 4) on methods that only dispatch client-side commands (no re-render needed). On older Livewire 3.x, call `$this->skipRender()` at the end of the method instead.
 
+`onNodesChange` / `onEdgesChange` receive `array $changes` that now carries an **`origin`** key — filter on it to persist only user intent:
+
+```php
+public function onNodesChange(array $changes): void
+{
+    // $changes = ['type' => 'add'|'remove', 'nodes' => [...], 'origin' => 'drop'|'paste'|'api'|'load']
+    if (($changes['origin'] ?? null) === 'drop') { /* the user dropped a node */ }
+}
+```
+
+The whole-graph replace methods (`replaceNodes` / `setNodes`) are client-side AlpineFlow canvas methods; there's no dedicated trait wrapper, but they're dispatchable from PHP via `$this->dispatch('flow:replaceNodes', nodes: [...], edges: [...])` (and `flow:setNodes`).
+
 Search docs for complete event handler signatures and payload shapes.
 
 ### Path motion from server
@@ -254,6 +306,30 @@ $this->flowAnimate([
 ```
 
 For programmatic paths (orbit, wave, pendulum, drift), use `$flow.animate()` client-side in Blade templates. See the paths animation docs.
+
+## WithSchemaDesigner Trait
+
+Server-side mirror of the schema addon's field CRUD — use alongside `WithWireFlow` on a schema-designer component. Every method validates field names via the `SchemaFieldName` rule (snake_case, length-capped), cascades touching edges, and returns an `['applied' => bool, 'reason' => ...]` array:
+
+```php
+use ArtisanFlow\WireFlow\Concerns\WithSchemaDesigner;
+use ArtisanFlow\WireFlow\Concerns\WithWireFlow;
+
+class ApiSchemaDesigner extends Component
+{
+    use WithSchemaDesigner, WithWireFlow;
+    // public array $nodes / $edges hold the schema
+}
+```
+
+| Method | Description |
+|--------|-------------|
+| `addField(nodeId, field)` | Append a field; rejects invalid/duplicate names |
+| `renameField(nodeId, oldName, newName)` | Rename; cascades edge `sourceHandle`/`targetHandle` |
+| `removeField(nodeId, fieldName)` | Remove field; cascade-drops relationship edges |
+| `removeNode(nodeId)` | Remove a table; cascade-drops its edges |
+
+Call from Blade via `$wire.call('addField', nodeId, { name, type })` for server-validated edits, or wire the `<x-schema-*-inspector>` slots to these. The pure client-side equivalents live in the AlpineFlow schema addon — see the `alpineflow-development` skill.
 
 ## Reverb Configuration for Real-Time Features
 
@@ -302,7 +378,7 @@ This is the most complex pattern. All three pieces must be correct:
         tool: null,
         toolSettings: { strokeColor: '#334155', strokeWidth: 2, opacity: 1 },
     })"
-    x-flow-freehand.filled="tool === 'draw'"
+    x-flow-freehand="tool === 'draw'"
     x-flow-highlighter="tool === 'highlighter'"
     x-flow-eraser="tool === 'eraser'"
 >
@@ -364,6 +440,15 @@ For AlpineFlow config options not exposed as `<x-flow>` props, use the `config` 
 ```
 
 Search docs for common config options reference.
+
+## Migration
+
+Upgrading a project across **v0.1.x → v0.2.1-alpha**, or debugging behavior that changed? Consult the canonical guide: `docs/migration/v0.2.1-alpha.md` in the wireflow repo (rendered at `/docs/wireflow/migration/v0.2.1-alpha`). This release **resyncs the bundled AlpineFlow engine**, so the client-side behavior shifts arrive through the vendored bundle too — the companion `/docs/alpineflow/migration/v0.2.1-alpha` covers those. WireFlow-side gotchas to check first:
+
+- **`<x-flow>` renders `wire:ignore` by default** — Livewire morphs no longer clobber the Alpine-managed canvas. If you *relied* on Livewire re-rendering the canvas internals, set `:wire-ignore="false"`.
+- **Enum props throw** — `<x-flow-toolbar>` (`position`/`align`/`show`), `<x-flow-edge-toolbar>` (`show`), and `<x-flow-panel>` (`position`) throw `InvalidArgumentException` on an unrecognized value: `align="left"` is an error (use `start`/`end`), not a silent center.
+- **Graph-mutating trait methods sync server state** — `flowAddNodes` / `flowRemoveNodes` / `flowAddEdges` / `flowRemoveEdges` now mutate `$this->nodes` / `$this->edges` (with cascade) when those are public arrays; delete your manual pre-call filters. `flowClear()` is destructive (empties nodes/edges and resets the viewport).
+- **Inherited from the bundle** — selection is no longer undoable, and handle `pointerdown` is delegated in the capture phase (markup *inside* a handle stops receiving its own `pointerdown`). See the AlpineFlow migration guide for the full list.
 
 ## Install Command
 
