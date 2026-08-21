@@ -78,6 +78,7 @@ public function canConnect(
     string $target,
     ?string $sourceHandle,
     ?string $targetHandle,
+    ?string $replacingEdgeId = null,
 ): bool|array {
     if ($source === $target) {
         return ['allowed' => false, 'reason' => 'Self-connections not supported.'];
@@ -85,6 +86,18 @@ public function canConnect(
     return true;
 }
 ```
+
+`$replacingEdgeId` is the id of the edge whose end is being dragged, and `null` for a new line. It
+matters to any rule that reasons about the graph as a whole — cycles, reachability, scopes — because
+a reconnect asks whether this connection may exist **instead of** that one, and the old edge is still
+in the graph while the question is asked:
+
+```php
+$edges = collect($this->edges)->reject(fn (array $edge): bool => $edge['id'] === $replacingEdgeId);
+```
+
+The parameter is optional and was added after the original four. A handler written without it keeps
+working untouched: PHP ignores extra positional arguments to a userland method.
 
 While the Livewire roundtrip is in flight, AlpineFlow adds the CSS class `flow-handle-validating` to the source and target handles. Style it to indicate a pending state — the default theme ships a subtle pulse. Override the class name via `config.validatingHandleClass`.
 

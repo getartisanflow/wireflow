@@ -127,20 +127,47 @@ class WireFlow extends Component
         // registerWireEvents doesn't install a dead onConnectValidate callback)
         // and inject it into config.connectValidator as a raw async JS function
         // that defers to Livewire.
+        //
+        // The validator is handed a Connection and nothing else, which is the right
+        // shape for a NEW line and the wrong one for a line being moved: dragging
+        // one end of an existing edge asks "may this connection exist INSTEAD OF
+        // that one", and a server rule that reasons about the whole graph — cycles,
+        // reachability, scopes — answers the wrong question without knowing which
+        // edge is leaving. It sees the old line still in place and refuses the move
+        // because of it.
+        //
+        // So the wrapper keeps its own note of which line is in hand, off the two
+        // events alpineflow already emits, and passes the id as a fifth argument.
+        // Public events only — no reading of `_pendingReconnection`. Listeners are
+        // bound to `$el`, which IS the canvas container alpineflow dispatches on,
+        // so they are per-canvas and die with it; `connect-start` clears the note
+        // as well as the two `-end` events, so a gesture that begins after an
+        // abandoned reconnect cannot inherit a stale id.
+        //
+        // Backwards compatible: PHP ignores extra positional arguments to a
+        // userland method, so a handler written against the old four keeps working.
         if (isset($wireEvents['connect-validate'])) {
             $method = $wireEvents['connect-validate'];
             unset($wireEvents['connect-validate']);
             $methodLiteral = json_encode($method, JSON_THROW_ON_ERROR);
             $config['connectValidator'] = new JsRaw(
-                "async (connection) => {\n"
-                ."    const result = await \$wire.call({$methodLiteral}, "
-                ."connection.source, connection.target, "
-                ."connection.sourceHandle ?? null, connection.targetHandle ?? null);\n"
-                ."    if (result && typeof result === 'object' && result.allowed === false && result.reason) {\n"
-                ."        Livewire.dispatch('flux-toast', { variant: 'warning', text: result.reason });\n"
-                ."    }\n"
-                ."    return result;\n"
-                .'}'
+                "(() => {\n"
+                ."    let replacing = null;\n"
+                ."    \$el.addEventListener('flow-reconnect-start', (e) => { replacing = e.detail?.edge?.id ?? null; });\n"
+                ."    \$el.addEventListener('flow-reconnect-end', () => { replacing = null; });\n"
+                ."    \$el.addEventListener('flow-connect-start', () => { replacing = null; });\n"
+                ."    \$el.addEventListener('flow-connect-end', () => { replacing = null; });\n"
+                ."\n"
+                ."    return async (connection) => {\n"
+                ."        const result = await \$wire.call({$methodLiteral}, "
+                .'connection.source, connection.target, '
+                ."connection.sourceHandle ?? null, connection.targetHandle ?? null, replacing);\n"
+                ."        if (result && typeof result === 'object' && result.allowed === false && result.reason) {\n"
+                ."            Livewire.dispatch('flux-toast', { variant: 'warning', text: result.reason });\n"
+                ."        }\n"
+                ."        return result;\n"
+                ."    };\n"
+                .'})()'
             );
         }
 

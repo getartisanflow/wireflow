@@ -1,5 +1,24 @@
 # Changelog
 
+## Unreleased
+
+### Fixed — `@connect-validate` now says which line is being moved
+
+The validator was handed a `Connection` and nothing else. That is the right shape for a NEW line and
+the wrong one for a line being moved: dragging one end of an existing edge asks whether this
+connection may exist **instead of** that one, and the edge being replaced is still in the graph while
+the question is asked. Any rule that reasons about the graph as a whole — cycles, reachability,
+scopes — therefore answered the wrong question, and refused perfectly legal moves because of the
+line the move was about to remove.
+
+The handler now receives a fifth argument, `?string $replacingEdgeId`: the id of the edge whose end
+is in hand, or `null` for a new connection. The wrapper keeps its own note off the `reconnect-start`
+/ `reconnect-end` / `connect-start` / `connect-end` events AlpineFlow already emits — public events
+only, bound to the canvas element so two canvases on one page cannot share a note.
+
+Backwards compatible: PHP ignores extra positional arguments to a userland method, so a handler
+written against the original four keeps working untouched.
+
 ## v0.2.2-alpha — 2026-08-05
 
 ### Fixed — right-click no longer dismisses the context menu (via the bundled engine)
