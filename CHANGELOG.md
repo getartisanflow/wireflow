@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## v0.2.3-alpha — unreleased
 
 ### Fixed — `@connect-validate` now says which line is being moved
 
