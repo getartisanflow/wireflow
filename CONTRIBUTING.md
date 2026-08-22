@@ -58,6 +58,7 @@ WireFlow ships AlpineFlow's compiled JS/CSS inside `dist/` so Laravel apps don't
 - [ ] `vendor/bin/pint --dirty` run on changed PHP
 - [ ] New behavior has a test
 - [ ] No new Composer dependencies without discussing first
+- [ ] No `CHANGELOG.md` entries — the maintainer compiles them at release
 - [ ] No version bumps or tags — releases are cut by the maintainer
 
 ## Reporting bugs / requesting features
