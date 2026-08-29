@@ -58,6 +58,24 @@ public array $edges = [
 ```
 ::enddemo
 
+## HTML labels
+
+Label text is written with `textContent`, so any markup shows as literal tags. Set `labelHtml` on the edge to render its labels as HTML instead — for a line break, an icon, or a piece of emphasis:
+
+```php
+public array $edges = [
+    [
+        'id' => 'e1',
+        'source' => 'a',
+        'target' => 'b',
+        'label' => 'over the limit<br><em>and no manager on shift</em>',
+        'labelHtml' => true,
+    ],
+];
+```
+
+`labelHtml` applies to all of the edge's labels (`label`, `labelStart`, `labelEnd`). The markup is inserted as-is, so render only content you control — never unescaped user input.
+
 ## Label visibility
 
 Control when labels appear with `labelVisibility`:

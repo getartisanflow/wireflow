@@ -95,6 +95,24 @@ The minimap supports panning and zooming interactions, both disabled by default:
 | `minimapPannable` | `bool` | `false` | Click or drag on the minimap to pan the main viewport |
 | `minimapZoomable` | `bool` | `false` | Scroll over the minimap to zoom the main viewport |
 
+## Size
+
+The minimap has a fixed default size. Override it with `minimapWidth` / `minimapHeight` (pixels):
+
+```blade
+<x-flow :nodes="$nodes" :edges="$edges" :minimap="true" :config="[
+    'minimapWidth' => 240,
+    'minimapHeight' => 180,
+]">
+```
+
+| Config key | Type | Default | Description |
+|------------|------|---------|-------------|
+| `minimapWidth` | `int` | `200` | Minimap width in pixels |
+| `minimapHeight` | `int` | `150` | Minimap height in pixels |
+
+The size is written back into the canvas config, so it survives a save/restore and can be patched from the server like any other config value. Whenever it changes, a [`minimap-resize`](../server/events.md) event fires with the new dimensions — handle `onMinimapResize(int $width, int $height)` on the server to persist it. A non-positive or unchanged size is a no-op.
+
 ## Node colors
 
 Use `minimapNodeColor` to control how nodes appear in the minimap. Pass a static color string:

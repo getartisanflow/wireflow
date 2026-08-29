@@ -16,6 +16,27 @@ Click a node or edge to select it. The previously selected items are deselected.
 
 Selected nodes receive the `.flow-node-selected` CSS class. Selected edges receive `.flow-edge-selected`.
 
+## Disabling selection
+
+Every node and edge is selectable by default. Turn selection off at the canvas level with `nodesSelectable` / `edgesSelectable`:
+
+```blade
+<x-flow :nodes="$nodes" :edges="$edges" :config="[
+    'nodesSelectable' => false,
+    'edgesSelectable' => false,
+]">
+```
+
+An individual edge can opt out (or back in) with a `selectable` key, regardless of the canvas default:
+
+```php
+public array $edges = [
+    ['id' => 'e1', 'source' => 'a', 'target' => 'b', 'selectable' => false],
+];
+```
+
+Precedence: an explicit `selectable` on the item wins; otherwise a `locked` item cannot be selected; otherwise the canvas default (`nodesSelectable` / `edgesSelectable`, both `true`) applies.
+
 ## Selection box
 
 Draw a rectangle on the canvas to select multiple nodes at once. By default, hold **Shift** and drag on the canvas background.

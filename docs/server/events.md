@@ -400,6 +400,7 @@ class PersistentFlow extends Component
 | `pane-click` | `onPaneClick` | `array $position` |
 | `pane-context-menu` | `onPaneContextMenu` | `array $position` |
 | `viewport-change` | `onViewportChange` | `array $viewport` |
+| `minimap-resize` | `onMinimapResize` | `int $width, int $height` |
 | `selection-change` | `onSelectionChange` | `array $nodes, array $edges` |
 | `selection-context-menu` | `onSelectionContextMenu` | `array $nodes, array $edges, array $screenPosition` |
 | `row-select` | `onRowSelect` | `string $nodeId, string $attrId` |
