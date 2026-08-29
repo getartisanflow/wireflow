@@ -66,7 +66,7 @@ For new components that wrap an alpineflow directive, follow the SSR-fallback pa
 - **Feature workflow:** cut a `feature/<kebab-topic>` branch off `dev`, do the work there, open a PR back to `dev` once tests pass. The PR gets reviewed and merged into `dev` (typically by the owner). Don't push commits directly to `dev`
 - **`main`** mirrors the latest tagged release. **Never push to main directly. Never merge dev → main without owner approval**
 - **Never tag a version**. Tags are cut by the owner after manual verification across alpineflow + wireflow + the consuming site
-- **CHANGELOG.md** is append-only. Match the existing version-block structure
+- **CHANGELOG.md** is append-only. Match the existing version-block structure. Add each entry as its change merges into the version branch — don't batch them at release. Before any tag, audit that **every** merged PR has both a CHANGELOG entry and its reference-doc update
 
 ## Conventions
 
@@ -76,6 +76,7 @@ For new components that wrap an alpineflow directive, follow the SSR-fallback pa
 - Curly braces on all control structures, even single-statement bodies
 - Match sibling-file style for component class shape, Blade view header comments, test descriptions
 - No new Composer dependencies without owner approval
+- **Docs + CHANGELOG travel with the change.** Any change to public surface updates its reference doc under `docs/` *and* adds a CHANGELOG entry in the active version block, in the same PR/commit. "Public surface" includes wireflow's own (`<x-flow>` props, trait methods, `docs/server/events.md` handlers) **and** engine features WireFlow exposes when the bundle resyncs — a new alpineflow config key, bridge-forwarded event, or edge/node property needs its wireflow doc too (this is exactly what a resync silently omits). Never defer to release
 
 ## Don't
 
