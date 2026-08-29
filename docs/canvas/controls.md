@@ -44,6 +44,18 @@ Controls stack vertically by default. Switch to horizontal layout:
 ]">
 ```
 
+### Animation
+
+The zoom-in, zoom-out, and fit-view buttons snap the viewport instantly by default. Set `controlsDuration` (milliseconds) to animate the move instead:
+
+```blade
+<x-flow :nodes="$nodes" :edges="$edges" :controls="true" :config="[
+    'controlsDuration' => 300,
+]">
+```
+
+The default of `0` keeps the instant behaviour.
+
 ### Button visibility
 
 Toggle individual buttons:

@@ -77,7 +77,8 @@ For options not exposed as props, use `:config`:
 | `panOnDrag` | `array` | `[0]` | Mouse button indices that trigger panning (0 = left, 1 = middle, 2 = right) |
 | `translateExtent` | `array` | -- | Pan boundaries: `[[minX, minY], [maxX, maxY]]` in flow coordinates |
 | `viewportCulling` | `bool` | `true` | Only render visible nodes/edges for performance |
-| `zoomOnDoubleClick` | `bool` | `true` | Double-click to zoom in |
+| `zoomOnDoubleClick` | `bool\|string` | `true` | Double-click to zoom in; `'toggle'` alternates zoom in / out |
+| `dblClickZoomOutLevel` | `string\|int` | `'min'` | With `zoomOnDoubleClick: 'toggle'`, where the zoom-out step lands: `'min'`, `'fit'` (frame all nodes), or a zoom number |
 | `autoPanOnNodeDrag` | `bool` | `true` | Auto-pan when dragging a node near the canvas edge |
 | `autoPanOnConnect` | `bool` | `true` | Auto-pan when dragging a connection near the canvas edge |
 
