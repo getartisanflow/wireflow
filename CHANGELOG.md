@@ -1,5 +1,14 @@
 # Changelog
 
+## v0.2.4-alpha — unreleased
+
+### Changed — bundled AlpineFlow engine resynced to v0.2.4-alpha
+
+Resyncs the bundled AlpineFlow engine to v0.2.4-alpha — a polish release (documentation
+clarifications and expanded test coverage; **no functional changes**). There are no WireFlow-side
+changes; users receive it on upgrade + asset republish (`php artisan wireflow:install --force` +
+`npm run build`).
+
 ## v0.2.3-alpha — 2026-08-29
 
 ### Fixed — `@connect-validate` now says which line is being moved
