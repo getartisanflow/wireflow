@@ -891,15 +891,20 @@
     opacity: 0.4;
 }
 
-/* Vertical: round top of first, bottom of last */
-.flow-controls-vertical button:first-child { border-radius: var(--flow-controls-btn-border-radius) var(--flow-controls-btn-border-radius) 0 0; }
-.flow-controls-vertical button:last-child  { border-radius: 0 0 var(--flow-controls-btn-border-radius) var(--flow-controls-btn-border-radius); }
-.flow-controls-vertical button:only-child  { border-radius: var(--flow-controls-btn-border-radius); }
+/* Vertical: round top of first, bottom of last.
+
+   Direct children only. As a descendant selector these matched any button that is first or last
+   inside ITS OWN parent, so a control wrapped in an element — a trigger that needs something to
+   anchor a fly-out to, say — was handed the corners of the end of the strip while sitting in the
+   middle of it. */
+.flow-controls-vertical > button:first-child { border-radius: var(--flow-controls-btn-border-radius) var(--flow-controls-btn-border-radius) 0 0; }
+.flow-controls-vertical > button:last-child  { border-radius: 0 0 var(--flow-controls-btn-border-radius) var(--flow-controls-btn-border-radius); }
+.flow-controls-vertical > button:only-child  { border-radius: var(--flow-controls-btn-border-radius); }
 
 /* Horizontal: round left of first, right of last */
-.flow-controls-horizontal button:first-child { border-radius: var(--flow-controls-btn-border-radius) 0 0 var(--flow-controls-btn-border-radius); }
-.flow-controls-horizontal button:last-child  { border-radius: 0 var(--flow-controls-btn-border-radius) var(--flow-controls-btn-border-radius) 0; }
-.flow-controls-horizontal button:only-child  { border-radius: var(--flow-controls-btn-border-radius); }
+.flow-controls-horizontal > button:first-child { border-radius: var(--flow-controls-btn-border-radius) 0 0 var(--flow-controls-btn-border-radius); }
+.flow-controls-horizontal > button:last-child  { border-radius: 0 var(--flow-controls-btn-border-radius) var(--flow-controls-btn-border-radius) 0; }
+.flow-controls-horizontal > button:only-child  { border-radius: var(--flow-controls-btn-border-radius); }
 
 /* External controls: rendered outside the flow-container */
 .flow-controls-external {

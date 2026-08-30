@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.3-alpha — unreleased
+## v0.2.3-alpha — 2026-08-29
 
 ### Fixed — `@connect-validate` now says which line is being moved
 
