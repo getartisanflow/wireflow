@@ -17,11 +17,11 @@
     {{ $attributes }}
 >
     <div class="flow-execution-log-header">
-        <span class="flow-execution-log-title">Execution log</span>
+        <span class="flow-execution-log-title">{{ __('wireflow::components.executionLog.title') }}</span>
         <select class="flow-execution-log-filter" x-model="filter">
-            <option value="all">All events</option>
-            <option value="errors">Errors only</option>
-            <option value="lifecycle">Lifecycle only</option>
+            <option value="all">{{ __('wireflow::components.executionLog.filterAll') }}</option>
+            <option value="errors">{{ __('wireflow::components.executionLog.filterErrors') }}</option>
+            <option value="lifecycle">{{ __('wireflow::components.executionLog.filterLifecycle') }}</option>
         </select>
     </div>
     <div
@@ -30,7 +30,7 @@
         x-on:scroll="onUserScroll()"
     >
         <template x-if="filteredEvents.length === 0">
-            <div class="flow-execution-log-empty">No events yet. Run the workflow to see activity.</div>
+            <div class="flow-execution-log-empty">{{ __('wireflow::components.executionLog.empty') }}</div>
         </template>
 
         <template x-for="(event, index) in filteredEvents" :key="event.t + ':' + index">

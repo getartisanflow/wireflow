@@ -12,8 +12,8 @@
         class="flow-replay-button flow-replay-button--primary"
         x-bind:disabled="!hasPlayableSource"
         x-on:click="onPlayPause()"
-        x-text="isPlaying ? 'Pause' : 'Play'"
-        title="Play / Pause"
+        x-text="isPlaying ? @js(__('wireflow::components.replayControls.pause')) : @js(__('wireflow::components.replayControls.play'))"
+        title="{{ __('wireflow::components.replayControls.playPause') }}"
     ></button>
 
     <button
@@ -21,8 +21,8 @@
         class="flow-replay-button"
         x-bind:disabled="!hasPlayableSource"
         x-on:click="onRestart()"
-        title="Restart"
-    >Restart</button>
+        title="{{ __('wireflow::components.replayControls.restart') }}"
+    >{{ __('wireflow::components.replayControls.restart') }}</button>
 
     <select
         class="flow-replay-speed"

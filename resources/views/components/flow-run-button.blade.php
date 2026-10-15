@@ -15,7 +15,7 @@
     @if(! $slot->isEmpty())
         {{ $slot }}
     @else
-        <span x-show="!isRunning" class="flow-run-button-label">Run workflow</span>
-        <span x-show="isRunning" class="flow-run-button-label flow-run-button-label--running">Running…</span>
+        <span x-show="!isRunning" class="flow-run-button-label">{{ __('wireflow::components.runButton.idle') }}</span>
+        <span x-show="isRunning" class="flow-run-button-label flow-run-button-label--running">{{ __('wireflow::components.runButton.running') }}</span>
     @endif
 </button>
