@@ -43,6 +43,8 @@ cp /Users/zachiler/projects/alpineflow/dist/alpineflow-<addon>.esm.js         di
 cp /Users/zachiler/projects/alpineflow/dist/alpineflow-<addon>.esm.js.map     dist/
 cp /Users/zachiler/projects/alpineflow/dist/alpineflow.css                    dist/
 cp /Users/zachiler/projects/alpineflow/dist/alpineflow-theme.css              dist/
+cp /Users/zachiler/projects/alpineflow/dist/locales/*.json                    dist/locales/
+php scripts/sync-locales.php                                                  # regenerates lang/*/canvas.php from dist/locales
 ```
 
 (Absolute paths shown above are the conventional sibling layout. Adjust if your local checkout differs.)
