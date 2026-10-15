@@ -63,6 +63,8 @@
         :wire-ignore="$wireIgnore"
         :fullscreen-target="$fullscreenTarget"
         :container-height="$containerHeight"
+        :translations="$translations"
+        :locale="$locale"
         {{ $attributes }}
     >
         @if($hasNodeSlot)

@@ -39,6 +39,8 @@ class WireFlow extends Component
         public bool $wireIgnore = true,
         public mixed $fullscreenTarget = null,
         public string|int|null $containerHeight = null,
+        public ?array $translations = null,
+        public ?string $locale = null,
     ) {}
 
     /**
@@ -82,10 +84,42 @@ class WireFlow extends Component
             $config['interactive'] = false;
         }
 
+        $translations = $this->translations ?? $this->appTranslations();
+
+        if ($translations !== null) {
+            $config['translations'] = $translations;
+        }
+
+        $locale = $this->locale ?? (config('wireflow.translations') ? app()->getLocale() : null);
+
+        if ($locale !== null) {
+            $config['locale'] = $locale;
+        }
+
         // Merge user-provided config last (overrides promoted props)
         $config = array_merge($config, $this->config);
 
         return $config;
+    }
+
+    /**
+     * The 'wireflow::canvas' messages for the app locale, or null when translations are disabled.
+     *
+     * Laravel falls back to `app.fallback_locale` for a locale without a catalog, and merges
+     * keys an app overrides in lang/vendor/wireflow/{locale}/canvas.php. Plural forms are
+     * picked in the browser by AlpineFlow, so the catalog is passed through untouched.
+     *
+     * @return array<string, string>|null
+     */
+    private function appTranslations(): ?array
+    {
+        if (! config('wireflow.translations')) {
+            return null;
+        }
+
+        $messages = trans('wireflow::canvas');
+
+        return is_array($messages) ? $messages : null;
     }
 
     /**

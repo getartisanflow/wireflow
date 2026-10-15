@@ -26,4 +26,18 @@ return [
     |
     */
     'theme' => env('WIREFLOW_THEME', 'default'),  // 'default' | 'flux' | 'structural' | 'none'
+
+    /*
+    |--------------------------------------------------------------------------
+    | Translate Canvases
+    |--------------------------------------------------------------------------
+    |
+    | When enabled, every <x-flow> passes the 'wireflow::canvas' messages for
+    | the app locale and the locale itself to AlpineFlow, so built-in canvas
+    | text (controls, screen reader announcements, loading text) follows
+    | app()->getLocale(). Set to false to leave canvases in English unless a
+    | :translations or locale prop is passed explicitly.
+    |
+    */
+    'translations' => env('WIREFLOW_TRANSLATIONS', true),
 ];

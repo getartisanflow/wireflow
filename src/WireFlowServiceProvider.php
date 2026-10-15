@@ -41,6 +41,7 @@ class WireFlowServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->loadViewsFrom(__DIR__.'/../resources/views', 'wireflow');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'wireflow');
 
         $this->registerBladeComponents();
 
@@ -50,6 +51,10 @@ class WireFlowServiceProvider extends ServiceProvider
             $this->publishes([
                 __DIR__.'/../config/wireflow.php' => config_path('wireflow.php'),
             ], 'wireflow-config');
+
+            $this->publishes([
+                __DIR__.'/../lang' => $this->app->langPath('vendor/wireflow'),
+            ], 'wireflow-lang');
 
             $this->publishes([
                 __DIR__.'/../dist' => public_path('vendor/alpineflow'),
