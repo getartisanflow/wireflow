@@ -44,7 +44,7 @@ Once a handle is bound, the component inspects it once:
 | `currentTime` + `duration` (no scrub) | Non-interactive progress bar + time readout |
 | Neither | Progress bar derived from log timestamps + elapsed wall clock |
 
-The Play / Restart / Speed controls render in all cases; the progress wrap is gated on `hasPlayableSource` (a handle exists OR the executionLog is non-empty).
+The Play / Restart / Speed controls render in all cases (their labels are translatable via `wireflow::components`, `replayControls.*`; see [Translations](../configuration.md#translations)); the progress wrap is gated on `hasPlayableSource` (a handle exists OR the executionLog is non-empty).
 
 ## Restart behaviour
 

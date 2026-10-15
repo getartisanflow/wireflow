@@ -28,7 +28,7 @@ Calls `canvas.resetStates()` then `canvas.resetExecutionLog()` on click — clea
 
 ## Slot
 
-Default label is `Reset`. Slot content overrides:
+Default label is `Reset`, translatable via `wireflow::components` (`resetButton.label`); see [Translations](../configuration.md#translations). Slot content overrides:
 
 ```blade
 <x-flow-reset-button>Clear</x-flow-reset-button>

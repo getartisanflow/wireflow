@@ -29,7 +29,7 @@ Calls `canvas.stopRun()` (which forwards to the active `FlowRunHandle.stop()`) o
 
 ## Slot
 
-Default label is `Stop`. Slot content overrides:
+Default label is `Stop`, translatable via `wireflow::components` (`stopButton.label`); see [Translations](../configuration.md#translations). Slot content overrides:
 
 ```blade
 <x-flow-stop-button>Halt</x-flow-stop-button>

@@ -184,6 +184,15 @@ it('keeps umlauts and placeholders intact through the raw-JS encoding path', fun
         ->toContain('"locale":"de"');
 });
 
+it('keeps a locale wire:key on the canvas container, so a locale switch replaces the canvas', function () {
+    app()->setLocale('de');
+
+    $html = Blade::render('<x-flow wire:key="flow-{{ app()->getLocale() }}" />');
+
+    expect($html)->toContain('wire:key="flow-de"')
+        ->and(renderedCanvasConfig($html)['locale'])->toBe('de');
+});
+
 it('forwards translations and locale through <x-schema-designer>', function () {
     $config = renderedCanvasConfig(Blade::render(
         '<x-schema-designer :translations="[\'schema.inspector.add\' => \'Ajouter\']" locale="fr" />'

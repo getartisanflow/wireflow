@@ -36,7 +36,7 @@ The button auto-disables while `canvas.runState` is `running` or `paused`.
 
 ## Slot
 
-Default content is the running-state-aware label: `Run workflow` / `Running…`. Slot content overrides both:
+Default content is the running-state-aware label: `Run workflow` / `Running…`. Both are translatable via `wireflow::components` (`runButton.idle`, `runButton.running`); see [Translations](../configuration.md#translations). Slot content overrides both:
 
 ```blade
 <x-flow-run-button start-id="trigger">
