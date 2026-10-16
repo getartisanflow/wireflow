@@ -1,6 +1,6 @@
 # Changelog
 
-## v0.2.4-alpha — unreleased
+## v0.2.4-alpha — 2026-10-15
 
 ### Added — translations for canvases and workflow components
 
