@@ -219,6 +219,19 @@ To add a language WireFlow doesn't ship, create `lang/vendor/wireflow/{locale}/c
 
 Keys are flat dotted strings in both files, in the same style as AlpineFlow (`controls.zoomIn`, `runButton.idle`). WireFlow's `lang/en/canvas.php` lists every engine message, and the [AlpineFlow docs](https://artisanflow.dev/docs/alpineflow/configuration/canvas#translations) describe what each key prefix covers.
 
+### Regional locales
+
+Laravel looks up the app locale exactly, then falls back to `app.fallback_locale`, never to the base language. An app on `fr_CA` therefore gets English canvas text even when WireFlow ships `fr`, and an app on `de_AT` doesn't pick up the German files. To fall back to the base language, add it to Laravel's locale chain in a service provider:
+
+```php
+// AppServiceProvider::boot()
+app('translator')->determineLocalesUsing(fn (array $locales) => collect($locales)
+    ->flatMap(fn (string $locale) => [$locale, explode('_', $locale)[0]])
+    ->all());
+```
+
+This applies to every translation in the app, not only WireFlow's. `<x-flow>` still passes the app locale (`de_AT`) to AlpineFlow, so plural forms follow the regional rules.
+
 ### Per-canvas translations and locale
 
 Pass `:translations` and `locale` to one canvas:

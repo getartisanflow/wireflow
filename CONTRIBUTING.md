@@ -51,6 +51,21 @@ Otherwise match the surrounding code: constructor property promotion, explicit r
 
 WireFlow ships AlpineFlow's compiled JS/CSS inside `dist/` so Laravel apps don't need a Node toolchain. **You normally won't touch `dist/`** — it's synced from the AlpineFlow repo. Changes to flow *behavior* usually belong in [AlpineFlow](https://github.com/getartisanflow/alpineflow); WireFlow's job is the PHP/Blade surface.
 
+## Adding a language
+
+Each locale has two translation files in `lang/<locale>/`:
+
+- **`canvas.php`: don't edit it here.** It's generated from AlpineFlow's `locales/*.json` whenever WireFlow syncs an AlpineFlow release. To add or fix canvas text (controls, accessible names, screen reader announcements), contribute to AlpineFlow instead; see its [Adding a language](https://github.com/getartisanflow/alpineflow/blob/main/CONTRIBUTING.md#adding-a-language) guide. The next WireFlow release picks it up.
+- **`components.php`: translate it here.** It holds the default text of the workflow components: the run, stop and reset buttons, the replay controls and the execution log.
+
+To add a language:
+
+1. Copy `lang/en/components.php` to `lang/<locale>/components.php`, using Laravel's folder name for the locale (`fr`, `pt_BR`). Use the plain language (`fr`) unless a region's text really differs. Laravel looks up the app locale exactly and doesn't fall back from `fr_CA` to `fr`.
+2. Translate the values. Keep every key and every `:placeholder`, and don't use Laravel's `|` plural syntax. Match the tone of the AlpineFlow file for the same language; the German files use the informal *du*.
+3. Run `vendor/bin/pest --compact`. A test checks that every key exists in English, every value is a string and the placeholders match English.
+
+If AlpineFlow doesn't have your language yet, add it there too, so Laravel apps get the canvas in your language as well as the buttons.
+
 ## Before you open a PR
 
 - [ ] Base branch is **`dev`**
