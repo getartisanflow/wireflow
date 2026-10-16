@@ -426,6 +426,7 @@ Install addon peer deps separately: `npm install @dagrejs/dagre` for dagre, `npm
 return [
     'inject_alpineflow' => true,  // false if you register AlpineFlow via npm yourself
     'theme' => 'default',          // 'default', 'flux', 'structural', 'none'
+    'translations' => true,        // env WIREFLOW_TRANSLATIONS; false = canvases stay English
 ];
 ```
 
@@ -440,6 +441,16 @@ For AlpineFlow config options not exposed as `<x-flow>` props, use the `config` 
 ```
 
 Search docs for common config options reference.
+
+## Translations
+
+- **On by default.** `<x-flow>` passes `trans('wireflow::canvas')` and `app()->getLocale()` to `flowCanvas()` as `translations` / `locale`, so engine text (controls, loading text, ARIA names, screen reader announcements) follows the app locale. Ships `en` and `de`; other locales fall back to `app.fallback_locale`. Opt out with `WIREFLOW_TRANSLATIONS=false`.
+- **Two files per locale.** `lang/{locale}/canvas.php` is generated from AlpineFlow's `locales/*.json` (never edit it in WireFlow; contribute to AlpineFlow). `lang/{locale}/components.php` holds the workflow components' text (`runButton.idle`, `executionLog.title`, …) and goes through `__('wireflow::components.…')`.
+- **Keys are flat dotted strings** (`controls.zoomIn`), not nested arrays. Override in the app with `php artisan vendor:publish --tag=wireflow-lang` → `lang/vendor/wireflow/{locale}/canvas.php`, keeping only the changed keys.
+- **Per canvas:** `:translations="[...]"` replaces the catalog (omitted keys fall back to English) and `locale="de"` sets plural rules. `:config="['translations' => …, 'locale' => …]"` wins over both.
+- **Plurals are picked in the browser** by AlpineFlow (`_one` / `_other` / `_few` … keys via `Intl.PluralRules`). Never use Laravel's `|` syntax or `trans_choice()` for these keys.
+- **Messages are fixed when the canvas is created** and `<x-flow>` is `wire:ignore`'d, so a Livewire locale switch needs a new canvas: `wire:key="flow-{{ app()->getLocale() }}"`.
+- In custom canvas templates, reuse the resolved messages with `$flow.t('controls.zoomIn')`.
 
 ## Migration
 

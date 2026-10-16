@@ -48,6 +48,8 @@ Each row is a `display: grid` of three columns:
 - **Errors only** — `run:error` and `edge:failed`.
 - **Lifecycle only** — `run:started`, `run:complete`, `run:stopped`, `node:enter`, `node:exit`.
 
+The header title, filter labels and empty-state text are translatable via `wireflow::components` (`executionLog.*`); see [Translations](../configuration.md#translations). Event-type labels such as `run:started` stay technical.
+
 ## Security — XSS-safe by construction
 
 Every dynamic field (node IDs, edge IDs, error messages, durations) is rendered via `x-text` on a discrete element. The component **never** uses `x-html` with built strings, so consumer-supplied identifiers cannot inject markup. The component's Pest test asserts that `x-html` does not appear anywhere in the rendered output — this contract is locked.

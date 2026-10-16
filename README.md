@@ -58,6 +58,7 @@ Raw AlpineFlow directives (`x-flow-handle:target.top`, `x-flow-panel`, etc.) als
 - **Bundled AlpineFlow assets** — no npm install required, includes schema + workflow addons
 - **Artisan install command** (`php artisan wireflow:install`)
 - **Publishable configuration** with theme support (default, flux, structural)
+- **Translations** — canvases and workflow components follow `app()->getLocale()` (English and German included); override keys after `php artisan vendor:publish --tag=wireflow-lang`
 - **Collaboration support** with ReverbProvider
 - **Livewire 3 and 4** compatible
 - **Laravel 11, 12, and 13** compatible

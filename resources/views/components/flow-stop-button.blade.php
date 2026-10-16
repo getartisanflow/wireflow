@@ -11,5 +11,5 @@
     x-on:click="onClick()"
     {{ $attributes }}
 >
-    @if(! $slot->isEmpty()){{ $slot }}@else Stop @endif
+    @if(! $slot->isEmpty()){{ $slot }}@else {{ __('wireflow::components.stopButton.label') }} @endif
 </button>

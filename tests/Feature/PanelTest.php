@@ -17,11 +17,11 @@ test('Panel accepts valid positions', function (string $position) {
 
 test('Panel throws on invalid position', function () {
     new Panel(position: 'middle');
-})->throws(\InvalidArgumentException::class, "Invalid panel position 'middle'");
+})->throws(InvalidArgumentException::class, "Invalid panel position 'middle'");
 
 test('Panel throws on empty position', function () {
     new Panel(position: '');
-})->throws(\InvalidArgumentException::class);
+})->throws(InvalidArgumentException::class);
 
 test('Panel defaults to top-left position', function () {
     $panel = new Panel;

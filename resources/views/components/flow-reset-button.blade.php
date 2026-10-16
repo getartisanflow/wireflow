@@ -6,5 +6,5 @@
     x-on:click="onClick()"
     {{ $attributes }}
 >
-    @if(! $slot->isEmpty()){{ $slot }}@else Reset @endif
+    @if(! $slot->isEmpty()){{ $slot }}@else {{ __('wireflow::components.resetButton.label') }} @endif
 </button>

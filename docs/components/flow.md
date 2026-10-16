@@ -88,6 +88,13 @@ All props are optional unless noted. Props whose default value appears as `—` 
 |------|------|---------|-------------|
 | `history` | `bool` | `false` | Enable undo/redo history (drives `$this->flowUndo()` / `$this->flowRedo()`). |
 
+### Translations
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `translations` | `array\|null` | `trans('wireflow::canvas')` | Canvas messages keyed like `controls.zoomIn`. Defaults to the catalog for the app locale while `wireflow.translations` is on; an explicit array replaces it, and omitted keys fall back to English. See [Translations](../configuration.md#translations). |
+| `locale` | `string\|null` | `app()->getLocale()` | Locale AlpineFlow uses to pick plural forms. Defaults to the app locale while `wireflow.translations` is on. Laravel's `pt_BR` is accepted. |
+
 ### Escape hatches
 
 | Prop | Type | Default | Description |

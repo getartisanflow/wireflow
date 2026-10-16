@@ -55,6 +55,8 @@ class SchemaDesigner extends Component
         public bool $wireIgnore = true,
         public mixed $fullscreenTarget = null,
         public string|int|null $containerHeight = null,
+        public ?array $translations = null,
+        public ?string $locale = null,
         // Schema-specific additions merged into $config
         public bool $keyboardConnect = true,
         public bool $collapseBidirectionalEdges = false,

@@ -2,12 +2,47 @@
 
 ## v0.2.4-alpha — unreleased
 
+### Added — translations for canvases and workflow components
+
+Translations were brought to ArtisanFlow by [@Fanmade](https://github.com/Fanmade), who originated
+the feature in AlpineFlow ([getartisanflow/alpineflow#101](https://github.com/getartisanflow/alpineflow/pull/101)).
+WireFlow connects it to Laravel's translator:
+
+- `<x-flow>` passes `trans('wireflow::canvas')` and `app()->getLocale()` to AlpineFlow as
+  `translations` / `locale`. English and German ship; a locale without a catalog falls back to
+  `app.fallback_locale`. Plural forms are picked in the browser by AlpineFlow.
+- New `:translations` and `locale` props on `<x-flow>` (forwarded by `<x-schema-designer>`) set
+  one canvas's messages and locale. The `config` passthrough still wins over both.
+- `lang/{locale}/canvas.php` is generated from AlpineFlow's `locales/*.json` (vendored in
+  `dist/locales/`) by `scripts/sync-locales.php` at each engine resync. It's never edited by hand;
+  engine translations are contributed to AlpineFlow.
+- The workflow components (`<x-flow-run-button>`, `<x-flow-stop-button>`,
+  `<x-flow-reset-button>`, `<x-flow-replay-controls>`, `<x-flow-execution-log>`) read their default
+  text from `lang/{locale}/components.php` via `__('wireflow::components.…')`. English output is
+  unchanged; German uses the informal "du", matching AlpineFlow's `de.json`.
+- `php artisan vendor:publish --tag=wireflow-lang` publishes both files to
+  `lang/vendor/wireflow/{locale}/` for key-by-key overrides.
+
+See [Configuration → Translations](docs/configuration.md#translations). (#35)
+
+### Changed — canvases follow the app locale
+
+Translations are on by default. After upgrading, a German app's canvases turn German: control
+tooltips, loading text, accessible names and screen reader announcements follow `app()->getLocale()`,
+and so do the workflow components' default labels. English apps see no change.
+
+To keep canvases in English, set `WIREFLOW_TRANSLATIONS=false` (or `'translations' => false` in a
+published `config/wireflow.php`). With the flag off and no explicit `:translations` / `locale`
+props, `<x-flow>` renders exactly as before. The flag covers canvases only; the workflow components'
+labels always go through `__()` and can be overridden in
+`lang/vendor/wireflow/{locale}/components.php`.
+
 ### Changed — bundled AlpineFlow engine resynced to v0.2.4-alpha
 
-Resyncs the bundled AlpineFlow engine to v0.2.4-alpha — a polish release (documentation
-clarifications and expanded test coverage; **no functional changes**). There are no WireFlow-side
-changes; users receive it on upgrade + asset republish (`php artisan wireflow:install --force` +
-`npm run build`).
+Resyncs the bundled AlpineFlow engine to v0.2.4-alpha, which brings the translations engine
+(per-canvas messages, CLDR plural forms via `Intl.PluralRules`, `$flow.t()`, a German catalog)
+alongside documentation clarifications and expanded test coverage. Users receive it on upgrade +
+asset republish (`php artisan wireflow:install --force` + `npm run build`).
 
 ## v0.2.3-alpha — 2026-08-29
 
