@@ -23,7 +23,7 @@ WireFlow connects it to Laravel's translator:
 - `php artisan vendor:publish --tag=wireflow-lang` publishes both files to
   `lang/vendor/wireflow/{locale}/` for key-by-key overrides.
 
-See [Configuration → Translations](docs/configuration.md#translations).
+See [Configuration → Translations](docs/configuration.md#translations). (#35)
 
 ### Changed — canvases follow the app locale
 
